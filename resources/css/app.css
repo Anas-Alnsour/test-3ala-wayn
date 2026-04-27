@@ -766,6 +766,8 @@ select.glass-input { appearance: none; background-image: url('data:image/svg+xml
 }
 
 /* --- Dynamic Role Utilities --- */
+.bg-dynamic-main { background-color: color-mix(in srgb, var(--dynamic-primary) 4%, #111827) !important; }
+.bg-dynamic-sidebar { background-color: color-mix(in srgb, var(--dynamic-primary) 8%, #0f172a) !important; box-shadow: 4px 0 25px rgba(0,0,0,0.5); }
 .text-dynamic { color: var(--dynamic-primary) !important; }
 .bg-dynamic { background-color: var(--dynamic-primary) !important; }
 .border-dynamic { border-color: var(--dynamic-primary) !important; }
@@ -777,6 +779,6 @@ select.glass-input { appearance: none; background-image: url('data:image/svg+xml
   font-weight: bold; 
 }
 html[dir="rtl"] .sidebar-active { border-right: none !important; border-left: 4px solid var(--dynamic-primary) !important; }
-.btn-dynamic { background: linear-gradient(135deg, var(--dynamic-primary), #333) !important; color: white !important; transition: all 0.3s; border: none; cursor: pointer; }
-.btn-dynamic:hover { box-shadow: 0 0 15px var(--dynamic-primary); transform: translateY(-2px); }
+.btn-dynamic { background: var(--dynamic-primary) !important; color: white !important; font-weight: 600; border-radius: 12px; transition: all 0.3s ease; border: 1px solid color-mix(in srgb, var(--dynamic-primary) 60%, white); cursor: pointer;}
+.btn-dynamic:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 8px 20px color-mix(in srgb, var(--dynamic-primary) 40%, transparent); }
 }

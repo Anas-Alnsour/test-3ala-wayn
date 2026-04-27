@@ -9,7 +9,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="flex h-screen w-full bg-gray-900" x-data="{ 
+<div class="flex h-screen w-full bg-dynamic-main text-white font-sans" x-data="{ 
     activeTab: 'overview', 
     sidebarOpen: false,
     
@@ -40,8 +40,7 @@
     }
 }">
 
-    <!-- Sidebar -->
-    <aside class="w-72 bg-[#1a1513] border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col z-40 transition-transform" :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
+    <aside class="w-72 bg-dynamic-sidebar border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col z-40 transition-all duration-300" :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
         <div class="p-6 border-b border-gray-800 flex justify-between items-center">
              <a href="/" class="flex items-center gap-3 no-underline group">
                 <svg viewBox="0 0 100 100" fill="none" class="w-8 h-8 transition-transform duration-500 group-hover:rotate-45">
@@ -92,15 +91,13 @@
         </div>
     </aside>
 
-    <!-- Mobile Sidebar Overlay -->
     <div x-show="sidebarOpen" 
          class="fixed inset-0 bg-black/60 z-30 md:hidden backdrop-blur-sm"
          x-transition.opacity
          @click="sidebarOpen = false" style="display: none;"></div>
 
-    <!-- Main Content Area -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <header class="h-20 bg-[#1a1513]/80 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-6 z-10 sticky top-0">
+        <header class="h-20 bg-dynamic-main/80 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-6 z-10 sticky top-0">
              <button @click="sidebarOpen = true" class="md:hidden text-gray-400 hover:text-white bg-transparent border-none cursor-pointer">
                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
              </button>
@@ -126,7 +123,7 @@
                         </div>
                     </button>
 
-                    <div x-show="profileOpen" @click.away="profileOpen = false" class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-48 bg-gray-800 rounded-xl border border-gray-700 shadow-2xl py-2 z-50" x-transition.opacity style="display: none;">
+                    <div x-show="profileOpen" @click.away="profileOpen = false" class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-48 bg-dynamic-sidebar rounded-xl border border-gray-700 shadow-2xl py-2 z-50" x-transition.opacity style="display: none;">
                         <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
                             <button type="submit" class="w-full ltr:text-left rtl:text-right px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition-colors cursor-pointer bg-transparent border-none">
@@ -153,7 +150,7 @@
 
             <div x-show="activeTab === 'overview'" x-transition x-cloak>
                 <div class="stats-bar mb-10">
-                    <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)]">
+                    <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)] bg-dynamic-sidebar">
                         <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
                             <span class="en-text">Total Users</span>
                             <span class="ar-text">إجمالي المستخدمين</span>
@@ -161,7 +158,7 @@
                         <div class="text-4xl font-bold text-dynamic mb-2">{{ number_format($totalUsers) }}</div>
                     </div>
                     
-                    <div class="stat-card">
+                    <div class="stat-card bg-dynamic-sidebar">
                         <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
                             <span class="en-text">Total Attractions</span>
                             <span class="ar-text">المعالم السياحية</span>
@@ -169,7 +166,7 @@
                         <div class="text-4xl font-bold text-white mb-2">{{ number_format($totalAttractions) }}</div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="stat-card bg-dynamic-sidebar">
                         <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
                             <span class="en-text">Supported Cities</span>
                             <span class="ar-text">المدن المدعومة</span>
@@ -180,38 +177,38 @@
             </div>
 
             <div x-show="activeTab === 'approvals'" x-transition x-cloak>
-                <div class="solid-panel overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-800 bg-[#1F2937]">
+                <div class="solid-panel overflow-hidden bg-dynamic-sidebar">
+                    <div class="px-6 py-4 border-b border-gray-800 bg-black/20">
                         <h3 class="text-lg font-bold text-white">
                             <span class="en-text">Pending Approvals</span>
                             <span class="ar-text">بانتظار الموافقة</span>
                         </h3>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="users-table">
+                        <table class="users-table w-full text-left rtl:text-right border-collapse">
                             <thead>
-                                <tr>
-                                    <th><span class="en-text">Attraction Name</span><span class="ar-text">اسم المكان</span></th>
-                                    <th><span class="en-text">City</span><span class="ar-text">المدينة</span></th>
-                                    <th><span class="en-text">Submitted By</span><span class="ar-text">مقدم الطلب</span></th>
-                                    <th><span class="en-text">Action</span><span class="ar-text">إجراء</span></th>
+                                <tr class="border-b border-gray-800 text-gray-400">
+                                    <th class="p-4 font-normal"><span class="en-text">Attraction Name</span><span class="ar-text">اسم المكان</span></th>
+                                    <th class="p-4 font-normal"><span class="en-text">City</span><span class="ar-text">المدينة</span></th>
+                                    <th class="p-4 font-normal"><span class="en-text">Submitted By</span><span class="ar-text">مقدم الطلب</span></th>
+                                    <th class="p-4 font-normal"><span class="en-text">Action</span><span class="ar-text">إجراء</span></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($pendingApprovals as $gem)
-                                <tr id="row-{{ $gem->id }}" class="hover:bg-white/5 transition-colors">
-                                    <td class="font-medium text-white">
+                                <tr id="row-{{ $gem->id }}" class="hover:bg-white/5 transition-colors border-b border-gray-800/50">
+                                    <td class="p-4 font-medium text-white">
                                         <span class="en-text">{{ $gem->name }}</span>
                                         <span class="ar-text">{{ $gem->name_ar ?? $gem->name }}</span>
                                     </td>
-                                    <td class="text-gray-300">{{ $gem->city->name ?? 'N/A' }}</td>
-                                    <td class="text-gray-400">{{ $gem->submitter->name ?? 'Unknown' }}</td>
-                                    <td>
+                                    <td class="p-4 text-gray-300">{{ $gem->city->name ?? 'N/A' }}</td>
+                                    <td class="p-4 text-gray-400">{{ $gem->submitter->name ?? 'Unknown' }}</td>
+                                    <td class="p-4">
                                         <div class="flex gap-2">
-                                            <button @click="approveAttraction({{ $gem->id }})" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded transition-colors shadow-[0_0_10px_rgba(52,211,153,0.3)] border-none cursor-pointer">
+                                            <button @click="approveAttraction({{ $gem->id }})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition-colors border-none cursor-pointer">
                                                 <span class="en-text">Approve</span><span class="ar-text">قبول</span>
                                             </button>
-                                            <button @click="rejectAttraction({{ $gem->id }})" class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded transition-colors border-none cursor-pointer">
+                                            <button @click="rejectAttraction({{ $gem->id }})" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg transition-colors border-none cursor-pointer">
                                                 <span class="en-text">Reject</span><span class="ar-text">رفض</span>
                                             </button>
                                         </div>
@@ -219,7 +216,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="4" class="text-center py-6 text-gray-500">No pending approvals found.</td>
+                                    <td colspan="4" class="text-center py-8 text-gray-500">No pending approvals found.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -229,34 +226,34 @@
             </div>
 
             <div x-show="activeTab === 'users'" x-transition x-cloak>
-                <div class="solid-panel overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-800 bg-[#1F2937]">
+                <div class="solid-panel overflow-hidden bg-dynamic-sidebar">
+                    <div class="px-6 py-4 border-b border-gray-800 bg-black/20">
                         <h3 class="text-lg font-bold text-white">
                             <span class="en-text">Platform Users</span>
                             <span class="ar-text">مستخدمو المنصة</span>
                         </h3>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="users-table">
+                        <table class="users-table w-full text-left rtl:text-right border-collapse">
                             <thead>
-                                <tr>
-                                    <th><span class="en-text">Name</span><span class="ar-text">الاسم</span></th>
-                                    <th><span class="en-text">Email</span><span class="ar-text">البريد الإلكتروني</span></th>
-                                    <th><span class="en-text">Role</span><span class="ar-text">الدور</span></th>
-                                    <th><span class="en-text">Joined</span><span class="ar-text">تاريخ الانضمام</span></th>
+                                <tr class="border-b border-gray-800 text-gray-400">
+                                    <th class="p-4 font-normal"><span class="en-text">Name</span><span class="ar-text">الاسم</span></th>
+                                    <th class="p-4 font-normal"><span class="en-text">Email</span><span class="ar-text">البريد الإلكتروني</span></th>
+                                    <th class="p-4 font-normal"><span class="en-text">Role</span><span class="ar-text">الدور</span></th>
+                                    <th class="p-4 font-normal"><span class="en-text">Joined</span><span class="ar-text">تاريخ الانضمام</span></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($allUsers as $user)
-                                <tr class="hover:bg-white/5 transition-colors">
-                                    <td class="font-bold text-white">{{ $user->name }}</td>
-                                    <td class="text-gray-300">{{ $user->email }}</td>
-                                    <td>
-                                        <span class="px-2 py-1 rounded bg-white/10 text-xs font-bold uppercase tracking-wider text-dynamic border border-white/5">
+                                <tr class="hover:bg-white/5 transition-colors border-b border-gray-800/50">
+                                    <td class="p-4 font-bold text-white">{{ $user->name }}</td>
+                                    <td class="p-4 text-gray-300">{{ $user->email }}</td>
+                                    <td class="p-4">
+                                        <span class="px-2 py-1 rounded-md bg-white/10 text-xs font-bold uppercase tracking-wider text-dynamic border border-white/5">
                                             {{ $user->role }}
                                         </span>
                                     </td>
-                                    <td class="text-gray-500 text-sm">{{ $user->created_at->format('M d, Y') }}</td>
+                                    <td class="p-4 text-gray-500 text-sm">{{ $user->created_at->format('M d, Y') }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

@@ -8,7 +8,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="flex h-screen w-full bg-gray-900" x-data="{ 
+<div class="flex h-screen w-full bg-dynamic-main text-white font-sans" x-data="{ 
     activeTab: 'overview', 
     sidebarOpen: false,
     
@@ -45,7 +45,7 @@
     }
 }">
 
-    <aside class="w-72 bg-[#1a1513] border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col z-20" :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
+    <aside class="w-72 bg-dynamic-sidebar border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col z-20 transition-all duration-300" :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
         <div class="p-6 border-b border-gray-800 flex justify-between items-center">
              <a href="/" class="flex items-center gap-2 no-underline group">
                 <svg viewBox="0 0 100 100" fill="none" class="w-8 h-8 transition-transform duration-500 group-hover:rotate-45">
@@ -64,21 +64,21 @@
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
             <button @click="activeTab = 'overview'" 
                     class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
-                    :class="activeTab === 'overview' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                    :class="activeTab === 'overview' ? 'sidebar-active' : 'text-gray-400 hover:bg-white/5 hover:text-white bg-transparent'">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 <span class="font-medium en-text">Analytics</span>
                 <span class="font-medium ar-text">التحليلات</span>
             </button>
             <button @click="activeTab = 'post_offer'" 
                     class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
-                    :class="activeTab === 'post_offer' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                    :class="activeTab === 'post_offer' ? 'sidebar-active' : 'text-gray-400 hover:bg-white/5 hover:text-white bg-transparent'">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                 <span class="font-medium en-text">Post Offer</span>
                 <span class="font-medium ar-text">إضافة عرض</span>
             </button>
             <button @click="activeTab = 'active_offers'" 
                     class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
-                    :class="activeTab === 'active_offers' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                    :class="activeTab === 'active_offers' ? 'sidebar-active' : 'text-gray-400 hover:bg-white/5 hover:text-white bg-transparent'">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 <span class="font-medium en-text">Active Offers</span>
                 <span class="font-medium ar-text">العروض الفعالة</span>
@@ -86,7 +86,7 @@
         </nav>
         
         <div class="p-4 border-t border-gray-800">
-            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors no-underline">
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-colors no-underline">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 <span class="font-medium">
                     <span class="en-text">Back to Explore</span>
@@ -96,8 +96,13 @@
         </div>
     </aside>
 
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
-        <header class="h-20 bg-[#1a1513]/80 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-6 z-10 sticky top-0">
+    <div x-show="sidebarOpen" 
+         class="fixed inset-0 bg-black/60 z-30 md:hidden backdrop-blur-sm"
+         x-transition.opacity
+         @click="sidebarOpen = false" style="display: none;"></div>
+
+    <div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="h-20 bg-dynamic-main/80 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-6 z-10 sticky top-0">
              <button @click="sidebarOpen = true" class="md:hidden text-gray-400 hover:text-white bg-transparent border-none cursor-pointer">
                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
              </button>
@@ -106,7 +111,7 @@
              
              <div class="flex items-center gap-4 sm:gap-6">
                 <!-- Language Toggle -->
-                <button @click="toggleLang()" class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-gray-800 hover:bg-gray-700 transition-colors text-sm font-bold text-gray-200 cursor-pointer">
+                <button @click="toggleLang()" class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-dynamic-sidebar hover:bg-white/10 transition-colors text-sm font-bold text-gray-200 cursor-pointer">
                     <span class="en-text font-arabic">ع</span>
                     <span class="ar-text">EN</span>
                 </button>
@@ -123,10 +128,10 @@
                         </div>
                     </button>
 
-                    <div x-show="profileOpen" @click.away="profileOpen = false" class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-48 bg-gray-800 rounded-xl border border-gray-700 shadow-2xl py-2 z-50" x-transition.opacity style="display: none;">
+                    <div x-show="profileOpen" @click.away="profileOpen = false" class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-48 bg-dynamic-sidebar rounded-xl border border-gray-700 shadow-2xl py-2 z-50" x-transition.opacity style="display: none;">
                         <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
-                            <button type="submit" class="w-full ltr:text-left rtl:text-right px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition-colors cursor-pointer bg-transparent border-none">
+                            <button type="submit" class="w-full ltr:text-left rtl:text-right px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition-colors cursor-pointer bg-transparent border-none">
                                 <span class="en-text">Sign Out</span>
                                 <span class="ar-text">تسجيل خروج</span>
                             </button>
@@ -151,7 +156,7 @@
 
             <div x-show="activeTab === 'overview'" x-transition x-cloak>
                 <div class="stats-bar mb-10">
-                    <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)]">
+                    <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)] bg-dynamic-sidebar">
                         <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
                             <span class="en-text">Profile Views</span>
                             <span class="ar-text">مشاهدات الصفحة</span>
@@ -160,7 +165,7 @@
                         <div class="text-sm text-emerald-400">+12% from last week</div>
                     </div>
                     
-                    <div class="stat-card">
+                    <div class="stat-card bg-dynamic-sidebar border border-gray-800">
                         <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
                             <span class="en-text">Menu Scans (QR)</span>
                             <span class="ar-text">مسح قائمة الطعام (QR)</span>
@@ -169,7 +174,7 @@
                         <div class="text-sm text-emerald-400">+8% from last week</div>
                     </div>
                     
-                    <div class="stat-card">
+                    <div class="stat-card bg-dynamic-sidebar border border-gray-800">
                         <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
                             <span class="en-text">Active Offers</span>
                             <span class="ar-text">العروض الفعالة</span>
@@ -181,7 +186,7 @@
             </div>
 
             <div x-show="activeTab === 'post_offer'" x-transition x-cloak>
-                <div class="solid-panel p-6 md:p-10 max-w-4xl mx-auto rounded-2xl border-t-4 border-dynamic shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+                <div class="solid-panel p-6 md:p-10 max-w-4xl mx-auto rounded-2xl border-t-4 border-dynamic shadow-[0_10px_40px_rgba(0,0,0,0.5)] bg-dynamic-sidebar">
                     <h2 class="text-2xl font-bold font-serif text-white mb-6">
                         <span class="en-text">Create Flash Deal</span>
                         <span class="ar-text">إنشاء عرض سريع</span>
@@ -194,7 +199,7 @@
                                 <span class="en-text">Meal / Offer Name</span>
                                 <span class="ar-text">اسم الوجبة / العرض</span>
                             </label>
-                            <input type="text" x-model="offerForm.name" required class="glass-input-premium w-full bg-gray-900 border border-gray-700" placeholder="e.g. Mansaf Friday Special">
+                            <input type="text" x-model="offerForm.name" required class="glass-input-premium w-full bg-dynamic-main border border-gray-700 text-white" placeholder="e.g. Mansaf Friday Special">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -203,14 +208,14 @@
                                     <span class="en-text">Original Price (JOD)</span>
                                     <span class="ar-text">السعر الأصلي (دينار)</span>
                                 </label>
-                                <input type="number" step="0.01" x-model="offerForm.original_price" required class="glass-input-premium w-full bg-gray-900 border border-gray-700" placeholder="15.00">
+                                <input type="number" step="0.01" x-model="offerForm.original_price" required class="glass-input-premium w-full bg-dynamic-main border border-gray-700 text-white" placeholder="15.00">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">
                                     <span class="en-text">Discount Price (JOD)</span>
                                     <span class="ar-text">سعر الخصم (دينار)</span>
                                 </label>
-                                <input type="number" step="0.01" x-model="offerForm.discount_price" required class="glass-input-premium w-full bg-gray-900 border-dynamic focus:ring-dynamic focus:border-dynamic text-dynamic" placeholder="9.99">
+                                <input type="number" step="0.01" x-model="offerForm.discount_price" required class="glass-input-premium w-full bg-dynamic-main border border-dynamic shadow-[0_0_10px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)] text-dynamic focus:ring-dynamic focus:border-dynamic" placeholder="9.99">
                             </div>
                         </div>
 
@@ -220,14 +225,14 @@
                                     <span class="en-text">Valid Until</span>
                                     <span class="ar-text">صالح حتى</span>
                                 </label>
-                                <input type="time" x-model="offerForm.valid_until" required class="glass-input-premium w-full bg-gray-900 border border-gray-700">
+                                <input type="time" x-model="offerForm.valid_until" required class="glass-input-premium w-full bg-dynamic-main border border-gray-700 text-white">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-300 mb-2">
                                     <span class="en-text">Target Audience</span>
                                     <span class="ar-text">الفئة المستهدفة</span>
                                 </label>
-                                <select x-model="offerForm.audience" required class="glass-input-premium w-full bg-gray-900 border border-gray-700">
+                                <select x-model="offerForm.audience" required class="glass-input-premium w-full bg-dynamic-main border border-gray-700 text-white">
                                     <option value="all">Everyone / الجميع</option>
                                     <option value="tourist">Tourists Only / السياح فقط</option>
                                     <option value="local">Locals Only / أبناء البلد فقط</option>
@@ -248,7 +253,7 @@
             <div x-show="activeTab === 'active_offers'" x-transition x-cloak>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     @forelse($activeOffers as $offer)
-                    <div class="solid-panel p-6 border-l-4 {{ $offer->is_active ? 'border-emerald-500' : 'border-gray-600' }} flex flex-col justify-between bg-[#1F2937]">
+                    <div class="solid-panel p-6 border-l-4 {{ $offer->is_active ? 'border-emerald-500' : 'border-gray-600' }} flex flex-col justify-between bg-dynamic-sidebar border-y border-r border-gray-800">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <h3 class="text-xl font-bold text-white mb-1">
@@ -257,13 +262,13 @@
                                 </h3>
                                 <div class="text-sm text-gray-400">Valid until {{ $offer->valid_until }} • Target: <span class="capitalize">{{ $offer->audience }}</span></div>
                             </div>
-                            <div class="text-right rtl:text-left bg-gray-800 p-2 rounded-lg border border-white/10">
+                            <div class="text-right rtl:text-left bg-dynamic-main p-2 rounded-lg border border-white/10 shadow-inner">
                                 <div class="text-xs text-gray-500 line-through">{{ $offer->original_price }} JOD</div>
                                 <div class="text-lg font-bold text-dynamic">{{ $offer->discount_price }} JOD</div>
                             </div>
                         </div>
                         
-                        <div class="flex items-center justify-between pt-4 border-t border-gray-800">
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-800/50 mt-4">
                             <div class="flex items-center gap-2">
                                 <div class="w-3 h-3 rounded-full {{ $offer->is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-gray-600' }}"></div>
                                 <span class="text-sm font-bold {{ $offer->is_active ? 'text-emerald-500' : 'text-gray-500' }}">
@@ -271,7 +276,7 @@
                                 </span>
                             </div>
                             
-                            <button @click="toggleOffer({{ $offer->id }})" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white text-sm font-bold rounded-lg transition-colors cursor-pointer">
+                            <button @click="toggleOffer({{ $offer->id }})" class="px-4 py-2 bg-dynamic-main hover:bg-white/10 border border-gray-700 text-white text-sm font-bold rounded-lg transition-colors cursor-pointer">
                                 @if($offer->is_active)
                                     <span class="en-text">Pause Offer</span><span class="ar-text">إيقاف العرض</span>
                                 @else
@@ -281,7 +286,7 @@
                         </div>
                     </div>
                     @empty
-                    <div class="col-span-full solid-panel p-10 text-center border border-gray-700 border-dashed bg-[#1F2937]">
+                    <div class="col-span-full solid-panel p-10 text-center border border-gray-700 border-dashed bg-dynamic-sidebar">
                         <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         <p class="text-gray-400 text-lg">No offers created yet. Start driving traffic by posting a flash deal!</p>
                     </div>
