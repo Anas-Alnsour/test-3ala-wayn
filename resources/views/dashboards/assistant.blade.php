@@ -17,7 +17,6 @@
             'tourist_name' => 'Michael Smith',
             'tourist_country' => '🇺🇸 USA',
             'route_name' => 'Wadi Mujib Siq Trail',
-            'wiki_title' => 'Wadi_Mujib',
             'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Wadi_Mujib.jpg/800px-Wadi_Mujib.jpg',
             'date' => 'Oct 29',
             'time' => '08:00 AM',
@@ -28,7 +27,6 @@
             'tourist_name' => 'Elena Rossi',
             'tourist_country' => '🇮🇹 Italy',
             'route_name' => 'Dana Biosphere Hike',
-            'wiki_title' => 'Dana_Biosphere_Reserve',
             'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Dana_Biosphere_Reserve.jpg/800px-Dana_Biosphere_Reserve.jpg',
             'date' => 'Nov 02',
             'time' => '06:00 AM',
@@ -146,7 +144,7 @@
                 <div class="space-y-8">
                      @foreach($upcomingTours as $tour)
                     <div class="bg-[#16110f] border border-[#2d221e] rounded-[2.5rem] overflow-hidden group hover:border-[#E76F51]/50 transition-all flex flex-col lg:flex-row shadow-2xl">
-                        <div class="lg:w-80 h-64 lg:h-auto relative bg-[#1a1a1a]" x-wiki-image="'{{ $tour->wiki_title }}'">
+                        <div class="lg:w-80 h-64 lg:h-auto relative bg-[#1a1a1a]">
                             <img src="{{ $tour->fallback_img }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" alt="{{ $tour->route_name }}">
                             <div class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#16110f] via-transparent to-transparent"></div>
                         </div>

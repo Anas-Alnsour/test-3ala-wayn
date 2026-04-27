@@ -151,8 +151,11 @@
                     @forelse($pendingApprovals as $gem)
                     <div id="gem-{{ $gem->id }}" class="bg-[#121212] border border-[#2a2a2a] rounded-[2.5rem] overflow-hidden flex flex-col hover:border-[#F5C518]/50 transition-all shadow-2xl group">
 
-                        <div class="h-64 relative bg-[#1a1a1a]" x-wiki-image="'{{ $gem->wiki_title ?? $gem->city->wiki_title ?? 'Amman' }}'">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Amman_Citadel_Temple_of_Hercules.jpg/800px-Amman_Citadel_Temple_of_Hercules.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" alt="Jordan Attraction">
+                        <div class="h-64 relative bg-[#1a1a1a]">
+                            <img src="{{ $gem->image_url ?? $gem->city->image_url ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Amman_Citadel_Temple_of_Hercules.jpg/800px-Amman_Citadel_Temple_of_Hercules.jpg' }}"
+                                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Amman_Citadel_Temple_of_Hercules.jpg/800px-Amman_Citadel_Temple_of_Hercules.jpg'"
+                                 class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
+                                 alt="{{ $gem->name }}">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent"></div>
                             <div class="absolute top-6 left-6 px-4 py-2 bg-[#F5C518] text-black font-black rounded-xl text-xs uppercase shadow-md">
                                 {{ $gem->city->name ?? 'Jordan' }}

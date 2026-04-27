@@ -1,5 +1,5 @@
 @php
-    // Fetch cities for form and filtering safely
+    // Fetch cities for form
     $cities = \App\Models\City::all();
 
     // Fetch user's submitted gems with null safety
@@ -9,15 +9,8 @@
     $localPoints = $myGems->where('status', 'approved')->count() * 50;
     $badgeLevel = $localPoints >= 200 ? 'سفير سياحي' : ($localPoints >= 50 ? 'دليل محلي' : 'ابن البلد');
 
-    // Enhanced live deals with Direct Wikimedia Fallback Images
-    $liveDeals = [
-        (object)['id'=>1, 'title' => 'خصم 50% مخيمات رم', 'title_en' => '50% Off Wadi Rum Camps', 'wiki_title' => 'Wadi_Rum', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Wadi_Rum_-_desert.jpg/800px-Wadi_Rum_-_desert.jpg', 'location' => 'Wadi Rum', 'city_id' => 9, 'discount' => '50%'],
-        (object)['id'=>2, 'title' => 'عرض منسف الجمعة', 'title_en' => 'Friday Mansaf Deal', 'wiki_title' => 'Mansaf', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Mansaf.jpg/800px-Mansaf.jpg', 'location' => 'Amman', 'city_id' => 1, 'discount' => '25%'],
-        (object)['id'=>3, 'title' => 'تذاكر تلفريك عجلون', 'title_en' => 'Ajloun Cable Car', 'wiki_title' => 'Ajloun_Castle', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Ajloun_Castle_2019.jpg/800px-Ajloun_Castle_2019.jpg', 'location' => 'Ajloun', 'city_id' => 4, 'discount' => '15%'],
-        (object)['id'=>4, 'title' => 'دخولية منتجعات البحر الميت', 'title_en' => 'Dead Sea Resorts Entry', 'wiki_title' => 'Dead_Sea', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Dead_sea_jordan.jpg/800px-Dead_sea_jordan.jpg', 'location' => 'Dead Sea', 'city_id' => 7, 'discount' => '30%'],
-        (object)['id'=>5, 'title' => 'قهوة عربية مجانية', 'title_en' => 'Free Arabic Coffee', 'wiki_title' => 'Arabic_coffee', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Arabic_coffee_in_a_Dallah.jpg/800px-Arabic_coffee_in_a_Dallah.jpg', 'location' => 'Petra', 'city_id' => 8, 'discount' => '100%'],
-        (object)['id'=>6, 'title' => 'خصم مطاعم جرش', 'title_en' => 'Jerash Restaurants', 'wiki_title' => 'Jerash', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Jerash_-_Oval_Forum.jpg/800px-Jerash_-_Oval_Forum.jpg', 'location' => 'Jerash', 'city_id' => 3, 'discount' => '20%'],
-    ];
+    // Fetch deals directly from Database to use the new image_url column
+    $liveDeals = \App\Models\DailyOffer::where('is_active', true)->latest()->get();
 @endphp
 
 @extends('layouts.dashboard')
@@ -75,7 +68,7 @@
         </nav>
 
         <div class="p-6 border-t border-[#242b20] bg-gradient-to-t from-[#0a0c0a] to-transparent space-y-3">
-            <a href="/" class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-[#242b20] text-gray-400 hover:text-white hover:bg-gradient-to-r hover:from-[#556B2F] hover:to-[#8FBC8F] transition-all no-underline font-bold shadow-sm hover:shadow-[0_0_15px_var(--dynamic-glow)]">
+            <a href="/" class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-[#242b20] text-gray-400 hover:text-white hover:bg-gradient-to-r hover:from-[#556B2F] hover:to-[#8FBC8F] transition-all no-underline font-bold shadow-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 <span x-text="language === 'ar' ? 'العودة للموقع' : 'Back to Website'"></span>
             </a>
@@ -96,7 +89,7 @@
 
         <header class="h-24 bg-[#0a0c0a]/90 backdrop-blur-xl border-b border-[#242b20] flex items-center justify-between px-6 lg:px-10 z-50 sticky top-0 shadow-lg">
              <div class="flex items-center gap-4">
-                 <button @click="sidebarOpen = true" class="md:hidden p-2 text-gray-400 hover:text-[#8FBC8F] rounded-lg transition-colors border-none bg-transparent cursor-pointer">
+                 <button @click="sidebarOpen = true" class="md:hidden p-2 text-gray-400 hover:text-[#8FBC8F] rounded-lg border-none bg-transparent cursor-pointer">
                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                  </button>
                  <h2 class="text-3xl font-black text-white hidden sm:block">
@@ -104,7 +97,6 @@
                      <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#8FBC8F] to-[#556B2F]">{{ Auth::user()->name ?? 'Citizen' }}</span> 🇯🇴
                  </h2>
              </div>
-
              <div class="flex items-center gap-4 sm:gap-6">
                 <div class="hidden md:flex items-center gap-3 bg-[#121411] px-4 py-2 rounded-2xl border border-[#242b20] shadow-inner">
                     <div class="w-8 h-8 rounded-full bg-[#556B2F]/20 flex items-center justify-center text-[#8FBC8F] border border-[#556B2F]/50">
@@ -132,7 +124,6 @@
                         </div>
                         <svg class="w-4 h-4 text-gray-500 group-hover:text-[#8FBC8F] mr-2 ltr:mr-0 ltr:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-
                     <div x-show="profileOpen" @click.away="profileOpen = false" class="absolute top-full mt-3 ltr:right-0 rtl:left-0 w-56 bg-[#121411] rounded-2xl border border-[#242b20] shadow-[0_15px_50px_rgba(0,0,0,0.9)] py-3 z-50 overflow-hidden" x-transition style="display: none;">
                         <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
@@ -146,42 +137,37 @@
              </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative scroll-smooth bg-transparent z-10">
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative bg-transparent z-10">
 
             <div x-show="activeTab === 'deals'" x-transition:enter="transition ease-out duration-500 delay-100" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
-                <div class="mb-10 flex flex-col lg:flex-row justify-between lg:items-end gap-6">
-                    <div>
-                        <h1 class="text-4xl font-black font-serif text-white mb-2" x-text="language === 'ar' ? 'عروض الفزعة 🔥' : 'Local Deals 🔥'"></h1>
-                        <p class="text-gray-400 text-lg" x-text="language === 'ar' ? 'لأنك ابن البلد، الدلال كله لك. خصومات مخصصة للأردنيين.' : 'Because you are local, you get the best. Exclusive discounts.'"></p>
-                    </div>
-
-                    <div class="flex flex-wrap gap-3 bg-[#121411] p-2 rounded-2xl border border-[#242b20]">
-                        <button @click="filterCity = 0" :class="filterCity === 0 ? 'bg-[#556B2F] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all border-none cursor-pointer" x-text="language === 'ar' ? 'كل الأردن' : 'All Jordan'"></button>
-                        @foreach($cities->take(5) as $city)
-                        <button @click="filterCity = {{ $city->id }}" :class="filterCity === {{ $city->id }} ? 'bg-[#556B2F] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all border-none cursor-pointer">{{ $city->name }}</button>
-                        @endforeach
-                    </div>
+                <div class="mb-10">
+                    <h1 class="text-4xl font-black font-serif text-white mb-2" x-text="language === 'ar' ? 'عروض الفزعة 🔥' : 'Local Deals 🔥'"></h1>
+                    <p class="text-gray-400 text-lg" x-text="language === 'ar' ? 'لأنك ابن البلد، الدلال كله لك. خصومات مخصصة للأردنيين.' : 'Exclusive discounts for our locals.'"></p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                    @foreach($liveDeals as $deal)
-                    <div x-show="filterCity === 0 || filterCity === {{ $deal->city_id }}" class="bg-[#121411] border border-[#242b20] rounded-[2rem] overflow-hidden shadow-2xl hover:shadow-[0_20px_60px_var(--dynamic-glow)] hover:border-[#556B2F]/50 transition-all duration-500 group flex flex-col h-[480px]">
-                        <div class="h-56 relative overflow-hidden bg-[#1a1e18]" x-wiki-image="'{{ $deal->wiki_title }}'">
-                            <img src="{{ $deal->fallback_img }}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-100" alt="{{ $deal->title_en }}">
+                    @forelse($liveDeals as $deal)
+                    <div class="bg-[#121411] border border-[#242b20] rounded-[2rem] overflow-hidden shadow-2xl hover:border-[#556B2F]/50 transition-all duration-500 group flex flex-col h-[480px]">
+
+                        <div class="h-56 relative overflow-hidden bg-[#1a1e18]">
+                            <img src="{{ $deal->image_url }}"
+                                 class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100"
+                                 alt="{{ $deal->name }}"
+                                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Mansaf.jpg/800px-Mansaf.jpg'">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#121411] via-transparent to-transparent"></div>
                             <div class="absolute top-6 ltr:right-6 rtl:left-6 bg-[#556B2F] text-white font-black px-4 py-2 rounded-xl shadow-2xl">
-                                {{ $deal->discount }} OFF
+                                {{ round((($deal->original_price - $deal->discount_price) / $deal->original_price) * 100) }}% OFF
                             </div>
                         </div>
 
                         <div class="p-8 flex-1 flex flex-col justify-between">
                             <div>
                                 <h3 class="text-2xl font-black text-white mb-2 group-hover:text-[#8FBC8F] transition-colors">
-                                    <span x-text="language === 'ar' ? '{{ $deal->title }}' : '{{ $deal->title_en }}'"></span>
+                                    <span x-text="language === 'ar' ? '{{ $deal->name_ar ?? $deal->name }}' : '{{ $deal->name }}'"></span>
                                 </h3>
                                 <p class="text-gray-400 text-sm flex items-center gap-2 mb-6 font-bold uppercase tracking-widest">
-                                    <svg class="w-5 h-5 text-[#556B2F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                    {{ $deal->location }}
+                                    <svg class="w-5 h-5 text-[#556B2F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                    Valid Until: {{ $deal->valid_until }}
                                 </p>
                             </div>
                             <button @click="showToast(language==='ar'?'تم تفعيل الكود! استخدم هويتك الشخصية عند الدفع.':'Code activated! Show ID at checkout.')" class="w-full bg-[#1a1e18] hover:bg-[#556B2F] border border-[#242b20] hover:border-transparent text-[#8FBC8F] hover:text-white py-5 rounded-2xl font-black transition-all cursor-pointer shadow-lg">
@@ -189,7 +175,11 @@
                             </button>
                         </div>
                     </div>
-                    @endforeach
+                    @empty
+                    <div class="col-span-full p-10 text-center border border-dashed border-[#242b20] rounded-[2rem]">
+                         <p class="text-gray-500 font-bold text-lg">No active deals right now. Check back later!</p>
+                    </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -313,7 +303,6 @@
                 const formData = new FormData(event.target);
                 const plainFormData = Object.fromEntries(formData.entries());
 
-                // تم تصليح المسار هنا ليكون /local/hidden-gems حسب الـ web.php
                 fetch('/local/hidden-gems', {
                     method: 'POST',
                     headers: {

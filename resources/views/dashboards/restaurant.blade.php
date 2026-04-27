@@ -14,7 +14,6 @@
             'id' => '#ORD-001',
             'guest' => 'John Doe',
             'deal' => 'Mansaf',
-            'wiki_title' => 'Mansaf',
             'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Mansaf.jpg/800px-Mansaf.jpg',
             'time' => '10m ago',
             'status' => 'Arriving'
@@ -23,7 +22,6 @@
             'id' => '#ORD-002',
             'guest' => 'Sarah M.',
             'deal' => 'Falafel Platter',
-            'wiki_title' => 'Falafel',
             'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Falafel_02.jpg/800px-Falafel_02.jpg',
             'time' => '25m ago',
             'status' => 'Seated'
@@ -32,7 +30,6 @@
             'id' => '#ORD-003',
             'guest' => 'Ahmad R.',
             'deal' => 'Knafeh',
-            'wiki_title' => 'Knafeh',
             'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Kanafeh.jpg/800px-Kanafeh.jpg',
             'time' => '1h ago',
             'status' => 'Completed'
@@ -147,7 +144,7 @@
                          @foreach($liveOrders as $ord)
                             @if($ord->status === 'Completed')
                             <div class="flex items-center gap-6 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
-                                <div class="w-14 h-14 rounded-xl relative overflow-hidden bg-[#2e1c12]" x-wiki-image="'{{ $ord->wiki_title }}'">
+                                <div class="w-14 h-14 rounded-xl relative overflow-hidden bg-[#2e1c12]">
                                     <img src="{{ $ord->fallback_img }}" alt="{{ $ord->deal }}" class="w-full h-full object-cover">
                                 </div>
                                 <div class="flex-1">
@@ -171,7 +168,7 @@
                      @foreach($liveOrders as $ord)
                         @if($ord->status !== 'Completed')
                         <div class="bg-[#1a0f0a] border border-[#2e1c12] rounded-[2.5rem] overflow-hidden group hover:border-[#F4A261]/50 transition-all flex flex-col shadow-2xl">
-                            <div class="h-48 relative bg-[#2e1c12]" x-wiki-image="'{{ $ord->wiki_title }}'">
+                            <div class="h-48 relative bg-[#2e1c12]">
                                 <img src="{{ $ord->fallback_img }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" alt="{{ $ord->deal }}">
                                 <div class="absolute inset-0 bg-gradient-to-t from-[#1a0f0a] via-transparent to-transparent"></div>
                                 <div class="absolute top-6 left-6 px-4 py-2 bg-[#F4A261] text-black font-black rounded-xl text-xs uppercase shadow-md">

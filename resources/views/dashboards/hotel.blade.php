@@ -115,7 +115,7 @@
                     </div>
                 </div>
 
-                <div class="bg-[#0c1421] border border-[#1a273b] rounded-[2.5rem] overflow-hidden shadow-2xl relative" x-wiki-image="'Dead_Sea'">
+                <div class="bg-[#0c1421] border border-[#1a273b] rounded-[2.5rem] overflow-hidden shadow-2xl relative">
                     <div class="h-96 relative bg-[#121d2e]">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Dead_sea_jordan.jpg/800px-Dead_sea_jordan.jpg" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" alt="Dead Sea Resort">
                         <div class="absolute inset-0 bg-gradient-to-t from-[#0c1421] via-transparent to-transparent"></div>

@@ -118,7 +118,7 @@
                         <div class="ltr:ml-20 rtl:mr-20">
                             <div class="text-[#E56B6F] text-sm font-black tracking-widest mb-2 bg-[#B56576]/10 inline-block px-3 py-1 rounded-lg border border-[#B56576]/20">09:00 AM</div>
                             <div class="bg-[#1a0e11] p-0 rounded-3xl border border-[#2e191e] hover:border-[#B56576]/50 transition-all shadow-lg overflow-hidden flex flex-col md:flex-row h-auto md:h-60" :class="done ? 'opacity-70' : ''">
-                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden bg-[#2e191e]" x-wiki-image="'Amman_Citadel'">
+                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden bg-[#2e191e]">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Amman_Citadel_Temple_of_Hercules.jpg/800px-Amman_Citadel_Temple_of_Hercules.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Amman Citadel">
                                 </div>
                                 <div class="p-6 md:p-8 flex-1 flex flex-col justify-center">
@@ -141,7 +141,7 @@
                         <div class="ltr:ml-20 rtl:mr-20">
                             <div class="text-[#E56B6F] text-sm font-black tracking-widest mb-2 bg-[#B56576]/10 inline-block px-3 py-1 rounded-lg border border-[#B56576]/20">12:30 PM</div>
                             <div class="bg-[#1a0e11] p-0 rounded-3xl border border-[#B56576]/30 transition-all shadow-lg overflow-hidden flex flex-col md:flex-row h-auto md:h-60" :class="done ? 'opacity-70' : ''">
-                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden bg-[#2e191e]" x-wiki-image="'Falafel'">
+                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden bg-[#2e191e]">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Falafel_02.jpg/800px-Falafel_02.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Hashem Restaurant">
                                 </div>
                                 <div class="p-6 md:p-8 flex-1 flex flex-col justify-center">
@@ -164,7 +164,7 @@
                         <div class="ltr:ml-20 rtl:mr-20">
                             <div class="text-gray-500 text-sm font-black tracking-widest mb-2 px-3 py-1 inline-block">03:30 PM</div>
                             <div class="bg-[#1a0e11] p-0 rounded-3xl border border-[#2e191e] hover:border-[#B56576]/50 transition-all shadow-lg overflow-hidden flex flex-col md:flex-row h-auto md:h-60">
-                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden bg-[#2e191e]" x-wiki-image="'Roman_Theater_(Amman)'">
+                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden bg-[#2e191e]">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Roman_Theater_Amman_Jordan.jpg/800px-Roman_Theater_Amman_Jordan.jpg" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Roman Theatre">
                                 </div>
                                 <div class="p-6 md:p-8 flex-1 flex flex-col justify-center">
@@ -185,14 +185,17 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                     @forelse($wishlistCities as $city)
-                    <div class="bg-[#1a0e11] rounded-3xl overflow-hidden group cursor-pointer border border-[#2e191e] hover:border-[#B56576]/50 transition-all duration-300 shadow-lg relative flex flex-col h-80" x-wiki-image="'{{ $city->wiki_title }}'">
+                    <div class="bg-[#1a0e11] rounded-3xl overflow-hidden group cursor-pointer border border-[#2e191e] hover:border-[#B56576]/50 transition-all duration-300 shadow-lg relative flex flex-col h-80">
 
                         <button class="absolute top-4 ltr:right-4 rtl:left-4 z-20 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-red-600 transition-colors flex items-center justify-center border border-white/20 backdrop-blur-md cursor-pointer" @click.stop="$el.closest('.bg-\\[\\#1a0e11\\]').remove(); showToast(language==='ar'?'تم الإزالة':'Removed from wishlist')">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
                         </button>
 
                         <div class="absolute inset-0 overflow-hidden bg-[#2e191e]">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Petra_Jordan_BW_21.JPG/800px-Petra_Jordan_BW_21.JPG" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100" alt="{{ $city->name }}">
+                            <img src="{{ $city->image_url ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Petra_Jordan_BW_21.JPG/800px-Petra_Jordan_BW_21.JPG' }}"
+                                 onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Petra_Jordan_BW_21.JPG/800px-Petra_Jordan_BW_21.JPG'"
+                                 class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100"
+                                 alt="{{ $city->name }}">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#140b0d] via-transparent to-transparent"></div>
                         </div>
 

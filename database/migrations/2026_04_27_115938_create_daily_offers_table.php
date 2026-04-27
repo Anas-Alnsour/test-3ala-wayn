@@ -21,6 +21,10 @@ return new class extends Migration
             $table->string('valid_until');
             $table->string('audience')->default('all');
             $table->boolean('is_active')->default(true);
+
+            // هنا أضفنا عمود الصورة!
+            $table->string('image_url')->nullable();
+
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
