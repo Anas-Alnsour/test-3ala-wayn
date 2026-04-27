@@ -1,22 +1,22 @@
 @php
-    // Fetch cities for form and filtering
+    // Fetch cities for form and filtering safely
     $cities = \App\Models\City::all();
 
-    // Fetch user's submitted gems
-    $myGems = \App\Models\Attraction::with('city')->where('submitter_id', auth()->id())->latest()->get();
+    // Fetch user's submitted gems with null safety
+    $myGems = \App\Models\Attraction::with('city')->where('submitter_id', auth()->id() ?? 1)->latest()->get();
 
     // Calculate loyalty points
     $localPoints = $myGems->where('status', 'approved')->count() * 50;
     $badgeLevel = $localPoints >= 200 ? 'سفير سياحي' : ($localPoints >= 50 ? 'دليل محلي' : 'ابن البلد');
 
-    // Enhanced live deals with Wiki titles for dynamic imagery
+    // Enhanced live deals with Direct Wikimedia Fallback Images
     $liveDeals = [
-        (object)['id'=>1, 'title' => 'خصم 50% مخيمات رم', 'title_en' => '50% Off Wadi Rum Camps', 'wiki_title' => 'Wadi_Rum', 'location' => 'Wadi Rum', 'city_id' => 9, 'discount' => '50%'],
-        (object)['id'=>2, 'title' => 'عرض منسف الجمعة', 'title_en' => 'Friday Mansaf Deal', 'wiki_title' => 'Mansaf', 'location' => 'Amman', 'city_id' => 1, 'discount' => '25%'],
-        (object)['id'=>3, 'title' => 'تذاكر تلفريك عجلون', 'title_en' => 'Ajloun Cable Car', 'wiki_title' => 'Ajloun_Castle', 'location' => 'Ajloun', 'city_id' => 4, 'discount' => '15%'],
-        (object)['id'=>4, 'title' => 'دخولية منتجعات البحر الميت', 'title_en' => 'Dead Sea Resorts Entry', 'wiki_title' => 'Dead_Sea', 'location' => 'Dead Sea', 'city_id' => 7, 'discount' => '30%'],
-        (object)['id'=>5, 'title' => 'قهوة عربية مجانية', 'title_en' => 'Free Arabic Coffee', 'wiki_title' => 'Arabic_coffee', 'location' => 'Petra', 'city_id' => 8, 'discount' => '100%'],
-        (object)['id'=>6, 'title' => 'خصم مطاعم جرش', 'title_en' => 'Jerash Restaurants', 'wiki_title' => 'Jerash', 'location' => 'Jerash', 'city_id' => 3, 'discount' => '20%'],
+        (object)['id'=>1, 'title' => 'خصم 50% مخيمات رم', 'title_en' => '50% Off Wadi Rum Camps', 'wiki_title' => 'Wadi_Rum', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Wadi_Rum_-_desert.jpg/800px-Wadi_Rum_-_desert.jpg', 'location' => 'Wadi Rum', 'city_id' => 9, 'discount' => '50%'],
+        (object)['id'=>2, 'title' => 'عرض منسف الجمعة', 'title_en' => 'Friday Mansaf Deal', 'wiki_title' => 'Mansaf', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Mansaf.jpg/800px-Mansaf.jpg', 'location' => 'Amman', 'city_id' => 1, 'discount' => '25%'],
+        (object)['id'=>3, 'title' => 'تذاكر تلفريك عجلون', 'title_en' => 'Ajloun Cable Car', 'wiki_title' => 'Ajloun_Castle', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Ajloun_Castle_2019.jpg/800px-Ajloun_Castle_2019.jpg', 'location' => 'Ajloun', 'city_id' => 4, 'discount' => '15%'],
+        (object)['id'=>4, 'title' => 'دخولية منتجعات البحر الميت', 'title_en' => 'Dead Sea Resorts Entry', 'wiki_title' => 'Dead_Sea', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Dead_sea_jordan.jpg/800px-Dead_sea_jordan.jpg', 'location' => 'Dead Sea', 'city_id' => 7, 'discount' => '30%'],
+        (object)['id'=>5, 'title' => 'قهوة عربية مجانية', 'title_en' => 'Free Arabic Coffee', 'wiki_title' => 'Arabic_coffee', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Arabic_coffee_in_a_Dallah.jpg/800px-Arabic_coffee_in_a_Dallah.jpg', 'location' => 'Petra', 'city_id' => 8, 'discount' => '100%'],
+        (object)['id'=>6, 'title' => 'خصم مطاعم جرش', 'title_en' => 'Jerash Restaurants', 'wiki_title' => 'Jerash', 'fallback_img' => 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Jerash_-_Oval_Forum.jpg/800px-Jerash_-_Oval_Forum.jpg', 'location' => 'Jerash', 'city_id' => 3, 'discount' => '20%'],
     ];
 @endphp
 
@@ -28,7 +28,7 @@
      x-data="localCitizenDashboard()"
      :dir="language === 'ar' ? 'rtl' : 'ltr'">
 
-    <aside class="w-72 bg-[#121411] border-r border-[#242b20] flex-shrink-0 hidden md:flex flex-col z-40 transition-all duration-300 shadow-[4px_0_30px_var(--dynamic-glow)]"
+    <aside class="w-72 bg-[#121411] border-r border-[#242b20] flex-shrink-0 hidden md:flex flex-col z-[60] transition-all duration-300 shadow-[4px_0_30px_var(--dynamic-glow)]"
            :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
 
         <div class="p-6 border-b border-[#242b20] flex justify-between items-center bg-gradient-to-b from-[#556B2F]/10 to-transparent">
@@ -74,11 +74,19 @@
             </button>
         </nav>
 
-        <div class="p-6 border-t border-[#242b20] bg-gradient-to-t from-[#0a0c0a] to-transparent">
-            <a href="/" class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-[#242b20] text-gray-400 hover:text-black hover:bg-gradient-to-r hover:from-[#556B2F] hover:to-[#8FBC8F] transition-all no-underline font-bold shadow-sm hover:shadow-[0_0_15px_var(--dynamic-glow)]">
+        <div class="p-6 border-t border-[#242b20] bg-gradient-to-t from-[#0a0c0a] to-transparent space-y-3">
+            <a href="/" class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-[#242b20] text-gray-400 hover:text-white hover:bg-gradient-to-r hover:from-[#556B2F] hover:to-[#8FBC8F] transition-all no-underline font-bold shadow-sm hover:shadow-[0_0_15px_var(--dynamic-glow)]">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 <span x-text="language === 'ar' ? 'العودة للموقع' : 'Back to Website'"></span>
             </a>
+
+            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all font-black cursor-pointer uppercase tracking-widest text-[10px]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    <span x-text="language === 'ar' ? 'تسجيل الخروج' : 'Logout'"></span>
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -86,7 +94,7 @@
 
     <div class="flex-1 flex flex-col h-screen overflow-hidden relative bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoODUsMTA3LDQ3LDAuMDUpIi8+PC9zdmc+')]">
 
-        <header class="h-24 bg-[#0a0c0a]/90 backdrop-blur-xl border-b border-[#242b20] flex items-center justify-between px-6 lg:px-10 z-10 sticky top-0 shadow-lg">
+        <header class="h-24 bg-[#0a0c0a]/90 backdrop-blur-xl border-b border-[#242b20] flex items-center justify-between px-6 lg:px-10 z-50 sticky top-0 shadow-lg">
              <div class="flex items-center gap-4">
                  <button @click="sidebarOpen = true" class="md:hidden p-2 text-gray-400 hover:text-[#8FBC8F] rounded-lg transition-colors border-none bg-transparent cursor-pointer">
                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -138,7 +146,7 @@
              </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative scroll-smooth bg-transparent">
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative scroll-smooth bg-transparent z-10">
 
             <div x-show="activeTab === 'deals'" x-transition:enter="transition ease-out duration-500 delay-100" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                 <div class="mb-10 flex flex-col lg:flex-row justify-between lg:items-end gap-6">
@@ -158,8 +166,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                     @foreach($liveDeals as $deal)
                     <div x-show="filterCity === 0 || filterCity === {{ $deal->city_id }}" class="bg-[#121411] border border-[#242b20] rounded-[2rem] overflow-hidden shadow-2xl hover:shadow-[0_20px_60px_var(--dynamic-glow)] hover:border-[#556B2F]/50 transition-all duration-500 group flex flex-col h-[480px]">
-                        <div class="h-56 relative overflow-hidden" x-wiki-image="'{{ $deal->wiki_title }}'">
-                            <img src="" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-100">
+                        <div class="h-56 relative overflow-hidden bg-[#1a1e18]" x-wiki-image="'{{ $deal->wiki_title }}'">
+                            <img src="{{ $deal->fallback_img }}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-100" alt="{{ $deal->title_en }}">
                             <div class="absolute inset-0 bg-gradient-to-t from-[#121411] via-transparent to-transparent"></div>
                             <div class="absolute top-6 ltr:right-6 rtl:left-6 bg-[#556B2F] text-white font-black px-4 py-2 rounded-xl shadow-2xl">
                                 {{ $deal->discount }} OFF
@@ -190,8 +198,8 @@
                     <div class="w-24 h-24 bg-gradient-to-br from-[#556B2F] to-[#2E3B19] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl rotate-12">
                         <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path></svg>
                     </div>
-                    <h2 class="text-4xl font-black text-white mb-4">Hidden Gems</h2>
-                    <p class="text-gray-400 text-lg">Share undiscovered spots and help tourists experience the real Jordan while earning loyalty points.</p>
+                    <h2 class="text-4xl font-black text-white mb-4" x-text="language === 'ar' ? 'اكتشافات مخفية' : 'Hidden Gems'"></h2>
+                    <p class="text-gray-400 text-lg" x-text="language === 'ar' ? 'شاركنا أماكن سياحية جديدة ومخفية وساعد السياح يعيشوا تجربة الأردن الحقيقية، واكسب نقاط انتماء.' : 'Share undiscovered spots and help tourists experience the real Jordan while earning loyalty points.'"></p>
                 </div>
 
                 <div class="bg-[#121411] border border-[#242b20] p-10 md:p-16 rounded-[2.5rem] shadow-2xl max-w-5xl mx-auto relative overflow-hidden">
@@ -203,14 +211,14 @@
                                 <input type="text" name="name" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold" placeholder="e.g. Dana Sunset View">
                             </div>
                             <div class="space-y-3">
-                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest">الاسم (بالعربي)</label>
+                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest" x-text="language === 'ar' ? 'الاسم (بالعربي)' : 'Name (Arabic)'"></label>
                                 <input type="text" name="name_ar" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold text-right" placeholder="مثال: مطل الغروب في ضانا">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                             <div class="space-y-3">
-                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest">City</label>
+                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest" x-text="language === 'ar' ? 'المدينة' : 'City'"></label>
                                 <select name="city_id" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold appearance-none cursor-pointer">
                                     @foreach($cities as $city)
                                         <option value="{{ $city->id }}">{{ $city->name }}</option>
@@ -218,14 +226,17 @@
                                 </select>
                             </div>
                             <div class="space-y-3 md:col-span-2">
-                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest">Why is it special?</label>
-                                <input type="text" name="description" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold" placeholder="Mention the vibe, access, and best time to visit...">
+                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest" x-text="language === 'ar' ? 'ليش هالمكان مميز؟' : 'Why is it special?'"></label>
+                                <input type="text" name="description" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold" :placeholder="language === 'ar' ? 'احكيلنا عن الأجواء، كيف نوصله، وأفضل وقت للزيارة...' : 'Mention the vibe, access, and best time to visit...'">
                             </div>
                         </div>
 
                         <button type="submit" :disabled="isSubmitting" class="w-full bg-[#556B2F] hover:bg-[#8FBC8F] text-white py-6 rounded-2xl font-black text-xl transition-all shadow-2xl flex justify-center items-center gap-4 border-none cursor-pointer disabled:opacity-50">
-                            <span x-show="!isSubmitting">Submit Gem to Admins</span>
-                            <span x-show="isSubmitting" class="flex items-center gap-2">Processing... <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>
+                            <span x-show="!isSubmitting" x-text="language === 'ar' ? 'إرسال المكتشف للإدارة' : 'Submit Gem to Admins'"></span>
+                            <span x-show="isSubmitting" class="flex items-center gap-2">
+                                <span x-text="language === 'ar' ? 'جاري الإرسال...' : 'Processing...'"></span>
+                                <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            </span>
                         </button>
                     </form>
                 </div>
@@ -233,17 +244,17 @@
 
             <div x-show="activeTab === 'contributions'" x-transition:enter="transition ease-out duration-500 delay-100" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                  <div class="mb-10">
-                    <h2 class="text-4xl font-black text-white mb-2">My Contributions</h2>
-                    <p class="text-gray-400 text-lg">Track your approved gems and points.</p>
+                    <h2 class="text-4xl font-black text-white mb-2" x-text="language === 'ar' ? 'مساهماتي' : 'My Contributions'"></h2>
+                    <p class="text-gray-400 text-lg" x-text="language === 'ar' ? 'تابع الأماكن اللي اكتشفتها ونقاطك اللي كسبتها.' : 'Track your approved gems and points.'"></p>
                 </div>
 
                 <div class="bg-[#121411] border border-[#242b20] rounded-[2rem] shadow-2xl overflow-hidden">
                     <table class="w-full text-left rtl:text-right border-collapse">
                         <thead>
                             <tr class="border-b border-white/5 bg-white/5 text-gray-500 text-xs font-black uppercase tracking-widest">
-                                <th class="p-8">Attraction</th>
-                                <th class="p-8">City</th>
-                                <th class="p-8">Status</th>
+                                <th class="p-8" x-text="language === 'ar' ? 'المعلم' : 'Attraction'"></th>
+                                <th class="p-8" x-text="language === 'ar' ? 'المدينة' : 'City'"></th>
+                                <th class="p-8" x-text="language === 'ar' ? 'الحالة' : 'Status'"></th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/5">
@@ -265,7 +276,7 @@
                             @empty
                             <tr>
                                 <td colspan="3" class="p-24 text-center">
-                                    <p class="text-gray-500 font-black text-xl">No contributions yet. Start sharing the magic!</p>
+                                    <p class="text-gray-500 font-black text-xl" x-text="language === 'ar' ? 'لا يوجد مساهمات حتى الآن، شاركنا سحر الأردن!' : 'No contributions yet. Start sharing the magic!'"></p>
                                 </td>
                             </tr>
                             @endforelse
@@ -276,7 +287,7 @@
         </main>
     </div>
 
-    <div class="fixed bottom-8 ltr:right-8 rtl:left-8 z-50 flex flex-col gap-4 pointer-events-none" id="toast-container"></div>
+    <div class="fixed bottom-8 ltr:right-8 rtl:left-8 z-[9999] flex flex-col gap-4 pointer-events-none" id="toast-container"></div>
 </div>
 
 <script>
@@ -302,7 +313,8 @@
                 const formData = new FormData(event.target);
                 const plainFormData = Object.fromEntries(formData.entries());
 
-                fetch('/hidden-gems', {
+                // تم تصليح المسار هنا ليكون /local/hidden-gems حسب الـ web.php
+                fetch('/local/hidden-gems', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value || document.querySelector('meta[name="csrf-token"]')?.content || '',
@@ -313,10 +325,14 @@
                 }).then(() => {
                     setTimeout(() => {
                         this.isSubmitting = false;
-                        this.showToast('🌟 Gem submitted! Thanks for your contribution.', 'bg-[#556B2F] text-white border-none');
+                        this.showToast(this.language === 'ar' ? '🌟 تم إرسال المكتشف بنجاح! شكراً لفزعتك.' : '🌟 Gem submitted! Thanks for your contribution.', 'bg-[#556B2F] text-white border-none');
                         event.target.reset();
                         this.activeTab = 'contributions';
                     }, 1500);
+                }).catch(err => {
+                    console.error(err);
+                    this.isSubmitting = false;
+                    this.showToast('⚠️ حدث خطأ أثناء الإرسال', 'bg-red-600 text-white border-none');
                 });
             },
 
@@ -326,7 +342,11 @@
                 toast.className = `${colorClass} px-8 py-5 rounded-[2rem] shadow-2xl font-black flex items-center gap-4 transform translate-y-10 opacity-0 transition-all duration-500 border z-[100] backdrop-blur-xl pointer-events-auto`;
                 toast.innerHTML = `<span class='text-2xl font-serif'>✦</span> <span class='text-lg'>${message}</span>`;
                 container.appendChild(toast);
-                setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 20);
+
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-y-10', 'opacity-0');
+                });
+
                 setTimeout(() => {
                     toast.classList.add('translate-y-10', 'opacity-0', 'scale-90');
                     setTimeout(() => toast.remove(), 500);

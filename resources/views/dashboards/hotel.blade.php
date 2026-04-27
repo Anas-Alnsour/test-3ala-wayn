@@ -1,6 +1,7 @@
 @php
-    // Guest Requests
-    $guestRequests = \App\Models\GuestRequest::where('user_id', auth()->id())->latest()->get();
+    // جلب طلبات النزلاء بشكل آمن (Null-safe)
+    $user = Auth::user();
+    $guestRequests = \App\Models\GuestRequest::where('user_id', $user?->id ?? 1)->latest()->get();
 
     // Stats
     $occupancy = 82;
@@ -24,7 +25,7 @@
      x-data="hotelDashboard()"
      :dir="language === 'ar' ? 'rtl' : 'ltr'">
 
-    <aside class="w-72 bg-[#0c1421] border-r border-[#1a273b] flex-shrink-0 hidden md:flex flex-col z-40 transition-all duration-300 shadow-[4px_0_30px_rgba(0,0,0,0.8)]"
+    <aside class="w-72 bg-[#0c1421] border-r border-[#1a273b] flex-shrink-0 hidden md:flex flex-col z-[60] transition-all duration-300 shadow-[4px_0_30px_rgba(0,0,0,0.8)]"
            :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
 
         <div class="p-6 border-b border-[#1a273b] flex justify-between items-center bg-gradient-to-b from-[#457B9D]/10 to-transparent">
@@ -45,81 +46,82 @@
         <nav class="flex-1 p-5 space-y-3 overflow-y-auto">
             <button @click="activeTab = 'overview'"
                     class="w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 font-bold border border-transparent cursor-pointer ltr:text-left rtl:text-right group"
-                    :class="activeTab === 'overview' ? 'bg-[#457B9D]/10 border-[#457B9D]/30 text-[#A8DADC] shadow-2xl' : 'text-gray-400 hover:bg-[#121d2e] hover:text-white'">
+                    :class="activeTab === 'overview' ? 'bg-[#457B9D]/10 border-[#457B9D]/30 text-[#A8DADC] shadow-[0_0_15px_var(--dynamic-glow)]' : 'text-gray-400 hover:bg-[#121d2e] hover:text-white'">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z"></path></svg>
                 <span x-text="language === 'ar' ? 'الاستقبال' : 'Front Desk'"></span>
             </button>
 
             <button @click="activeTab = 'rooms'"
                     class="w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 font-bold border border-transparent cursor-pointer ltr:text-left rtl:text-right group"
-                    :class="activeTab === 'rooms' ? 'bg-[#457B9D]/10 border-[#457B9D]/30 text-[#A8DADC] shadow-2xl' : 'text-gray-400 hover:bg-[#121d2e] hover:text-white'">
+                    :class="activeTab === 'rooms' ? 'bg-[#457B9D]/10 border-[#457B9D]/30 text-[#A8DADC] shadow-[0_0_15px_var(--dynamic-glow)]' : 'text-gray-400 hover:bg-[#121d2e] hover:text-white'">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span x-text="language === 'ar' ? 'إدارة الغرف' : 'Room Map'"></span>
             </button>
         </nav>
 
         <div class="p-6 border-t border-[#1a273b] space-y-3">
-    <a href="/" class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-[#1a273b] text-gray-400 hover:text-white hover:border-[#457B9D] transition-all no-underline font-bold">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        <span x-text="language === 'ar' ? 'العودة للموقع' : 'Back to Website'"></span>
-    </a>
+            <a href="/" class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-[#1a273b] text-gray-400 hover:text-white hover:border-[#457B9D] transition-all no-underline font-bold">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span x-text="language === 'ar' ? 'العودة للموقع' : 'Back to Website'"></span>
+            </a>
 
-    <form method="POST" action="{{ route('logout') }}" class="m-0">
-        @csrf
-        <button type="submit" class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all font-black cursor-pointer uppercase tracking-widest text-[10px]">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-            <span x-text="language === 'ar' ? 'تسجيل الخروج' : 'Logout'"></span>
-        </button>
-    </form>
-</div>
+            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                @csrf
+                <button type="submit" class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all font-black cursor-pointer uppercase tracking-widest text-[10px]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    <span x-text="language === 'ar' ? 'تسجيل الخروج' : 'Logout'"></span>
+                </button>
+            </form>
+        </div>
     </aside>
 
     <div class="flex-1 flex flex-col h-screen overflow-hidden">
-        <header class="h-24 bg-[#0c1421]/90 backdrop-blur-xl border-b border-[#1a273b] flex items-center justify-between px-6 lg:px-10 z-10 sticky top-0 shadow-lg">
+        <header class="h-24 bg-[#0c1421]/90 backdrop-blur-xl border-b border-[#1a273b] flex items-center justify-between px-6 lg:px-10 z-50 sticky top-0 shadow-lg">
              <div class="flex items-center gap-4">
                  <button @click="sidebarOpen = true" class="md:hidden p-2 text-gray-400 hover:text-[#457B9D] rounded-lg cursor-pointer bg-transparent border-none">
                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                  </button>
                  <h2 class="text-3xl font-black text-white hidden sm:block">
                      <span x-text="language === 'ar' ? 'أهلاً بك، ' : 'Welcome, '"></span>
-                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#457B9D] to-[#A8DADC]">{{ Auth::user()->name }}</span> 🛎️
+                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#457B9D] to-[#A8DADC]">{{ $user->name ?? 'Manager' }}</span> 🛎️
                  </h2>
              </div>
              <div class="flex items-center gap-6">
-                <button @click="toggleLang()" class="w-12 h-12 rounded-2xl border border-[#1a273b] bg-[#121d2e] hover:border-[#457B9D] text-sm font-bold text-[#A8DADC] cursor-pointer transition-all">
-                    <span x-text="language === 'en' ? 'ع' : 'EN'"></span>
+                <button @click="toggleLang()" class="w-12 h-12 rounded-2xl border border-[#1a273b] bg-[#121d2e] hover:border-[#457B9D] text-sm font-bold text-[#A8DADC] cursor-pointer transition-all shadow-inner">
+                    <span x-show="language === 'en'" class="font-arabic text-lg">ع</span>
+                    <span x-show="language === 'ar'" class="text-xs">EN</span>
                 </button>
              </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative bg-transparent">
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative bg-transparent z-10">
             <div x-show="activeTab === 'overview'" x-transition x-cloak>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                    <div class="bg-[#0c1421] border border-[#1a273b] p-8 rounded-[2rem] group hover:border-[#457B9D]/50 transition-all">
+                    <div class="bg-[#0c1421] border border-[#1a273b] p-8 rounded-[2rem] group hover:border-[#457B9D]/50 transition-all shadow-lg">
                         <p class="text-gray-500 font-black uppercase text-xs tracking-widest mb-2">Occupancy</p>
                         <h3 class="text-5xl font-black text-[#A8DADC] group-hover:text-white transition-colors">{{ $occupancy }}%</h3>
                     </div>
-                    <div class="bg-[#0c1421] border border-[#1a273b] p-8 rounded-[2rem] group hover:border-[#457B9D]/50 transition-all">
+                    <div class="bg-[#0c1421] border border-[#1a273b] p-8 rounded-[2rem] group hover:border-[#457B9D]/50 transition-all shadow-lg">
                         <p class="text-gray-500 font-black uppercase text-xs tracking-widest mb-2">Check-ins</p>
                         <h3 class="text-5xl font-black text-white group-hover:text-[#457B9D] transition-colors">{{ $checkins }}</h3>
                     </div>
-                    <div class="bg-[#0c1421] border border-[#1a273b] p-8 rounded-[2rem] group hover:border-[#457B9D]/50 transition-all">
+                    <div class="bg-[#0c1421] border border-[#1a273b] p-8 rounded-[2rem] group hover:border-[#457B9D]/50 transition-all shadow-lg">
                         <p class="text-gray-500 font-black uppercase text-xs tracking-widest mb-2">Requests</p>
                         <h3 class="text-5xl font-black text-white group-hover:text-[#457B9D] transition-colors">{{ $pendingCount }}</h3>
                     </div>
-                    <div class="bg-gradient-to-br from-[#1D3557] to-[#457B9D] p-8 rounded-[2rem] text-white">
+                    <div class="bg-gradient-to-br from-[#1D3557] to-[#457B9D] p-8 rounded-[2rem] text-white shadow-lg">
                         <p class="font-black uppercase text-xs tracking-widest mb-2">Resort Status</p>
                         <h3 class="text-4xl font-black">ELITE</h3>
                     </div>
                 </div>
 
-                <div class="bg-[#0c1421] border border-[#1a273b] rounded-[2.5rem] overflow-hidden" x-wiki-image="'Dead Sea Marriott Resort & Spa'">
-                    <div class="h-96 relative">
-                        <img src="" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000">
+                <div class="bg-[#0c1421] border border-[#1a273b] rounded-[2.5rem] overflow-hidden shadow-2xl relative" x-wiki-image="'Dead_Sea'">
+                    <div class="h-96 relative bg-[#121d2e]">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Dead_sea_jordan.jpg/800px-Dead_sea_jordan.jpg" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" alt="Dead Sea Resort">
                         <div class="absolute inset-0 bg-gradient-to-t from-[#0c1421] via-transparent to-transparent"></div>
                         <div class="absolute bottom-10 left-10">
                             <h3 class="text-4xl font-black text-white mb-2">Resort Overview</h3>
-                            <p class="text-gray-300">Live view of the property and guest satisfaction metrics.</p>
+                            <p class="text-gray-300">Live view of the property and guest satisfaction metrics at the Dead Sea.</p>
                         </div>
                     </div>
                 </div>
@@ -133,7 +135,7 @@
 
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                     @foreach($rooms as $room)
-                    <div class="bg-[#0c1421] border border-[#1a273b] p-6 rounded-[2rem] text-center group hover:border-[#457B9D] transition-all cursor-pointer">
+                    <div class="bg-[#0c1421] border border-[#1a273b] p-6 rounded-[2rem] text-center group hover:border-[#457B9D] transition-all cursor-pointer shadow-lg hover:shadow-[0_0_15px_var(--dynamic-glow)]">
                         <p class="text-3xl font-black text-white mb-1">{{ $room->number }}</p>
                         <p class="text-xs text-gray-500 font-black mb-4">{{ $room->type }}</p>
                         <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase border border-current {{ $room->status === 'Available' ? 'text-emerald-500 bg-emerald-500/10' : ($room->status === 'Occupied' ? 'text-red-500 bg-red-500/10' : 'text-yellow-500 bg-yellow-500/10') }}">
@@ -145,7 +147,8 @@
             </div>
         </main>
     </div>
-    <div class="fixed bottom-8 ltr:right-8 rtl:left-8 z-50 flex flex-col gap-4 pointer-events-none" id="toast-container"></div>
+
+    <div class="fixed bottom-8 ltr:right-8 rtl:left-8 z-[9999] flex flex-col gap-4 pointer-events-none" id="toast-container"></div>
 </div>
 
 <script>
@@ -162,15 +165,21 @@
                 });
             },
 
-            toggleLang() { this.language = this.language === 'ar' ? 'en' : 'ar'; },
+            toggleLang() {
+                this.language = this.language === 'ar' ? 'en' : 'ar';
+            },
 
             showToast(message, colorClass = 'bg-[#0c1421] border-[#457B9D]') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div');
-                toast.className = `${colorClass} text-white px-8 py-5 rounded-[2rem] shadow-2xl font-black flex items-center gap-4 transform translate-y-10 opacity-0 transition-all duration-500 border z-[100] backdrop-blur-xl pointer-events-auto`;
-                toast.innerHTML = `<span class='text-2xl font-serif'>✦</span> <span class='text-lg'>${message}</span>`;
+                toast.className = `${colorClass} text-white px-8 py-5 rounded-[2rem] shadow-2xl font-black flex items-center gap-4 transform translate-y-10 opacity-0 transition-all duration-500 border pointer-events-auto`;
+                toast.innerHTML = `<span class='text-2xl font-serif text-[#A8DADC]'>✦</span> <span class='text-lg'>${message}</span>`;
                 container.appendChild(toast);
-                setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 20);
+
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-y-10', 'opacity-0');
+                });
+
                 setTimeout(() => {
                     toast.classList.add('translate-y-10', 'opacity-0', 'scale-90');
                     setTimeout(() => toast.remove(), 500);
