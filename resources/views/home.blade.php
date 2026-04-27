@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  
+
   <!-- HEADER -->
   <header class="header">
 <div class="logo" id="logoBtn">
@@ -48,7 +48,7 @@
         <div class="logo-sub" data-i18n="logo_sub">Authentic Travel · Jordan</div>
       </div>
     </div>
-    
+
     <div class="header-mobile-controls">
       <div class="auth-buttons-mobile" style="display: flex; gap: 10px; align-items: center;">
           @guest
@@ -76,7 +76,7 @@
       <button class="nav-btn" data-target="cities" data-i18n="nav_cities">Cities</button>
       <button class="nav-btn" data-target="planner" data-i18n="nav_planner">AI Planner</button>
       <button class="nav-btn" data-target="currency" data-i18n="nav_currency">Currency</button>
-      
+
       <div class="auth-buttons desktop-only" style="display: flex; gap: 10px; align-items: center; margin-left: 1rem;">
           @guest
               <a href="{{ route('login') }}" class="btn-secondary ripple" style="padding: 6px 16px; font-size: 0.85rem; border: 1px solid var(--secondary-accent); color: var(--secondary-accent); border-radius: 20px; text-decoration: none; background: transparent;" data-i18n="nav_login">Login</a>
@@ -300,7 +300,7 @@
     <section id="sec-currency" class="view-section">
       <article class="section">
         <div class="section-header"><h2 class="section-title stagger-item" data-i18n="sec_currency">Currency <span class="gradient-text">Converter</span></h2></div>
-        
+
         <div class="currency-container">
           <div class="currency-card stagger-item">
             <div class="currency-grid">
@@ -374,14 +374,14 @@
               <div class="admin-card"><div class="admin-num">250</div><div class="admin-label" data-i18n="stat_rest_lbl">Restaurants</div></div>
               <div class="admin-card"><div class="admin-num">4.8★</div><div class="admin-label" data-i18n="admin_avg_rating">Avg Rating</div></div>
             </div>
-            
+
             <div class="tabs">
               <button class="tab-btn active ripple" data-tab="content" data-i18n="tab_content">Content</button>
               <button class="tab-btn ripple" data-tab="users" data-i18n="tab_users">Users</button>
               <button class="tab-btn ripple" data-tab="analytics" data-i18n="tab_analytics">Analytics</button>
               <button class="tab-btn ripple" data-tab="ai" data-i18n="tab_ai">AI Insights</button>
             </div>
-            
+
             <!-- ADMIN CONTENT -->
             <div id="admin-content" class="admin-tab-content">
               <div class="admin-content-grid">
@@ -473,8 +473,8 @@
   <!-- FOOTER -->
   <footer class="footer" style="background-color: var(--bg-dark); position: relative; overflow: hidden; padding: 60px 20px; text-align: center; border-top: 1px solid var(--border-highlight); margin-top: auto;">
     <!-- Geometric/Sadu pattern background element -->
-    <div class="sadu-pattern" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.03; pointer-events: none; background-image: url('data:image/svg+xml;utf8,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M30 0L60 30L30 60L0 30L30 0ZM30 15L45 30L30 45L15 30L30 15Z\" fill=\"%23D4A373\" fill-rule=\"evenodd\"/></svg>'); background-size: 60px 60px;"></div>
-    
+    <div class="sadu-pattern" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.03; pointer-events: none; background-image: url('data:image/svg+xml;utf8,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M30 0L60 30L30 60L0 30L30 0ZM30 15L45 30L30 45L15 30L30 15Z\" fill=\"%23D4A373\" fill-rule=\"evenodd\"/></svg> </div>
+
     <div style="position: relative; z-index: 2;">
         <div data-i18n="footer_text" style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--primary-accent); margin-bottom: 15px; font-weight: 600;">Wayn? | وين؟ — Authentic Tourism Platform for Jordan</div>
         <div class="footer-sub" data-i18n="footer_sub" style="font-size: 1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Powered by AI &middot; Built with &hearts; for Jordan</div>

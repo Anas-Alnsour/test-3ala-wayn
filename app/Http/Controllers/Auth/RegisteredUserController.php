@@ -34,12 +34,14 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:tourist,local,restaurant,hotel,assistant'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
 
         event(new Registered($user));
@@ -49,10 +51,22 @@ class RegisteredUserController extends Controller
         $role = $user->role;
         $redirectTo = '/tourist/dashboard';
         
-        if ($role === 'admin') {
-            $redirectTo = '/admin/dashboard';
-        } elseif ($role === 'local') {
-            $redirectTo = '/local/dashboard';
+        switch ($role) {
+            case 'admin':
+                $redirectTo = '/admin/dashboard';
+                break;
+            case 'local':
+                $redirectTo = '/local/dashboard';
+                break;
+            case 'restaurant':
+                $redirectTo = '/restaurant/dashboard';
+                break;
+            case 'hotel':
+                $redirectTo = '/hotel/dashboard';
+                break;
+            case 'assistant':
+                $redirectTo = '/assistant/dashboard';
+                break;
         }
 
         return redirect($redirectTo);

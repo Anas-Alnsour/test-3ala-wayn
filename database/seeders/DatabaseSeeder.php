@@ -35,6 +35,27 @@ class DatabaseSeeder extends Seeder
             'role' => 'tourist',
         ]);
 
+        \App\Models\User::factory()->create([
+            'name' => 'Restaurant Provider',
+            'email' => 'restaurant@wayn.com',
+            'password' => bcrypt('password'),
+            'role' => 'restaurant',
+        ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Hotel Partner',
+            'email' => 'hotel@wayn.com',
+            'password' => bcrypt('password'),
+            'role' => 'hotel',
+        ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Local Assistant',
+            'email' => 'assistant@wayn.com',
+            'password' => bcrypt('password'),
+            'role' => 'assistant',
+        ]);
+
         // Cities
         $cities = [
             ['name' => 'Amman', 'name_ar' => 'عمان', 'wiki_title' => 'Amman', 'description' => 'The capital and largest city of Jordan.'],

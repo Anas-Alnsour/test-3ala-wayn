@@ -31,10 +31,22 @@ class AuthenticatedSessionController extends Controller
         $role = $request->user()->role;
         $redirectTo = '/tourist/dashboard';
         
-        if ($role === 'admin') {
-            $redirectTo = '/admin/dashboard';
-        } elseif ($role === 'local') {
-            $redirectTo = '/local/dashboard';
+        switch ($role) {
+            case 'admin':
+                $redirectTo = '/admin/dashboard';
+                break;
+            case 'local':
+                $redirectTo = '/local/dashboard';
+                break;
+            case 'restaurant':
+                $redirectTo = '/restaurant/dashboard';
+                break;
+            case 'hotel':
+                $redirectTo = '/hotel/dashboard';
+                break;
+            case 'assistant':
+                $redirectTo = '/assistant/dashboard';
+                break;
         }
 
         return redirect()->intended($redirectTo);

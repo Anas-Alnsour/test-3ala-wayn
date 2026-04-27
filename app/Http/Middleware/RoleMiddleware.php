@@ -22,9 +22,14 @@ class RoleMiddleware
         if (! in_array($request->user()->role, $roles)) {
             // Redirect based on actual role if they don't have permission
             $role = $request->user()->role;
-            if ($role === 'admin') return redirect('/admin/dashboard');
-            if ($role === 'local') return redirect('/local/dashboard');
-            return redirect('/tourist/dashboard');
+            switch ($role) {
+                case 'admin': return redirect('/admin/dashboard');
+                case 'local': return redirect('/local/dashboard');
+                case 'restaurant': return redirect('/restaurant/dashboard');
+                case 'hotel': return redirect('/hotel/dashboard');
+                case 'assistant': return redirect('/assistant/dashboard');
+                default: return redirect('/tourist/dashboard');
+            }
         }
 
         return $next($request);
