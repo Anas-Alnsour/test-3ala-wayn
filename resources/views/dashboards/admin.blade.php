@@ -1,3 +1,16 @@
+@php
+    $totalUsers = \App\Models\User::count();
+    $activeItineraries = rand(500, 1000);
+    $platformRevenue = number_format(rand(3000, 8000));
+    
+    $pendingApprovals = [
+        (object)['name' => 'Wadi Bin Hammad Secret Trail', 'name_ar' => 'مسار وادي بن حماد السري', 'submitter' => 'Ahmad Local', 'date' => now()->format('M d, Y'), 'status' => 'Pending'],
+        (object)['name' => 'Old Salt Viewpoint', 'name_ar' => 'مطل السلط القديم', 'submitter' => 'Omar K.', 'date' => now()->subDay()->format('M d, Y'), 'status' => 'Approved'],
+        (object)['name' => 'Ajloun Forest Cabin', 'name_ar' => 'كوخ غابة عجلون', 'submitter' => 'Fatima S.', 'date' => now()->subDays(2)->format('M d, Y'), 'status' => 'Pending'],
+    ];
+
+    $recentUsers = \App\Models\User::latest()->take(6)->get();
+@endphp
 @extends('layouts.dashboard')
 
 @section('sidebar_links')
@@ -41,7 +54,7 @@
                     <span class="en-text">Total Users</span>
                     <span class="ar-text">إجمالي المستخدمين</span>
                 </div>
-                <div class="text-3xl font-bold text-white mb-2">12,450</div>
+                <div class="text-3xl font-bold text-white mb-2">{{ number_format($totalUsers) }}</div>
                 <div class="text-emerald-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     <span>12% <span class="en-text">vs last month</span><span class="ar-text">عن الشهر الماضي</span></span>
@@ -53,19 +66,19 @@
                     <span class="en-text">Active Itineraries</span>
                     <span class="ar-text">مسارات نشطة</span>
                 </div>
-                <div class="text-3xl font-bold text-white mb-2">843</div>
+                <div class="text-3xl font-bold text-white mb-2">{{ $activeItineraries }}</div>
                 <div class="text-emerald-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     <span>5% <span class="en-text">vs last month</span><span class="ar-text">عن الشهر الماضي</span></span>
                 </div>
             </div>
 
-            <div class="stat-card">
+            <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)]">
                 <div class="text-gray-400 text-sm font-medium mb-1">
                     <span class="en-text">Platform Revenue (JOD)</span>
                     <span class="ar-text">أرباح المنصة (دينار)</span>
                 </div>
-                <div class="text-3xl font-bold text-amber-500 mb-2">4,290 JD</div>
+                <div class="text-3xl font-bold text-dynamic mb-2">{{ $platformRevenue }} JD</div>
                 <div class="text-emerald-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     <span>18% <span class="en-text">vs last month</span><span class="ar-text">عن الشهر الماضي</span></span>
@@ -77,7 +90,7 @@
                     <span class="en-text">Pending Approvals</span>
                     <span class="ar-text">بانتظار الموافقة</span>
                 </div>
-                <div class="text-3xl font-bold text-red-500 mb-2">24</div>
+                <div class="text-3xl font-bold text-red-500 mb-2">{{ collect($pendingApprovals)->where('status', 'Pending')->count() }}</div>
                 <div class="text-red-400 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     <span><span class="en-text">Action required</span><span class="ar-text">إجراء مطلوب</span></span>
@@ -90,7 +103,7 @@
                 <span class="en-text">Recent Activity</span>
                 <span class="ar-text">النشاط الأخير</span>
             </h3>
-            <div class="text-gray-400 text-center py-10">
+            <div class="text-gray-400 text-center py-10 border border-dashed border-gray-700 rounded-xl bg-gray-800/30">
                 <span class="en-text">Activity graph rendering...</span>
                 <span class="ar-text">جاري تحميل الرسم البياني...</span>
             </div>
@@ -118,12 +131,23 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @forelse($pendingApprovals as $gem)
                         <tr class="hover:bg-white/5 transition-colors">
-                            <td class="font-medium text-white">Wadi Bin Hammad Secret Trail</td>
-                            <td class="text-gray-300">Ahmad Local</td>
-                            <td class="text-gray-400">Today, 10:30 AM</td>
-                            <td><span class="px-2 py-1 rounded-full bg-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">Pending</span></td>
+                            <td class="font-medium text-white">
+                                <span class="en-text">{{ $gem->name }}</span>
+                                <span class="ar-text">{{ $gem->name_ar }}</span>
+                            </td>
+                            <td class="text-gray-300">{{ $gem->submitter }}</td>
+                            <td class="text-gray-400">{{ $gem->date }}</td>
                             <td>
+                                @if($gem->status === 'Pending')
+                                <span class="px-2 py-1 rounded-full bg-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">Pending</span>
+                                @else
+                                <span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider">Approved</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($gem->status === 'Pending')
                                 <div class="flex gap-2">
                                     <button class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded transition-colors shadow-[0_0_10px_rgba(52,211,153,0.3)] hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]">
                                         <span class="en-text">Approve</span><span class="ar-text">قبول</span>
@@ -132,19 +156,18 @@
                                         <span class="en-text">Reject</span><span class="ar-text">رفض</span>
                                     </button>
                                 </div>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-white/5 transition-colors">
-                            <td class="font-medium text-white">Old Salt Viewpoint</td>
-                            <td class="text-gray-300">Omar K.</td>
-                            <td class="text-gray-400">Yesterday</td>
-                            <td><span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider">Approved</span></td>
-                            <td>
+                                @else
                                 <button class="text-gray-400 hover:text-white underline text-xs">
                                     <span class="en-text">View</span><span class="ar-text">عرض</span>
                                 </button>
+                                @endif
                             </td>
                         </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-6 text-gray-500">No submissions found.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -154,37 +177,26 @@
     <!-- Users Tab -->
     <div x-show="activeTab === 'users'" style="display: none;" x-transition.opacity.duration.300ms>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <!-- Partner Card -->
-            <div class="solid-panel p-6 flex flex-col items-center text-center">
-                <div class="w-20 h-20 rounded-full bg-gray-800 border-2 border-amber-500 flex items-center justify-center mb-4">
-                    <svg class="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            @forelse($recentUsers as $user)
+            <!-- User Card -->
+            <div class="solid-panel p-6 flex flex-col items-center text-center hover:border-dynamic transition-colors">
+                <div class="w-20 h-20 rounded-full bg-gray-800 border-2 border-dynamic flex items-center justify-center mb-4 overflow-hidden text-2xl font-bold text-white shadow-lg shadow-black/30">
+                    {{ substr($user->name, 0, 1) }}
                 </div>
-                <h4 class="text-lg font-bold text-white">Amman Rotana</h4>
-                <div class="text-sm text-gray-400 mb-4">Hotel Partner</div>
+                <h4 class="text-lg font-bold text-white">{{ $user->name }}</h4>
+                <div class="text-sm text-gray-400 mb-1">{{ $user->email }}</div>
+                <div class="text-xs text-dynamic mb-4 font-bold uppercase tracking-wider">{{ $user->role ?? 'User' }}</div>
                 <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-1">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    Verified
+                    Registered
                 </span>
                 <button class="w-full py-2 border border-white/10 hover:bg-white/5 rounded-lg text-sm font-medium transition-colors">
-                    <span class="en-text">Manage Access</span><span class="ar-text">إدارة الصلاحيات</span>
+                    <span class="en-text">View Details</span><span class="ar-text">التفاصيل</span>
                 </button>
             </div>
-            
-            <!-- Partner Card -->
-            <div class="solid-panel p-6 flex flex-col items-center text-center">
-                <div class="w-20 h-20 rounded-full bg-gray-800 border-2 border-amber-500 flex items-center justify-center mb-4">
-                    <svg class="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"></path></svg>
-                </div>
-                <h4 class="text-lg font-bold text-white">Hashem Restaurant</h4>
-                <div class="text-sm text-gray-400 mb-4">Restaurant Partner</div>
-                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                    Verified
-                </span>
-                <button class="w-full py-2 border border-white/10 hover:bg-white/5 rounded-lg text-sm font-medium transition-colors">
-                    <span class="en-text">Manage Access</span><span class="ar-text">إدارة الصلاحيات</span>
-                </button>
-            </div>
+            @empty
+            <div class="col-span-3 text-center text-gray-400 py-10">No users found.</div>
+            @endforelse
         </div>
     </div>
 

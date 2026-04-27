@@ -1,3 +1,36 @@
+@php
+    $cities = \App\Models\City::with('attractions')->get();
+    
+    // Simulated Hidden Gems for Local
+    $myContributions = [
+        (object)['name' => 'Wadi Bin Hammad Secret Trail', 'name_ar' => 'مسار وادي بن حماد', 'date' => 'Oct 24, 2023', 'status' => 'Pending', 'wiki_img' => 'Wadi_Mujib'], // using Wadi_Mujib as fallback for Wadi Hammad
+        (object)['name' => 'Old Salt Viewpoint', 'name_ar' => 'مطل السلط القديم', 'date' => 'Sep 10, 2023', 'status' => 'Approved', 'wiki_img' => 'Al-Salt'],
+    ];
+
+    // Local exclusive deals (Simulated)
+    $localDeals = [
+        (object)[
+            'name' => 'Wadi Rum Desert Camp',
+            'name_ar' => 'مخيم وادي رم الصحراوي',
+            'desc' => 'Valid for Jordanian ID holders only.',
+            'desc_ar' => 'صالح لحاملي الهوية الأردنية فقط.',
+            'original_price' => 80,
+            'discount_price' => 40,
+            'discount_percent' => '50%',
+            'wiki_img' => 'Wadi_Rum'
+        ],
+        (object)[
+            'name' => 'Dead Sea Resort Day Pass',
+            'name_ar' => 'دخولية منتجع البحر الميت',
+            'desc' => 'Includes lunch buffet and pool access.',
+            'desc_ar' => 'يشمل بوفيه الغداء واستخدام المسابح.',
+            'original_price' => 50,
+            'discount_price' => 35,
+            'discount_percent' => '30%',
+            'wiki_img' => 'Dead_Sea'
+        ]
+    ];
+@endphp
 @extends('layouts.dashboard')
 
 @section('sidebar_links')
@@ -35,82 +68,55 @@
 
     <!-- Overview Tab -->
     <div x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
-        <h3 class="text-xl font-bold text-amber-500 mb-6 flex items-center gap-2">
+        <h3 class="text-xl font-bold text-dynamic mb-6 flex items-center gap-2">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span class="en-text">Exclusive Local Deals</span>
             <span class="ar-text">عروض حصرية للأردنيين</span>
         </h3>
         
         <div class="cities-grid">
+            @forelse($localDeals as $deal)
             <!-- Deal Card -->
-            <div class="solid-panel overflow-hidden group cursor-pointer relative">
-                <div class="absolute top-4 right-4 z-10 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    50% OFF
+            <div class="solid-panel overflow-hidden group cursor-pointer relative hover:border-dynamic transition-colors">
+                <div class="absolute top-4 right-4 rtl:left-4 rtl:right-auto z-10 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                    {{ $deal->discount_percent }} OFF
                 </div>
                 <div class="h-48 bg-gray-800 relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1542401886-65d6c61db217?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Wadi Rum">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-wiki="{{ $deal->wiki_img }}" class="city-img w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $deal->name }}">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#1F2937] to-transparent"></div>
                 </div>
                 <div class="p-5 relative z-10">
                     <h4 class="text-lg font-bold text-white mb-1">
-                        <span class="en-text">Wadi Rum Desert Camp</span>
-                        <span class="ar-text">مخيم وادي رم الصحراوي</span>
+                        <span class="en-text">{{ $deal->name }}</span>
+                        <span class="ar-text">{{ $deal->name_ar }}</span>
                     </h4>
                     <p class="text-gray-400 text-sm mb-4">
-                        <span class="en-text">Valid for Jordanian ID holders only.</span>
-                        <span class="ar-text">صالح لحاملي الهوية الأردنية فقط.</span>
+                        <span class="en-text">{{ $deal->desc }}</span>
+                        <span class="ar-text">{{ $deal->desc_ar }}</span>
                     </p>
-                    <div class="flex justify-between items-center mt-4">
+                    <div class="flex justify-between items-center mt-4 border-t border-white/10 pt-4">
                         <div>
-                            <span class="text-gray-500 line-through text-xs">80 JD</span>
-                            <span class="text-amber-500 font-bold text-lg ml-2">40 JD</span>
+                            <span class="text-gray-500 line-through text-xs">{{ $deal->original_price }} JD</span>
+                            <span class="text-dynamic font-bold text-lg ml-2 rtl:ml-0 rtl:mr-2">{{ $deal->discount_price }} JD</span>
                         </div>
-                        <button class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm font-bold rounded-lg transition-colors">
+                        <button class="px-4 py-2 bg-dynamic hover:opacity-90 text-white text-sm font-bold rounded-lg transition-colors">
                             <span class="en-text">Claim Deal</span>
                             <span class="ar-text">احصل على العرض</span>
                         </button>
                     </div>
                 </div>
             </div>
-
-            <!-- Deal Card -->
-            <div class="solid-panel overflow-hidden group cursor-pointer relative">
-                <div class="absolute top-4 right-4 z-10 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                    30% OFF
-                </div>
-                <div class="h-48 bg-gray-800 relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1580834341580-8c17a3a63ebc?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Dead Sea Spa">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#1F2937] to-transparent"></div>
-                </div>
-                <div class="p-5 relative z-10">
-                    <h4 class="text-lg font-bold text-white mb-1">
-                        <span class="en-text">Dead Sea Resort Day Pass</span>
-                        <span class="ar-text">دخولية منتجع البحر الميت</span>
-                    </h4>
-                    <p class="text-gray-400 text-sm mb-4">
-                        <span class="en-text">Includes lunch buffer and pool access.</span>
-                        <span class="ar-text">يشمل بوفيه الغداء واستخدام المسابح.</span>
-                    </p>
-                    <div class="flex justify-between items-center mt-4">
-                        <div>
-                            <span class="text-gray-500 line-through text-xs">50 JD</span>
-                            <span class="text-amber-500 font-bold text-lg ml-2">35 JD</span>
-                        </div>
-                        <button class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm font-bold rounded-lg transition-colors">
-                            <span class="en-text">Claim Deal</span>
-                            <span class="ar-text">احصل على العرض</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            @empty
+            <div class="col-span-full text-center text-gray-400 py-10">No local deals available right now.</div>
+            @endforelse
         </div>
     </div>
 
     <!-- Submit Gem Tab -->
     <div x-show="activeTab === 'submit_gem'" style="display: none;" x-transition.opacity.duration.300ms>
-        <div class="solid-panel p-6 lg:p-10 max-w-3xl mx-auto border-t-4 border-t-amber-600">
+        <div class="solid-panel p-6 lg:p-10 max-w-3xl mx-auto border-t-4 border-dynamic">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 rounded-full bg-amber-500/20 text-amber-500 flex items-center justify-center mx-auto mb-4 border border-amber-500/50">
+                <div class="w-16 h-16 rounded-full text-dynamic flex items-center justify-center mx-auto mb-4 border border-dynamic" style="background-color: color-mix(in srgb, var(--dynamic-primary) 20%, transparent);">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </div>
                 <h2 class="text-2xl font-bold text-white mb-2">
@@ -138,9 +144,9 @@
                         </label>
                         <select class="glass-input-premium">
                             <option value="">Select...</option>
-                            <option value="amman">Amman</option>
-                            <option value="ajloun">Ajloun</option>
-                            <option value="salt">As-Salt</option>
+                            @foreach($cities as $city)
+                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
@@ -167,7 +173,7 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         <span class="en-text">Upload Images</span><span class="ar-text">رفع الصور</span>
                     </label>
-                    <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-amber-500 transition-colors cursor-pointer bg-gray-800/50">
+                    <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-dynamic transition-colors cursor-pointer bg-gray-800/50">
                         <svg class="w-10 h-10 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         <p class="text-gray-400 text-sm">
                             <span class="en-text">Click to upload or drag and drop</span><span class="ar-text">اضغط للرفع أو اسحب وأفلت</span>
@@ -177,7 +183,7 @@
                 </div>
 
                 <div class="pt-4">
-                    <button type="button" class="w-full py-3 bg-gradient-to-r from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-white font-bold rounded-lg transition-all shadow-lg shadow-amber-900/20">
+                    <button type="button" class="w-full py-3 bg-dynamic hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-lg">
                         <span class="en-text">Submit for Review</span>
                         <span class="ar-text">إرسال للمراجعة</span>
                     </button>
@@ -205,16 +211,29 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @forelse($myContributions as $gem)
                         <tr class="hover:bg-white/5 transition-colors">
                             <td class="font-medium text-white flex items-center gap-3">
-                                <div class="w-10 h-10 rounded bg-gray-700 overflow-hidden">
-                                    <img src="https://images.unsplash.com/photo-1542401886-65d6c61db217?w=100&q=80" class="w-full h-full object-cover">
+                                <div class="w-10 h-10 rounded bg-gray-700 overflow-hidden shrink-0">
+                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-wiki="{{ $gem->wiki_img }}" class="city-img w-full h-full object-cover">
                                 </div>
-                                Wadi Bin Hammad Secret Trail
+                                <div>
+                                    <span class="en-text block">{{ $gem->name }}</span>
+                                    <span class="ar-text block">{{ $gem->name_ar }}</span>
+                                </div>
                             </td>
-                            <td class="text-gray-400">Oct 24, 2023</td>
-                            <td><span class="px-2 py-1 rounded-full bg-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">Pending</span></td>
+                            <td class="text-gray-400">{{ $gem->date }}</td>
+                            <td>
+                                @if($gem->status === 'Pending')
+                                <span class="px-2 py-1 rounded-full bg-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">Pending</span>
+                                @else
+                                <span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider">Approved</span>
+                                @endif
+                            </td>
                         </tr>
+                        @empty
+                        <tr><td colspan="3" class="text-center text-gray-500 py-6">No contributions yet.</td></tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

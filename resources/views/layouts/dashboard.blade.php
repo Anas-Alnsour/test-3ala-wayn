@@ -1,3 +1,15 @@
+@php
+    $role = auth()->user()->role ?? 'tourist';
+    $themeColors = [
+        'tourist' => '#c17551',    // Petra Rose
+        'local' => '#8c9e6c',      // Olive Tree Green
+        'admin' => '#d4af37',      // Royal Gold
+        'restaurant' => '#cc5500', // Warm Saffron
+        'hotel' => '#0ea5e9',      // Deep Azure
+        'assistant' => '#ea580c',  // Desert Sunset Orange
+    ];
+    $dynamicPrimary = $themeColors[$role] ?? '#D4A373';
+@endphp
 <!DOCTYPE html>
 <html lang="en" dir="ltr" x-data="{ lang: 'en', sidebarOpen: false, toggleLang() { this.lang = this.lang === 'en' ? 'ar' : 'en'; document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr'; } }">
 <head>
@@ -23,9 +35,10 @@
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #F9FAFB;
             --text-secondary: #9CA3AF;
-            --primary-accent: #D4A373;
+            --dynamic-primary: {{ $dynamicPrimary }};
+            --primary-accent: var(--dynamic-primary);
             --secondary-accent: #BC6C25;
-            --shmagh-red: #B91C1C;
+            --shmagh-red: var(--dynamic-primary);
         }
         
         html[dir="rtl"] { font-family: 'Tajawal', sans-serif; }
@@ -38,6 +51,10 @@
             color: var(--text-main);
             overflow-x: hidden;
         }
+
+        .text-dynamic { color: var(--dynamic-primary) !important; }
+        .bg-dynamic { background-color: var(--dynamic-primary) !important; }
+        .border-dynamic { border-color: var(--dynamic-primary) !important; }
 
         /* Glassmorphism */
         .glass-panel {
@@ -73,18 +90,18 @@
             background: rgba(255, 255, 255, 0.05);
         }
         .nav-link.active {
-            background-color: rgba(185, 28, 28, 0.1); /* Translucent Red */
+            background-color: color-mix(in srgb, var(--dynamic-primary) 15%, transparent);
             color: white;
             border-radius: 0;
         }
-        html[dir="ltr"] .nav-link.active { border-left: 4px solid var(--shmagh-red); }
-        html[dir="rtl"] .nav-link.active { border-right: 4px solid var(--shmagh-red); }
+        html[dir="ltr"] .nav-link.active { border-left: 4px solid var(--dynamic-primary); }
+        html[dir="rtl"] .nav-link.active { border-right: 4px solid var(--dynamic-primary); }
         
         .nav-link.active::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(185, 28, 28, 0.05) 10px, rgba(185, 28, 28, 0.05) 20px);
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, color-mix(in srgb, var(--dynamic-primary) 5%, transparent) 10px, color-mix(in srgb, var(--dynamic-primary) 5%, transparent) 20px);
             z-index: 0;
             pointer-events: none;
         }
@@ -92,7 +109,7 @@
 
         .shmagh-border {
             border-bottom: 2px solid transparent;
-            border-image: repeating-linear-gradient(45deg, #B91C1C, #B91C1C 10px, transparent 10px, transparent 20px) 1;
+            border-image: repeating-linear-gradient(45deg, var(--dynamic-primary), var(--dynamic-primary) 10px, transparent 10px, transparent 20px) 1;
         }
 
         /* Layout */
@@ -138,7 +155,7 @@
         .glass-input-premium:focus {
             outline: none;
             border-color: var(--primary-accent);
-            box-shadow: 0 0 0 2px rgba(212, 163, 115, 0.2);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--dynamic-primary) 20%, transparent);
         }
 
         /* Tables */
@@ -223,19 +240,13 @@
 
         <!-- Sidebar -->
         <aside class="sidebar glass-panel flex flex-col" :class="{'open': sidebarOpen}">
-            <!-- Logo Area -->
-            <div class="h-20 flex items-center justify-center border-b border-white/10 shmagh-border relative">
+            <!-- Logo Area (Shmagh border removed per Phase 8 req) -->
+            <div class="h-20 flex items-center justify-center border-b border-white/10 relative">
                 <a href="/" class="flex items-center gap-3 no-underline group">
                     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 transition-transform duration-500 group-hover:rotate-45">
-                        <path d="M50 0L57.5 35L93.3 25L70 50L93.3 75L57.5 65L50 100L42.5 65L6.7 75L30 50L6.7 25L42.5 35L50 0Z" fill="url(#paint0_linear)"/>
+                        <path d="M50 0L57.5 35L93.3 25L70 50L93.3 75L57.5 65L50 100L42.5 65L6.7 75L30 50L6.7 25L42.5 35L50 0Z" class="fill-dynamic"/>
                         <circle cx="50" cy="50" r="15" fill="#111827"/>
-                        <circle cx="50" cy="50" r="5" fill="url(#paint0_linear)"/>
-                        <defs>
-                            <linearGradient id="paint0_linear" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#D4A373"/>
-                                <stop offset="1" stop-color="#BC6C25"/>
-                            </linearGradient>
-                        </defs>
+                        <circle cx="50" cy="50" r="5" class="fill-dynamic"/>
                     </svg>
                     <span class="font-serif text-2xl font-bold text-white tracking-wider">Wayn?</span>
                 </a>
@@ -290,18 +301,18 @@
                     <!-- Notifications -->
                     <button class="relative text-gray-300 hover:text-white transition-colors focus:outline-none">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-600 rounded-full border border-gray-900"></span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-dynamic rounded-full border border-gray-900"></span>
                     </button>
 
                     <!-- Profile Dropdown -->
                     <div x-data="{ profileOpen: false }" class="relative">
                         <button @click="profileOpen = !profileOpen" class="flex items-center gap-3 focus:outline-none bg-transparent border-none p-0 cursor-pointer">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-amber-900 border border-amber-500/50 flex items-center justify-center text-white font-bold shadow-lg shadow-amber-900/20">
+                            <div class="w-10 h-10 rounded-full bg-dynamic border border-white/20 flex items-center justify-center text-white font-bold shadow-lg shadow-black/20">
                                 {{ substr(Auth::user()->name ?? 'U', 0, 1) }}
                             </div>
                             <div class="hidden md:block text-left rtl:text-right">
                                 <div class="text-sm font-bold text-white leading-tight">{{ Auth::user()->name ?? 'User' }}</div>
-                                <div class="text-xs text-amber-500 capitalize leading-tight">{{ Auth::user()->role ?? 'Guest' }}</div>
+                                <div class="text-xs text-dynamic capitalize leading-tight">{{ Auth::user()->role ?? 'Guest' }}</div>
                             </div>
                             <svg class="w-4 h-4 text-gray-400 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
@@ -313,7 +324,7 @@
                              style="display: none;">
                             <div class="px-4 py-2 border-b border-white/10 mb-2 md:hidden">
                                 <div class="text-sm font-bold text-white">{{ Auth::user()->name ?? 'User' }}</div>
-                                <div class="text-xs text-amber-500 capitalize">{{ Auth::user()->role ?? 'Guest' }}</div>
+                                <div class="text-xs text-dynamic capitalize">{{ Auth::user()->role ?? 'Guest' }}</div>
                             </div>
                             <form method="POST" action="{{ route('logout') }}" class="m-0">
                                 @csrf

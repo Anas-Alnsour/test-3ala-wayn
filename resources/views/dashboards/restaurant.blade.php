@@ -1,3 +1,38 @@
+@php
+    $menuScans = number_format(rand(1000, 3000));
+    $platformReferrals = number_format(rand(200, 800));
+    
+    // Simulated active offers
+    $activeOffers = [
+        (object)[
+            'id' => 1, 
+            'name' => 'Mansaf Friday Special', 
+            'name_ar' => 'عرض منسف يوم الجمعة', 
+            'original_price' => 20.00, 
+            'discount_price' => 14.00, 
+            'valid_until' => '18:00', 
+            'active' => true
+        ],
+        (object)[
+            'id' => 2, 
+            'name' => 'Authentic Mixed Grill', 
+            'name_ar' => 'مشاوي مشكلة أصيلة', 
+            'original_price' => 30.00, 
+            'discount_price' => 22.00, 
+            'valid_until' => '23:00', 
+            'active' => false
+        ],
+        (object)[
+            'id' => 3, 
+            'name' => 'Kunafa & Turkish Coffee', 
+            'name_ar' => 'كنافة وقهوة تركية', 
+            'original_price' => 8.00, 
+            'discount_price' => 5.00, 
+            'valid_until' => '16:00', 
+            'active' => true
+        ],
+    ];
+@endphp
 @extends('layouts.dashboard')
 
 @section('sidebar_links')
@@ -41,19 +76,19 @@
                     <span class="en-text">Menu Scans</span>
                     <span class="ar-text">مسحات المنيو</span>
                 </div>
-                <div class="text-4xl font-bold text-white mb-2">1,204</div>
+                <div class="text-4xl font-bold text-white mb-2">{{ $menuScans }}</div>
                 <div class="text-emerald-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     <span>+24% <span class="en-text">this week</span><span class="ar-text">هذا الأسبوع</span></span>
                 </div>
             </div>
             
-            <div class="stat-card">
+            <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)]">
                 <div class="text-gray-400 text-sm font-medium mb-1">
                     <span class="en-text">Platform Referrals</span>
                     <span class="ar-text">زوار من وين؟</span>
                 </div>
-                <div class="text-4xl font-bold text-amber-500 mb-2">342</div>
+                <div class="text-4xl font-bold text-dynamic mb-2">{{ $platformReferrals }}</div>
                 <div class="text-emerald-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     <span>+12% <span class="en-text">this week</span><span class="ar-text">هذا الأسبوع</span></span>
@@ -64,7 +99,7 @@
 
     <!-- Post Offer Tab -->
     <div x-show="activeTab === 'post_offer'" style="display: none;" x-transition.opacity.duration.300ms>
-        <div class="solid-panel p-6 lg:p-10 max-w-4xl mx-auto">
+        <div class="solid-panel p-6 lg:p-10 max-w-4xl mx-auto border-t-4 border-dynamic">
             <h3 class="text-2xl font-bold text-white mb-6">
                 <span class="en-text">Post Daily Offer</span>
                 <span class="ar-text">نشر عرض يومي</span>
@@ -89,7 +124,7 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Discounted Price (JOD)</span><span class="ar-text">السعر بعد الخصم (دينار)</span>
                         </label>
-                        <input type="number" step="0.5" class="glass-input-premium border-amber-500/50" placeholder="10.00">
+                        <input type="number" step="0.5" class="glass-input-premium border-dynamic" placeholder="10.00">
                     </div>
                 </div>
 
@@ -113,7 +148,7 @@
                 </div>
 
                 <div class="pt-4">
-                    <button type="button" class="w-full py-3 bg-gradient-to-r from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-white font-bold rounded-lg transition-all shadow-lg shadow-amber-900/20">
+                    <button type="button" class="w-full py-3 bg-dynamic hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-lg">
                         <span class="en-text">Publish Offer</span>
                         <span class="ar-text">نشر العرض</span>
                     </button>
@@ -125,27 +160,34 @@
     <!-- Active Offers Tab -->
     <div x-show="activeTab === 'active_offers'" style="display: none;" x-transition.opacity.duration.300ms>
         <div class="cities-grid">
+            @foreach($activeOffers as $offer)
             <!-- Offer Card -->
-            <div class="solid-panel p-5 relative overflow-hidden" x-data="{ active: true }">
-                <div class="absolute top-0 right-0 w-16 h-16 bg-amber-500/10 rounded-bl-full rtl:left-0 rtl:right-auto rtl:rounded-bl-none rtl:rounded-br-full z-0"></div>
+            <div class="solid-panel p-5 relative overflow-hidden" x-data="{ active: {{ $offer->active ? 'true' : 'false' }} }">
+                <div class="absolute top-0 right-0 w-16 h-16 rounded-bl-full rtl:left-0 rtl:right-auto rtl:rounded-bl-none rtl:rounded-br-full z-0 transition-colors" :class="active ? 'bg-dynamic/20' : 'bg-gray-600/20'"></div>
                 <div class="relative z-10">
                     <div class="flex justify-between items-start mb-4">
-                        <h4 class="text-lg font-bold text-white">Mansaf Friday Special</h4>
-                        <span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-500 text-xs font-bold" x-show="active">LIVE</span>
-                        <span class="px-2 py-1 rounded bg-gray-500/20 text-gray-500 text-xs font-bold" x-show="!active" style="display:none">PAUSED</span>
+                        <h4 class="text-lg font-bold text-white pr-8 rtl:pr-0 rtl:pl-8 leading-tight">
+                            <span class="en-text">{{ $offer->name }}</span>
+                            <span class="ar-text">{{ $offer->name_ar }}</span>
+                        </h4>
+                        <span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-500 text-xs font-bold shrink-0" x-show="active">LIVE</span>
+                        <span class="px-2 py-1 rounded bg-gray-500/20 text-gray-500 text-xs font-bold shrink-0" x-show="!active" style="display:none">PAUSED</span>
                     </div>
                     <div class="flex items-center gap-4 mb-6">
-                        <div class="text-gray-500 line-through text-sm">20.00 JOD</div>
-                        <div class="text-2xl font-bold text-amber-500">14.00 JOD</div>
+                        <div class="text-gray-500 line-through text-sm">{{ number_format($offer->original_price, 2) }} JOD</div>
+                        <div class="text-2xl font-bold text-dynamic">{{ number_format($offer->discount_price, 2) }} JOD</div>
                     </div>
                     <div class="flex items-center justify-between border-t border-white/10 pt-4">
                         <div class="text-xs text-gray-400">
-                            Valid till: <span class="text-white font-medium">18:00</span>
+                            Valid till: <span class="text-white font-medium">{{ $offer->valid_until }}</span>
                         </div>
-                        <button @click="active = !active" class="text-xs font-bold px-3 py-1 rounded border transition-colors" :class="active ? 'border-red-500 text-red-500 hover:bg-red-500/10' : 'border-emerald-500 text-emerald-500 hover:bg-emerald-500/10'" x-text="active ? 'Deactivate' : 'Activate'"></button>
+                        <button @click="active = !active" class="text-xs font-bold px-3 py-1 rounded border transition-colors" :class="active ? 'border-red-500 text-red-500 hover:bg-red-500/10' : 'border-emerald-500 text-emerald-500 hover:bg-emerald-500/10'">
+                            <span x-text="active ? 'Deactivate' : 'Activate'"></span>
+                        </button>
                     </div>
                 </div>
             </div>
+            @endforeach
         </div>
     </div>
 

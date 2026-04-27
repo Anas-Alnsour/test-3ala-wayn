@@ -1,3 +1,16 @@
+@php
+    $currentOccupancy = rand(70, 95);
+    $todaysCheckins = rand(20, 60);
+    $completedCheckins = round($todaysCheckins * (rand(50, 90) / 100));
+    
+    // Simulated guest requests
+    $guestRequests = [
+        (object)['room' => '412', 'guest' => 'John Smith', 'type' => 'Room Service (Dinner)', 'time' => '5 mins ago', 'status' => 'Pending'],
+        (object)['room' => '205', 'guest' => 'Fatima Al-Sayed', 'type' => 'Late Checkout Request', 'time' => '15 mins ago', 'status' => 'In Progress'],
+        (object)['room' => '510', 'guest' => 'David Chen', 'type' => 'Extra Towels', 'time' => '1 hour ago', 'status' => 'Resolved'],
+        (object)['room' => '301', 'guest' => 'Amira Khalil', 'type' => 'Taxi Booking', 'time' => '2 hours ago', 'status' => 'Resolved'],
+    ];
+@endphp
 @extends('layouts.dashboard')
 
 @section('sidebar_links')
@@ -31,14 +44,14 @@
     <!-- Overview Tab -->
     <div x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
         <div class="stats-bar mb-8">
-            <div class="stat-card">
+            <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)]">
                 <div class="text-gray-400 text-sm font-medium mb-1">
                     <span class="en-text">Current Occupancy</span>
                     <span class="ar-text">نسبة الإشغال</span>
                 </div>
-                <div class="text-3xl font-bold text-white mb-2">85%</div>
-                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-2">
-                    <div class="bg-amber-500 h-2.5 rounded-full" style="width: 85%"></div>
+                <div class="text-3xl font-bold text-white mb-2">{{ $currentOccupancy }}%</div>
+                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-2 overflow-hidden">
+                    <div class="bg-dynamic h-2.5 rounded-full transition-all duration-1000" style="width: {{ $currentOccupancy }}%"></div>
                 </div>
             </div>
             
@@ -47,10 +60,10 @@
                     <span class="en-text">Today's Check-ins</span>
                     <span class="ar-text">وصول اليوم</span>
                 </div>
-                <div class="text-3xl font-bold text-white mb-2">42</div>
+                <div class="text-3xl font-bold text-white mb-2">{{ $todaysCheckins }}</div>
                 <div class="text-emerald-500 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    <span>28 Completed</span>
+                    <span>{{ $completedCheckins }} Completed</span>
                 </div>
             </div>
 
@@ -59,7 +72,7 @@
                     <span class="en-text">Pending Requests</span>
                     <span class="ar-text">طلبات قيد الانتظار</span>
                 </div>
-                <div class="text-3xl font-bold text-red-500 mb-2">7</div>
+                <div class="text-3xl font-bold text-red-500 mb-2">{{ collect($guestRequests)->where('status', 'Pending')->count() }}</div>
                 <div class="text-red-400 text-sm flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span>Requires attention</span>
@@ -101,42 +114,42 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="hover:bg-white/5 transition-colors">
-                            <td class="font-bold text-amber-500">412</td>
-                            <td class="text-white">John Smith</td>
-                            <td class="text-gray-300">Room Service (Dinner)</td>
-                            <td class="text-red-400 font-medium">5 mins ago</td>
-                            <td><span class="px-2 py-1 rounded-full bg-red-500/20 text-red-500 text-xs font-bold uppercase tracking-wider">Pending</span></td>
+                        @forelse($guestRequests as $request)
+                        <tr class="hover:bg-white/5 transition-colors {{ $request->status === 'Resolved' ? 'opacity-50' : '' }}">
+                            <td class="font-bold text-dynamic">{{ $request->room }}</td>
+                            <td class="text-white">{{ $request->guest }}</td>
+                            <td class="text-gray-300">{{ $request->type }}</td>
+                            <td class="{{ $request->status === 'Pending' ? 'text-red-400 font-medium' : 'text-gray-400' }}">{{ $request->time }}</td>
                             <td>
-                                <select class="bg-gray-800 border border-white/10 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-amber-500">
-                                    <option>Mark In Progress</option>
-                                    <option>Mark Resolved</option>
-                                </select>
+                                @if($request->status === 'Pending')
+                                    <span class="px-2 py-1 rounded-full bg-red-500/20 text-red-500 text-xs font-bold uppercase tracking-wider">Pending</span>
+                                @elseif($request->status === 'In Progress')
+                                    <span class="px-2 py-1 rounded-full text-dynamic bg-dynamic/20 text-xs font-bold uppercase tracking-wider">In Progress</span>
+                                @else
+                                    <span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider">Resolved</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($request->status === 'Pending')
+                                    <select class="bg-gray-800 border border-white/10 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-dynamic">
+                                        <option>Mark In Progress</option>
+                                        <option>Mark Resolved</option>
+                                    </select>
+                                @elseif($request->status === 'In Progress')
+                                    <select class="bg-gray-800 border border-white/10 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-dynamic">
+                                        <option>Mark Resolved</option>
+                                        <option>Revert to Pending</option>
+                                    </select>
+                                @else
+                                    <span class="text-xs text-gray-500">Done</span>
+                                @endif
                             </td>
                         </tr>
-                        <tr class="hover:bg-white/5 transition-colors">
-                            <td class="font-bold text-amber-500">205</td>
-                            <td class="text-white">Fatima Al-Sayed</td>
-                            <td class="text-gray-300">Late Checkout Request</td>
-                            <td class="text-gray-400 font-medium">15 mins ago</td>
-                            <td><span class="px-2 py-1 rounded-full bg-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">In Progress</span></td>
-                            <td>
-                                <select class="bg-gray-800 border border-white/10 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-amber-500">
-                                    <option>Mark Resolved</option>
-                                    <option>Revert to Pending</option>
-                                </select>
-                            </td>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-6 text-gray-500">No active requests.</td>
                         </tr>
-                        <tr class="hover:bg-white/5 transition-colors opacity-50">
-                            <td class="font-bold text-amber-500">510</td>
-                            <td class="text-white">David Chen</td>
-                            <td class="text-gray-300">Extra Towels</td>
-                            <td class="text-gray-500 font-medium">1 hour ago</td>
-                            <td><span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider">Resolved</span></td>
-                            <td>
-                                <span class="text-xs text-gray-500">Done</span>
-                            </td>
-                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
