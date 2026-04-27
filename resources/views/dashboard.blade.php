@@ -6,7 +6,7 @@
      */
 
     // جلب دور المستخدم (الافتراضي هو سائح)
-    $role = auth()->user()->role ?? 'tourist';
+    $role = auth()->user()?->role ?? 'tourist';
 
     // تحديد مسار ملف اللوحة بناءً على الدور
     $dashboardView = 'dashboards.' . $role;

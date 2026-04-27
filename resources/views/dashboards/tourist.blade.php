@@ -1,5 +1,5 @@
 @php
-    // جلب المفضلة الخاصة بالسائح (بيانات حقيقية مع صور من ويكيبيديا إن وجدت)
+    // Fetch wishlist cities for the tourist (Real data with Wiki titles)
     $wishlistCities = \App\Models\City::with('attractions')->take(4)->get();
 @endphp
 
@@ -9,7 +9,6 @@
 <div class="theme-tourist flex h-screen w-full bg-[#140b0d] text-[#f5f0e6] font-sans overflow-hidden transition-colors duration-500"
      style="--dynamic-primary: #B56576; --dynamic-glow: rgba(181, 101, 118, 0.4);"
      x-data="touristDashboard()"
-     x-init="initWikiImages(); $watch('activeTab', value => { if(value === 'wishlist') setTimeout(() => initWikiImages(), 100); })"
      :dir="language === 'ar' ? 'rtl' : 'ltr'">
 
     <aside class="w-72 bg-[#1a0e11] border-r border-[#2e191e] flex-shrink-0 hidden md:flex flex-col z-40 transition-all duration-300 shadow-[4px_0_30px_rgba(0,0,0,0.8)]"
@@ -125,52 +124,70 @@
                 <div class="max-w-4xl mx-auto relative">
                     <div class="absolute ltr:left-[35px] rtl:right-[35px] top-0 bottom-0 w-1 bg-gradient-to-b from-[#B56576] to-transparent rounded-full opacity-50"></div>
 
+                    <!-- Itinerary Item 1 -->
                     <div class="relative mb-12 group" x-data="{ done: true }">
                         <div class="absolute ltr:left-[21px] rtl:right-[21px] top-0 w-8 h-8 rounded-full border-4 border-[#140b0d] flex items-center justify-center transition-colors cursor-pointer z-10"
-                             :class="done ? 'bg-green-500 text-white shadow-[0_0_15px_rgba(34,197,94,0.5)]' : 'bg-[#B56576] text-transparent'" @click="done = !done; showToast(done ? '✅ تم زيارة المكان!' : '🔄 تم التراجع')">
+                             :class="done ? 'bg-green-500 text-white shadow-[0_0_15px_rgba(34,197,94,0.5)]' : 'bg-[#B56576] text-transparent'" @click="done = !done">
                             <svg x-show="done" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                         </div>
                         <div class="ltr:ml-20 rtl:mr-20">
                             <div class="text-[#E56B6F] text-sm font-black tracking-widest mb-2 bg-[#B56576]/10 inline-block px-3 py-1 rounded-lg border border-[#B56576]/20">09:00 AM</div>
-                            <div class="bg-[#1a0e11] p-6 md:p-8 rounded-3xl border border-[#2e191e] hover:border-[#B56576]/50 transition-all shadow-lg hover:shadow-[0_10px_30px_var(--dynamic-glow)]" :class="done ? 'opacity-70' : ''">
-                                <h4 class="text-2xl font-black text-white mb-2" :class="done ? 'line-through text-gray-500' : ''">Amman Citadel</h4>
-                                <p class="text-gray-400 text-base leading-relaxed mb-4">Start your morning exploring the historic ruins of Jabal Al Qal'a. Don't miss the Temple of Hercules and the beautiful Umayyad Palace.</p>
-                                <button class="bg-[#140b0d] text-gray-300 hover:text-[#B56576] border border-[#2e191e] px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 cursor-pointer transition-colors">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    <span x-text="language === 'ar' ? 'افتح الخريطة' : 'Get Directions'"></span>
-                                </button>
+                            <div class="bg-[#1a0e11] p-0 rounded-3xl border border-[#2e191e] hover:border-[#B56576]/50 transition-all shadow-lg overflow-hidden flex flex-col md:flex-row h-auto md:h-60" :class="done ? 'opacity-70' : ''">
+                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden" x-wiki-image="'Amman_Citadel'">
+                                    <img src="" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                                </div>
+                                <div class="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                                    <h4 class="text-2xl font-black text-white mb-2" :class="done ? 'line-through text-gray-500' : ''">Amman Citadel</h4>
+                                    <p class="text-gray-400 text-base leading-relaxed mb-4">Explore the Temple of Hercules and Umayyad Palace with panoramic city views.</p>
+                                    <button class="w-fit bg-[#140b0d] text-gray-300 hover:text-[#B56576] border border-[#2e191e] px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 cursor-pointer transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                                        <span x-text="language === 'ar' ? 'افتح الخريطة' : 'Get Directions'"></span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Itinerary Item 2 -->
                     <div class="relative mb-12 group" x-data="{ done: false }">
                         <div class="absolute ltr:left-[21px] rtl:right-[21px] top-0 w-8 h-8 rounded-full border-4 border-[#140b0d] flex items-center justify-center transition-colors cursor-pointer z-10"
-                             :class="done ? 'bg-green-500 text-white shadow-[0_0_15px_rgba(34,197,94,0.5)]' : 'bg-[#B56576] text-transparent hover:scale-110'" @click="done = !done; showToast(done ? '✅ صحتين وعافية!' : '🔄 تم التراجع')">
+                             :class="done ? 'bg-green-500 text-white shadow-[0_0_15px_rgba(34,197,94,0.5)]' : 'bg-[#B56576] text-transparent hover:scale-110'" @click="done = !done">
                             <svg x-show="done" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                         </div>
                         <div class="ltr:ml-20 rtl:mr-20">
                             <div class="text-[#E56B6F] text-sm font-black tracking-widest mb-2 bg-[#B56576]/10 inline-block px-3 py-1 rounded-lg border border-[#B56576]/20">12:30 PM</div>
-                            <div class="bg-gradient-to-br from-[#1a0e11] to-[#2e191e] p-6 md:p-8 rounded-3xl border border-[#B56576]/30 transition-all shadow-lg hover:shadow-[0_10px_30px_var(--dynamic-glow)]" :class="done ? 'opacity-70' : ''">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <h4 class="text-2xl font-black text-white" :class="done ? 'line-through text-gray-500' : ''">Hashem Restaurant</h4>
-                                    <span class="px-2 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-black rounded-lg">Popular</span>
+                            <div class="bg-[#1a0e11] p-0 rounded-3xl border border-[#B56576]/30 transition-all shadow-lg overflow-hidden flex flex-col md:flex-row h-auto md:h-60" :class="done ? 'opacity-70' : ''">
+                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden" x-wiki-image="'Falafel'">
+                                    <img src="" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                                 </div>
-                                <p class="text-gray-400 text-base leading-relaxed mb-4">Head down to Downtown Amman (Al-Balad) for the most famous falafel and hummus in the city. A true local experience.</p>
-                                <button class="bg-[#B56576] text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 cursor-pointer transition-colors shadow-md hover:bg-[#E56B6F] border-none">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-                                    <span x-text="language === 'ar' ? 'عرض المنيو (QR)' : 'Scan Menu'"></span>
-                                </button>
+                                <div class="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <h4 class="text-2xl font-black text-white" :class="done ? 'line-through text-gray-500' : ''">Hashem Restaurant</h4>
+                                        <span class="px-2 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-black rounded-lg">Iconic</span>
+                                    </div>
+                                    <p class="text-gray-400 text-base leading-relaxed mb-4">Legendary street food experience in the heart of Downtown Amman.</p>
+                                    <button class="w-fit bg-[#B56576] text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 cursor-pointer transition-colors shadow-md border-none">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14"></path></svg>
+                                        <span x-text="language === 'ar' ? 'عرض المنيو' : 'Scan Menu'"></span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Itinerary Item 3 -->
                     <div class="relative group" x-data="{ done: false }">
                         <div class="absolute ltr:left-[21px] rtl:right-[21px] top-0 w-8 h-8 rounded-full border-4 border-[#140b0d] flex items-center justify-center transition-colors cursor-pointer z-10 bg-[#2e191e] hover:bg-[#B56576] text-transparent" @click="done = !done"></div>
                         <div class="ltr:ml-20 rtl:mr-20">
-                            <div class="text-gray-500 text-sm font-black tracking-widest mb-2 px-3 py-1 inline-block">03:00 PM</div>
-                            <div class="bg-[#1a0e11] p-6 md:p-8 rounded-3xl border border-[#2e191e] hover:border-[#B56576]/50 transition-all shadow-lg">
-                                <h4 class="text-2xl font-black text-white mb-2 text-gray-300">Roman Theater & Souq</h4>
-                                <p class="text-gray-500 text-base leading-relaxed">Walk to the 6,000-seat Roman Theater, then explore the surrounding old markets for authentic souvenirs.</p>
+                            <div class="text-gray-500 text-sm font-black tracking-widest mb-2 px-3 py-1 inline-block">03:30 PM</div>
+                            <div class="bg-[#1a0e11] p-0 rounded-3xl border border-[#2e191e] hover:border-[#B56576]/50 transition-all shadow-lg overflow-hidden flex flex-col md:flex-row h-auto md:h-60">
+                                <div class="w-full md:w-1/3 h-48 md:h-full relative overflow-hidden" x-wiki-image="'Roman_Theater_(Amman)'">
+                                    <img src="" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                                </div>
+                                <div class="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                                    <h4 class="text-2xl font-black text-white mb-2">Roman Theatre</h4>
+                                    <p class="text-gray-400 text-base leading-relaxed mb-4">Marvel at the 6,000-seat amphitheater dating back to the 2nd century.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -185,25 +202,22 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                     @foreach($wishlistCities as $city)
-                    <div class="bg-[#1a0e11] rounded-3xl overflow-hidden group cursor-pointer border border-[#2e191e] hover:border-[#B56576]/50 transition-all duration-300 shadow-lg relative flex flex-col h-72">
+                    <div class="bg-[#1a0e11] rounded-3xl overflow-hidden group cursor-pointer border border-[#2e191e] hover:border-[#B56576]/50 transition-all duration-300 shadow-lg relative flex flex-col h-80" x-wiki-image="'{{ $city->wiki_title }}'">
 
                         <button class="absolute top-4 ltr:right-4 rtl:left-4 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:bg-red-600 transition-colors flex items-center justify-center border border-white/20 backdrop-blur-md cursor-pointer" @click.stop="$el.closest('.bg-\\[\\#1a0e11\\]').remove(); showToast(language==='ar'?'تم الإزالة':'Removed from wishlist')">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
                         </button>
 
                         <div class="absolute inset-0 overflow-hidden">
-                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                                 data-wiki="{{ $city->wiki_title }}"
-                                 class="city-img w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-                                 alt="{{ $city->name }}">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#140b0d] via-[#140b0d]/60 to-transparent"></div>
+                            <img src="" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-60 group-hover:opacity-100" alt="{{ $city->name }}">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#140b0d] via-transparent to-transparent"></div>
                         </div>
 
-                        <div class="absolute bottom-0 left-0 right-0 p-6">
-                            <h4 class="text-3xl font-black font-serif text-white shadow-sm mb-1">{{ $city->name }}</h4>
-                            <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#B56576]/20 text-[#E56B6F] text-xs font-bold rounded-lg border border-[#B56576]/30 backdrop-blur-sm">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                {{ $city->attractions->count() }} Places
+                        <div class="absolute bottom-0 left-0 right-0 p-6 z-10 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                            <h4 class="text-3xl font-black font-serif text-white mb-2">{{ $city->name }}</h4>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 backdrop-blur-md rounded-xl">
+                                <span class="w-2 h-2 rounded-full bg-[#B56576]"></span>
+                                <span class="text-xs font-black text-gray-300 uppercase tracking-widest">{{ $city->attractions->count() }} Attractions</span>
                             </div>
                         </div>
                     </div>
@@ -218,92 +232,56 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-                    <div class="bg-[#1a0e11] p-8 md:p-10 rounded-3xl border border-[#2e191e] shadow-xl relative overflow-hidden">
-                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#B56576] opacity-10 rounded-full blur-3xl"></div>
-                        <div class="flex items-center gap-4 mb-8">
-                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#B56576] to-[#E56B6F] flex items-center justify-center text-white shadow-[0_0_15px_var(--dynamic-glow)]">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div class="bg-[#1a0e11] p-8 md:p-10 rounded-[2.5rem] border border-[#2e191e] shadow-2xl relative overflow-hidden">
+                        <div class="absolute -right-20 -top-20 w-64 h-64 bg-[#B56576] opacity-10 rounded-full blur-3xl"></div>
+                        <div class="flex items-center gap-6 mb-10">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#B56576] to-[#E56B6F] flex items-center justify-center text-white shadow-2xl">
+                                <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <h3 class="text-2xl font-bold text-white">
-                                <span class="en-text">Live Currency Exchange</span>
-                                <span class="ar-text">محول العملات الفوري</span>
-                            </h3>
+                            <h3 class="text-3xl font-black text-white">Live Currency</h3>
                         </div>
 
-                        <div class="space-y-6 relative z-10">
-                            <div class="bg-[#140b0d] border border-[#2e191e] rounded-2xl p-5 flex items-center shadow-inner hover:border-[#B56576] transition-colors focus-within:border-[#B56576] focus-within:ring-1 focus-within:ring-[#B56576]">
-                                <div class="flex items-center gap-3 w-32 border-r rtl:border-l rtl:border-r-0 border-[#2e191e]">
-                                    <span class="text-2xl">🇯🇴</span>
-                                    <span class="text-gray-400 font-bold tracking-widest text-lg">JOD</span>
+                        <div class="space-y-6">
+                            <div class="bg-[#140b0d] border border-white/5 rounded-3xl p-6 flex items-center shadow-inner focus-within:border-[#B56576] transition-all">
+                                <div class="flex items-center gap-3 w-32 border-r border-white/5">
+                                    <span class="text-3xl">🇯🇴</span>
+                                    <span class="text-gray-400 font-black tracking-widest text-lg">JOD</span>
                                 </div>
-                                <input type="number" step="0.01" x-model="amountJod" @input="updateFromJod" class="w-full bg-transparent border-none text-white text-3xl font-black ltr:text-right rtl:text-left focus:outline-none focus:ring-0 px-4">
+                                <input type="number" x-model="amountJod" @input="updateFromJod" class="w-full bg-transparent border-none text-white text-4xl font-black ltr:text-right rtl:text-left focus:outline-none px-4">
                             </div>
-
-                            <div class="flex justify-center text-[#B56576] -my-2">
-                                <div class="bg-[#1a0e11] p-2 rounded-full border border-[#2e191e]">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                            <div class="flex justify-center -my-3">
+                                <div class="bg-[#B56576] p-3 rounded-full shadow-lg z-10"><svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg></div>
+                            </div>
+                            <div class="bg-[#140b0d] border border-white/5 rounded-3xl p-6 flex items-center shadow-inner focus-within:border-[#B56576] transition-all">
+                                <div class="flex items-center gap-3 w-32 border-r border-white/5">
+                                    <span class="text-3xl">🇺🇸</span>
+                                    <span class="text-gray-400 font-black tracking-widest text-lg">USD</span>
                                 </div>
-                            </div>
-
-                            <div class="bg-[#140b0d] border border-[#2e191e] rounded-2xl p-5 flex items-center shadow-inner hover:border-[#B56576] transition-colors focus-within:border-[#B56576] focus-within:ring-1 focus-within:ring-[#B56576]">
-                                <div class="flex items-center gap-3 w-32 border-r rtl:border-l rtl:border-r-0 border-[#2e191e]">
-                                    <span class="text-2xl">🇺🇸</span>
-                                    <span class="text-gray-400 font-bold tracking-widest text-lg">USD</span>
-                                </div>
-                                <input type="number" step="0.01" x-model="amountUsd" @input="updateFromUsd" class="w-full bg-transparent border-none text-[#E56B6F] text-3xl font-black ltr:text-right rtl:text-left focus:outline-none focus:ring-0 px-4">
-                            </div>
-
-                            <div class="bg-[#B56576]/10 border border-[#B56576]/30 p-4 rounded-xl text-center">
-                                <p class="text-sm font-bold text-[#E56B6F]" x-text="language === 'ar' ? 'سعر الصرف الأردني ثابت: 1 دينار = 1.41 دولار' : 'Fixed Peg Rate: 1 JOD = 1.41 USD'"></p>
+                                <input type="number" x-model="amountUsd" @input="updateFromUsd" class="w-full bg-transparent border-none text-[#E56B6F] text-4xl font-black ltr:text-right rtl:text-left focus:outline-none px-4">
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-[#1a0e11] p-8 md:p-10 border border-[#2e191e] rounded-3xl relative overflow-hidden shadow-xl flex flex-col justify-between">
-                        <div class="absolute top-0 right-0 p-8 opacity-5">
-                            <svg class="w-40 h-40 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                    <div class="bg-[#1a0e11] p-8 md:p-10 border border-[#2e191e] rounded-[2.5rem] relative overflow-hidden shadow-2xl flex flex-col justify-between">
+                         <div class="relative z-10">
+                            <h3 class="text-3xl font-black text-white mb-4">Emergency Support</h3>
+                            <p class="text-gray-400 text-lg mb-10 leading-relaxed">Safety is our priority. In any event of emergency, these numbers are available 24/7 across the Kingdom.</p>
                         </div>
-
-                        <div class="relative z-10 mb-8">
-                            <h3 class="text-3xl font-black text-white mb-2">
-                                <span class="en-text">Emergency & Help</span>
-                                <span class="ar-text">الطوارئ والمساعدة</span>
-                            </h3>
-                            <p class="text-gray-400 text-lg">
-                                <span class="en-text">Jordan is extremely safe, but we are always here for you.</span>
-                                <span class="ar-text">الأردن بلد الأمان، بس إحنا دائماً معك.</span>
-                            </p>
-                        </div>
-
-                        <div class="space-y-4 relative z-10">
-                            <button @click="callEmergency('11777')" class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white p-5 rounded-2xl font-black text-xl flex items-center justify-between transition-transform hover:-translate-y-1 cursor-pointer border-none shadow-[0_10px_20px_rgba(220,38,38,0.3)]">
+                        <div class="space-y-4">
+                            <button @click="callEmergency('11777')" class="w-full bg-red-600/10 border border-red-600/30 hover:bg-red-600 text-red-500 hover:text-white p-6 rounded-[2rem] font-black text-xl flex items-center justify-between transition-all group">
                                 <div class="flex items-center gap-4">
-                                    <div class="bg-white/20 p-2 rounded-xl backdrop-blur-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg></div>
+                                    <div class="p-3 bg-red-600/20 group-hover:bg-white/20 rounded-2xl transition-colors"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg></div>
                                     <div class="text-left rtl:text-right">
-                                        <span class="block en-text">Tourist Police (11777)</span>
-                                        <span class="block ar-text">الشرطة السياحية (11777)</span>
+                                        <span class="block text-xs uppercase tracking-widest opacity-60 mb-1">Tourist Police</span>
+                                        <span class="block">11777</span>
                                     </div>
                                 </div>
-                                <span class="opacity-50 text-sm font-bold bg-black/20 px-3 py-1 rounded-lg">CALL</span>
-                            </button>
-
-                            <button @click="callEmergency('911')" class="w-full bg-[#140b0d] border border-[#2e191e] hover:border-[#B56576] text-white p-5 rounded-2xl font-black text-xl flex items-center justify-between transition-colors cursor-pointer shadow-md">
-                                <div class="flex items-center gap-4">
-                                    <div class="bg-[#2e191e] p-2 rounded-xl"><svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>
-                                    <div class="text-left rtl:text-right">
-                                        <span class="block en-text">General Emergency (911)</span>
-                                        <span class="block ar-text">الطوارئ العامة (911)</span>
-                                    </div>
-                                </div>
-                                <span class="opacity-50 text-sm font-bold bg-black/50 px-3 py-1 rounded-lg">CALL</span>
+                                <span class="text-xs font-black border border-current px-3 py-1 rounded-lg uppercase">Dial Now</span>
                             </button>
                         </div>
                     </div>
-
                 </div>
             </div>
-
         </main>
     </div>
 
@@ -316,62 +294,33 @@
             language: localStorage.getItem('wayn_lang') || 'ar',
             activeTab: 'overview',
             sidebarOpen: false,
-
-            // Logic for Currency Converter
             amountJod: 1,
             amountUsd: 1.41,
 
             init() {
-                this.$watch('language', val => localStorage.setItem('wayn_lang', val));
+                this.$watch('language', val => {
+                    localStorage.setItem('wayn_lang', val);
+                    document.documentElement.dir = val === 'ar' ? 'rtl' : 'ltr';
+                });
             },
 
             toggleLang() {
                 this.language = this.language === 'ar' ? 'en' : 'ar';
             },
 
-            updateFromJod() {
-                this.amountUsd = (this.amountJod * 1.41).toFixed(2);
-            },
-
-            updateFromUsd() {
-                this.amountJod = (this.amountUsd / 1.41).toFixed(2);
-            },
+            updateFromJod() { this.amountUsd = (this.amountJod * 1.41).toFixed(2); },
+            updateFromUsd() { this.amountJod = (this.amountUsd / 1.41).toFixed(2); },
 
             callEmergency(number) {
-                this.showToast(
-                    this.language === 'ar' ? `📞 جاري الاتصال بالرقم ${number}...` : `📞 Dialing ${number}...`,
-                    'bg-red-600 border-red-500 text-white'
-                );
-            },
-
-            // جلب صور ويكيبيديا للأماكن المحفوظة لتكون اللوحة واقعية جداً
-            initWikiImages() {
-                const images = document.querySelectorAll('.city-img');
-                images.forEach(img => {
-                    const title = img.getAttribute('data-wiki');
-                    if (title && !img.dataset.loaded) {
-                        fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.thumbnail && data.thumbnail.source) {
-                                    img.src = data.thumbnail.source;
-                                } else if (data.originalimage && data.originalimage.source) {
-                                    img.src = data.originalimage.source;
-                                }
-                                img.dataset.loaded = 'true';
-                            })
-                            .catch(err => console.error('Wiki image load error:', err));
-                    }
-                });
+                this.showToast(this.language === 'ar' ? `📞 جاري الاتصال...` : `📞 Dialing ${number}...`, 'bg-red-600 border-red-500 text-white');
             },
 
             showToast(message, colorClass = 'bg-[#1a0e11] border-[#B56576] text-white') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div');
-                toast.className = `${colorClass} px-6 py-4 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] font-bold flex items-center gap-4 transform translate-y-10 opacity-0 transition-all duration-500 border z-50`;
-                toast.innerHTML = `<span class='text-xl'>✧</span> <span class='text-lg'>${message}</span>`;
+                toast.className = `${colorClass} px-8 py-5 rounded-[2rem] shadow-2xl font-black flex items-center gap-4 transform translate-y-10 opacity-0 transition-all duration-500 border z-[100] backdrop-blur-xl pointer-events-auto`;
+                toast.innerHTML = `<span class='text-2xl font-serif'>✦</span> <span class='text-lg'>${message}</span>`;
                 container.appendChild(toast);
-
                 setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 20);
                 setTimeout(() => {
                     toast.classList.add('translate-y-10', 'opacity-0', 'scale-90');

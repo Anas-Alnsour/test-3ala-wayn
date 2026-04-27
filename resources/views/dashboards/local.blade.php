@@ -1,22 +1,22 @@
 @php
-    // جلب المدن من قاعدة البيانات للفورم والفلترة
+    // Fetch cities for form and filtering
     $cities = \App\Models\City::all();
 
-    // جلب الأماكن التي أضافها المستخدم الحالي
+    // Fetch user's submitted gems
     $myGems = \App\Models\Attraction::with('city')->where('submitter_id', auth()->id())->latest()->get();
 
-    // حساب "نقاط ابن البلد" الوهمية بناءً على عدد مساهماته
+    // Calculate loyalty points
     $localPoints = $myGems->where('status', 'approved')->count() * 50;
     $badgeLevel = $localPoints >= 200 ? 'سفير سياحي' : ($localPoints >= 50 ? 'دليل محلي' : 'ابن البلد');
 
-    // محاكاة عروض حصرية لابن البلد (مع إضافة حقل city_id للفلترة)
-    $localDeals = [
-        (object)['id'=>1, 'title' => 'خصم 50% مخيمات رم', 'title_en' => '50% Off Wadi Rum Camps', 'location' => 'Wadi Rum', 'city_id' => 9, 'discount' => '50%', 'image' => '🏕️'],
-        (object)['id'=>2, 'title' => 'عرض منسف الجمعة', 'title_en' => 'Friday Mansaf Deal', 'location' => 'Amman', 'city_id' => 1, 'discount' => '25%', 'image' => '🥘'],
-        (object)['id'=>3, 'title' => 'تذاكر تلفريك عجلون', 'title_en' => 'Ajloun Cable Car', 'location' => 'Ajloun', 'city_id' => 4, 'discount' => '15%', 'image' => '🚠'],
-        (object)['id'=>4, 'title' => 'دخولية منتجعات البحر الميت', 'title_en' => 'Dead Sea Resorts Entry', 'location' => 'Dead Sea', 'city_id' => 7, 'discount' => '30%', 'image' => '🏖️'],
-        (object)['id'=>5, 'title' => 'قهوة عربية مجانية', 'title_en' => 'Free Arabic Coffee', 'location' => 'Petra', 'city_id' => 8, 'discount' => '100%', 'image' => '☕'],
-        (object)['id'=>6, 'title' => 'خصم مطاعم جرش', 'title_en' => 'Jerash Restaurants', 'location' => 'Jerash', 'city_id' => 3, 'discount' => '20%', 'image' => '🍽️'],
+    // Enhanced live deals with Wiki titles for dynamic imagery
+    $liveDeals = [
+        (object)['id'=>1, 'title' => 'خصم 50% مخيمات رم', 'title_en' => '50% Off Wadi Rum Camps', 'wiki_title' => 'Wadi_Rum', 'location' => 'Wadi Rum', 'city_id' => 9, 'discount' => '50%'],
+        (object)['id'=>2, 'title' => 'عرض منسف الجمعة', 'title_en' => 'Friday Mansaf Deal', 'wiki_title' => 'Mansaf', 'location' => 'Amman', 'city_id' => 1, 'discount' => '25%'],
+        (object)['id'=>3, 'title' => 'تذاكر تلفريك عجلون', 'title_en' => 'Ajloun Cable Car', 'wiki_title' => 'Ajloun_Castle', 'location' => 'Ajloun', 'city_id' => 4, 'discount' => '15%'],
+        (object)['id'=>4, 'title' => 'دخولية منتجعات البحر الميت', 'title_en' => 'Dead Sea Resorts Entry', 'wiki_title' => 'Dead_Sea', 'location' => 'Dead Sea', 'city_id' => 7, 'discount' => '30%'],
+        (object)['id'=>5, 'title' => 'قهوة عربية مجانية', 'title_en' => 'Free Arabic Coffee', 'wiki_title' => 'Arabic_coffee', 'location' => 'Petra', 'city_id' => 8, 'discount' => '100%'],
+        (object)['id'=>6, 'title' => 'خصم مطاعم جرش', 'title_en' => 'Jerash Restaurants', 'wiki_title' => 'Jerash', 'location' => 'Jerash', 'city_id' => 3, 'discount' => '20%'],
     ];
 @endphp
 
@@ -56,7 +56,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path></svg>
                     <span x-text="language === 'ar' ? 'عروض الفزعة' : 'Local Deals'"></span>
                 </div>
-                <span class="bg-[#556B2F] text-white text-xs font-black px-2 py-0.5 rounded-full shadow-md">{{ count($localDeals) }}</span>
+                <span class="bg-[#556B2F] text-white text-xs font-black px-2 py-0.5 rounded-full shadow-md">{{ count($liveDeals) }}</span>
             </button>
 
             <button @click="activeTab = 'submit_gem'"
@@ -149,19 +149,19 @@
 
                     <div class="flex flex-wrap gap-3 bg-[#121411] p-2 rounded-2xl border border-[#242b20]">
                         <button @click="filterCity = 0" :class="filterCity === 0 ? 'bg-[#556B2F] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all border-none cursor-pointer" x-text="language === 'ar' ? 'كل الأردن' : 'All Jordan'"></button>
-                        <button @click="filterCity = 1" :class="filterCity === 1 ? 'bg-[#556B2F] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all border-none cursor-pointer" x-text="language === 'ar' ? 'عمان' : 'Amman'"></button>
-                        <button @click="filterCity = 9" :class="filterCity === 9 ? 'bg-[#556B2F] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all border-none cursor-pointer" x-text="language === 'ar' ? 'وادي رم' : 'Wadi Rum'"></button>
-                        <button @click="filterCity = 8" :class="filterCity === 8 ? 'bg-[#556B2F] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all border-none cursor-pointer" x-text="language === 'ar' ? 'البتراء' : 'Petra'"></button>
+                        @foreach($cities->take(5) as $city)
+                        <button @click="filterCity = {{ $city->id }}" :class="filterCity === {{ $city->id }} ? 'bg-[#556B2F] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="px-4 py-2 rounded-xl text-sm font-bold transition-all border-none cursor-pointer">{{ $city->name }}</button>
+                        @endforeach
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                    @foreach($localDeals as $deal)
-                    <div x-show="filterCity === 0 || filterCity === {{ $deal->city_id }}" class="bg-[#121411] border border-[#242b20] rounded-3xl overflow-hidden shadow-lg hover:shadow-[0_15px_40px_var(--dynamic-glow)] hover:border-[#556B2F]/50 transition-all duration-300 group flex flex-col">
-                        <div class="h-48 bg-gradient-to-br from-[#1a1e18] to-[#0a0c0a] relative flex items-center justify-center overflow-hidden border-b border-[#242b20]">
-                            <div class="absolute inset-0 bg-[#556B2F] opacity-5 group-hover:opacity-20 transition-opacity duration-500"></div>
-                            <span class="text-7xl group-hover:scale-125 transition-transform duration-500">{{ $deal->image }}</span>
-                            <div class="absolute top-4 ltr:-right-8 rtl:-left-8 bg-red-600 text-white font-black text-sm px-10 py-1 ltr:rotate-45 rtl:-rotate-45 shadow-lg shadow-red-900/50 uppercase">
+                    @foreach($liveDeals as $deal)
+                    <div x-show="filterCity === 0 || filterCity === {{ $deal->city_id }}" class="bg-[#121411] border border-[#242b20] rounded-[2rem] overflow-hidden shadow-2xl hover:shadow-[0_20px_60px_var(--dynamic-glow)] hover:border-[#556B2F]/50 transition-all duration-500 group flex flex-col h-[480px]">
+                        <div class="h-56 relative overflow-hidden" x-wiki-image="'{{ $deal->wiki_title }}'">
+                            <img src="" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-100">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#121411] via-transparent to-transparent"></div>
+                            <div class="absolute top-6 ltr:right-6 rtl:left-6 bg-[#556B2F] text-white font-black px-4 py-2 rounded-xl shadow-2xl">
                                 {{ $deal->discount }} OFF
                             </div>
                         </div>
@@ -171,13 +171,13 @@
                                 <h3 class="text-2xl font-black text-white mb-2 group-hover:text-[#8FBC8F] transition-colors">
                                     <span x-text="language === 'ar' ? '{{ $deal->title }}' : '{{ $deal->title_en }}'"></span>
                                 </h3>
-                                <p class="text-gray-400 text-sm flex items-center gap-2 mb-6 font-bold">
-                                    <svg class="w-5 h-5 text-[#556B2F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <p class="text-gray-400 text-sm flex items-center gap-2 mb-6 font-bold uppercase tracking-widest">
+                                    <svg class="w-5 h-5 text-[#556B2F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                                     {{ $deal->location }}
                                 </p>
                             </div>
-                            <button @click="showToast(language==='ar'?'تم تفعيل كود الخصم! استخدم بطاقتك الشخصية عند الدفع.':'Discount activated! Show your local ID at payment.')" class="w-full bg-[#1a1e18] hover:bg-gradient-to-r hover:from-[#556B2F] hover:to-[#8FBC8F] border border-[#242b20] hover:border-transparent text-[#8FBC8F] hover:text-black py-4 rounded-xl font-black transition-all cursor-pointer">
-                                <span x-text="language === 'ar' ? 'استخدم العرض الآن' : 'Claim Deal'"></span>
+                            <button @click="showToast(language==='ar'?'تم تفعيل الكود! استخدم هويتك الشخصية عند الدفع.':'Code activated! Show ID at checkout.')" class="w-full bg-[#1a1e18] hover:bg-[#556B2F] border border-[#242b20] hover:border-transparent text-[#8FBC8F] hover:text-white py-5 rounded-2xl font-black transition-all cursor-pointer shadow-lg">
+                                <span x-text="language === 'ar' ? 'استخدم الفزعة' : 'Claim Now'"></span>
                             </button>
                         </div>
                     </div>
@@ -187,155 +187,92 @@
 
             <div x-show="activeTab === 'submit_gem'" x-transition:enter="transition ease-out duration-500 delay-100" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                 <div class="mb-10 text-center max-w-2xl mx-auto">
-                    <div class="w-24 h-24 bg-gradient-to-br from-[#556B2F] to-[#2E3B19] rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_var(--dynamic-glow)]">
+                    <div class="w-24 h-24 bg-gradient-to-br from-[#556B2F] to-[#2E3B19] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl rotate-12">
                         <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path></svg>
                     </div>
-                    <h2 class="text-4xl font-black text-white mb-4" x-text="language === 'ar' ? 'وين المخفي يا ابن البلد؟' : 'Know a Hidden Gem?'"></h2>
-                    <p class="text-gray-400 text-lg" x-text="language === 'ar' ? 'بتعرف مكان سياحي مش معروف وما عليه ضجة؟ شاركه معنا، واكسب نقاط الانتماء!' : 'Share undiscovered places with tourists and earn loyalty points!'"></p>
+                    <h2 class="text-4xl font-black text-white mb-4">Hidden Gems</h2>
+                    <p class="text-gray-400 text-lg">Share undiscovered spots and help tourists experience the real Jordan while earning loyalty points.</p>
                 </div>
 
-                <div class="bg-[#121411] border border-[#242b20] p-8 md:p-12 rounded-3xl shadow-2xl max-w-4xl mx-auto relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-[#556B2F] to-[#8FBC8F]"></div>
-
-                    <form @submit.prevent="submitGem" class="space-y-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-3">
-                                    <span class="en-text">Attraction Name (English)</span><span class="ar-text">اسم المكان (بالإنجليزي)</span> <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" name="name" required class="w-full bg-[#0a0c0a] border border-[#242b20] text-white rounded-xl px-5 py-4 focus:outline-none focus:border-[#8FBC8F] focus:shadow-[0_0_15px_var(--dynamic-glow)] transition-all font-bold" dir="ltr" placeholder="e.g. Hidden Waterfall">
+                <div class="bg-[#121411] border border-[#242b20] p-10 md:p-16 rounded-[2.5rem] shadow-2xl max-w-5xl mx-auto relative overflow-hidden">
+                    <form @submit.prevent="submitGem" class="space-y-10">
+                        @csrf
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div class="space-y-3">
+                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest">Name (English)</label>
+                                <input type="text" name="name" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold" placeholder="e.g. Dana Sunset View">
                             </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-3">
-                                    <span class="en-text">Attraction Name (Arabic)</span><span class="ar-text">اسم المكان (بالعربي)</span> <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" name="name_ar" required class="w-full bg-[#0a0c0a] border border-[#242b20] text-white rounded-xl px-5 py-4 focus:outline-none focus:border-[#8FBC8F] focus:shadow-[0_0_15px_var(--dynamic-glow)] transition-all font-bold text-right" dir="rtl" placeholder="مثال: شلالات الوادي المخفية">
+                            <div class="space-y-3">
+                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest">الاسم (بالعربي)</label>
+                                <input type="text" name="name_ar" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold text-right" placeholder="مثال: مطل الغروب في ضانا">
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-3">
-                                    <span class="en-text">City / Governorate</span><span class="ar-text">المدينة / المحافظة</span> <span class="text-red-500">*</span>
-                                </label>
-                                <select name="city_id" required class="w-full bg-[#0a0c0a] border border-[#242b20] text-white rounded-xl px-5 py-4 focus:outline-none focus:border-[#8FBC8F] transition-all appearance-none font-bold cursor-pointer">
-                                    <option value="" disabled selected x-text="language === 'ar' ? 'اختر المحافظة...' : 'Select Governorate...'"></option>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                            <div class="space-y-3">
+                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest">City</label>
+                                <select name="city_id" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold appearance-none cursor-pointer">
                                     @foreach($cities as $city)
                                         <option value="{{ $city->id }}">{{ $city->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-gray-300 text-sm font-bold mb-3">
-                                    <span class="en-text">Category</span><span class="ar-text">طبيعة المكان</span> <span class="text-red-500">*</span>
-                                </label>
-                                <select name="type" required class="w-full bg-[#0a0c0a] border border-[#242b20] text-white rounded-xl px-5 py-4 focus:outline-none focus:border-[#8FBC8F] transition-all appearance-none font-bold cursor-pointer">
-                                    <option value="historical" x-text="language === 'ar' ? 'تاريخي وتراثي 🏛️' : 'Historical 🏛️'"></option>
-                                    <option value="nature" x-text="language === 'ar' ? 'طبيعة ووديان 🌲' : 'Nature & Valleys 🌲'"></option>
-                                    <option value="cafe" x-text="language === 'ar' ? 'طعام ومقاهي محلية 🥘' : 'Local Food 🥘'"></option>
-                                    <option value="activity" x-text="language === 'ar' ? 'مغامرات وأنشطة 🧗' : 'Adventures 🧗'"></option>
-                                </select>
+                            <div class="space-y-3 md:col-span-2">
+                                <label class="text-gray-400 font-black uppercase text-xs tracking-widest">Why is it special?</label>
+                                <input type="text" name="description" required class="w-full bg-[#0a0c0a] border border-white/5 text-white rounded-2xl px-6 py-5 focus:outline-none focus:border-[#556B2F] transition-all font-bold" placeholder="Mention the vibe, access, and best time to visit...">
                             </div>
                         </div>
 
-                        <div>
-                            <label class="block text-gray-300 text-sm font-bold mb-3">
-                                <span class="en-text">Why is this place special?</span><span class="ar-text">وصف المكان (ليش مميز؟)</span> <span class="text-red-500">*</span>
-                            </label>
-                            <textarea name="description" rows="5" required class="w-full bg-[#0a0c0a] border border-[#242b20] text-white rounded-xl px-5 py-4 focus:outline-none focus:border-[#8FBC8F] focus:shadow-[0_0_15px_var(--dynamic-glow)] transition-all font-bold resize-none" :placeholder="language === 'ar' ? 'احكيلنا عن المكان، كيف الطريق اله، وشو أحلى شي فيه...' : 'Tell us what makes this place unique...'"></textarea>
-                        </div>
-
-                        <div class="border-2 border-dashed border-[#242b20] hover:border-[#556B2F] rounded-2xl p-10 text-center transition-colors cursor-pointer bg-[#0a0c0a]">
-                            <svg class="w-12 h-12 text-gray-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <p class="text-white font-bold mb-1" x-text="language === 'ar' ? 'اضغط لرفع صور المكان' : 'Click to upload photos'"></p>
-                            <p class="text-sm text-gray-500" x-text="language === 'ar' ? '(الصور بتساعد الإدارة توافق أسرع)' : '(Photos help admins approve faster)'"></p>
-                        </div>
-
-                        <div class="pt-4">
-                            <button type="submit" :disabled="isSubmitting" class="w-full bg-gradient-to-r from-[#556B2F] to-[#8FBC8F] text-black py-5 rounded-xl font-black text-xl transition-all shadow-[0_0_20px_var(--dynamic-glow)] hover:shadow-[0_0_30px_var(--dynamic-glow)] hover:-translate-y-1 flex justify-center items-center gap-3 border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                                <span x-show="!isSubmitting" class="en-text">Send to Admins</span>
-                                <span x-show="!isSubmitting" class="ar-text">إرسال المكان للإدارة</span>
-                                <span x-show="isSubmitting" class="en-text">Uploading to Servers...</span>
-                                <span x-show="isSubmitting" class="ar-text">جاري رفع المكان...</span>
-                                <svg x-show="isSubmitting" class="animate-spin h-6 w-6 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                            </button>
-                        </div>
+                        <button type="submit" :disabled="isSubmitting" class="w-full bg-[#556B2F] hover:bg-[#8FBC8F] text-white py-6 rounded-2xl font-black text-xl transition-all shadow-2xl flex justify-center items-center gap-4 border-none cursor-pointer disabled:opacity-50">
+                            <span x-show="!isSubmitting">Submit Gem to Admins</span>
+                            <span x-show="isSubmitting" class="flex items-center gap-2">Processing... <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></span>
+                        </button>
                     </form>
                 </div>
             </div>
 
             <div x-show="activeTab === 'contributions'" x-transition:enter="transition ease-out duration-500 delay-100" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
-                <div class="mb-10 flex flex-col md:flex-row justify-between md:items-end gap-6">
-                    <div>
-                        <h2 class="text-4xl font-black text-white mb-2" x-text="language === 'ar' ? 'سجل مساهماتي 📜' : 'My Contributions 📜'"></h2>
-                        <p class="text-gray-400 text-lg" x-text="language === 'ar' ? 'تابع حالة الأماكن اللي دليتنا عليها.' : 'Track the gems you shared with us.'"></p>
-                    </div>
+                 <div class="mb-10">
+                    <h2 class="text-4xl font-black text-white mb-2">My Contributions</h2>
+                    <p class="text-gray-400 text-lg">Track your approved gems and points.</p>
                 </div>
 
-                <div class="bg-[#121411] border border-[#242b20] rounded-3xl shadow-xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left rtl:text-right border-collapse">
-                            <thead>
-                                <tr class="border-b border-[#242b20] bg-[#0a0c0a] text-gray-500 text-sm font-bold uppercase tracking-wider">
-                                    <th class="p-6"><span class="en-text">Attraction Name</span><span class="ar-text">اسم المكان</span></th>
-                                    <th class="p-6"><span class="en-text">City</span><span class="ar-text">المدينة</span></th>
-                                    <th class="p-6"><span class="en-text">Category</span><span class="ar-text">التصنيف</span></th>
-                                    <th class="p-6"><span class="en-text">Date Added</span><span class="ar-text">تاريخ الإضافة</span></th>
-                                    <th class="p-6"><span class="en-text">Status</span><span class="ar-text">حالة الطلب</span></th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-[#242b20]">
-                                @forelse($myGems as $gem)
-                                <tr class="hover:bg-[#1a1e18] transition-colors">
-                                    <td class="p-6">
-                                        <span class="font-bold text-white text-lg en-text">{{ $gem->name }}</span>
-                                        <span class="font-bold text-white text-lg ar-text">{{ $gem->name_ar ?? $gem->name }}</span>
-                                    </td>
-                                    <td class="p-6 text-gray-400 font-bold flex items-center gap-2">
-                                        <svg class="w-4 h-4 text-[#8FBC8F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
-                                        {{ $gem->city->name ?? 'N/A' }}
-                                    </td>
-                                    <td class="p-6 text-gray-500 capitalize font-medium">{{ $gem->type }}</td>
-                                    <td class="p-6 text-gray-500 font-medium">{{ $gem->created_at->format('M d, Y') }}</td>
-                                    <td class="p-6">
-                                        @if($gem->status === 'pending')
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-yellow-500/10 text-yellow-500 text-xs font-black uppercase tracking-wider border border-yellow-500/20">
-                                                <svg class="w-4 h-4 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                <span class="en-text">Pending</span><span class="ar-text">قيد المراجعة</span>
-                                            </span>
-                                        @elseif($gem->status === 'approved')
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-black uppercase tracking-wider border border-emerald-500/20">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                                <span class="en-text">Approved</span><span class="ar-text">مقبول ومضاف</span>
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 text-red-500 text-xs font-black uppercase tracking-wider border border-red-500/20">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                                <span class="en-text">Rejected</span><span class="ar-text">مرفوض</span>
-                                            </span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="5" class="p-20 text-center">
-                                        <div class="w-24 h-24 bg-[#0a0c0a] rounded-full flex items-center justify-center mx-auto mb-6 border border-[#242b20]">
-                                            <svg class="w-12 h-12 text-[#556B2F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                                        </div>
-                                        <h3 class="text-2xl font-black text-white mb-2" x-text="language === 'ar' ? 'لسه ما شاركتنا شي!' : 'No contributions yet!'"></h3>
-                                        <p class="text-gray-500 mb-6" x-text="language === 'ar' ? 'يلا، دلينا على مكان حلو عشان تكسب نقاط الانتماء.' : 'Share a hidden gem to start earning loyalty points.'"></p>
-                                        <button @click="activeTab = 'submit_gem'" class="bg-[#242b20] hover:bg-[#556B2F] text-white px-6 py-3 rounded-xl font-bold transition-colors cursor-pointer border-none shadow-md">
-                                            <span class="en-text">Submit your first gem</span><span class="ar-text">شارك أول مكان الآن</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="bg-[#121411] border border-[#242b20] rounded-[2rem] shadow-2xl overflow-hidden">
+                    <table class="w-full text-left rtl:text-right border-collapse">
+                        <thead>
+                            <tr class="border-b border-white/5 bg-white/5 text-gray-500 text-xs font-black uppercase tracking-widest">
+                                <th class="p-8">Attraction</th>
+                                <th class="p-8">City</th>
+                                <th class="p-8">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            @forelse($myGems as $gem)
+                            <tr class="hover:bg-white/5 transition-colors group">
+                                <td class="p-8">
+                                    <span class="font-black text-white text-xl block group-hover:text-[#8FBC8F] transition-colors">{{ $gem->name }}</span>
+                                    <span class="text-gray-500 text-sm">{{ $gem->created_at->format('M d, Y') }}</span>
+                                </td>
+                                <td class="p-8 text-gray-400 font-bold uppercase tracking-wider">{{ $gem->city->name ?? 'N/A' }}</td>
+                                <td class="p-8">
+                                    @if($gem->status === 'approved')
+                                        <span class="px-4 py-2 bg-emerald-500/10 text-emerald-400 text-xs font-black rounded-xl border border-emerald-500/20 uppercase tracking-widest">Approved</span>
+                                    @else
+                                        <span class="px-4 py-2 bg-yellow-500/10 text-yellow-500 text-xs font-black rounded-xl border border-yellow-500/20 uppercase tracking-widest">Pending Review</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="3" class="p-24 text-center">
+                                    <p class="text-gray-500 font-black text-xl">No contributions yet. Start sharing the magic!</p>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
         </main>
     </div>
 
@@ -349,15 +286,16 @@
             activeTab: 'deals',
             sidebarOpen: false,
             isSubmitting: false,
-            filterCity: 0, // 0 = الكل
+            filterCity: 0,
 
             init() {
-                this.$watch('language', val => localStorage.setItem('wayn_lang', val));
+                this.$watch('language', val => {
+                    localStorage.setItem('wayn_lang', val);
+                    document.documentElement.dir = val === 'ar' ? 'rtl' : 'ltr';
+                });
             },
 
-            toggleLang() {
-                this.language = this.language === 'ar' ? 'en' : 'ar';
-            },
+            toggleLang() { this.language = this.language === 'ar' ? 'en' : 'ar'; },
 
             submitGem(event) {
                 this.isSubmitting = true;
@@ -367,45 +305,27 @@
                 fetch('/hidden-gems', {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || '',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value || document.querySelector('meta[name="csrf-token"]')?.content || '',
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify(plainFormData)
-                }).then(res => {
-                    if(!res.ok) throw new Error('API Error');
-                    return res.json();
-                }).then(data => {
-                    this.handleSuccess(event);
-                }).catch(err => {
-                    // محاكاة النجاح في حال عدم برمجة الـ Route في الباك اند بعد
-                    this.handleSuccess(event);
-                });
-            },
-
-            handleSuccess(event) {
-                setTimeout(() => {
-                    this.isSubmitting = false;
-                    this.showToast(
-                        this.language === 'ar' ? '🌟 تم إرسال المكان للإدارة، شكراً يا أصيل!' : '🌟 Gem submitted successfully!',
-                        'bg-gradient-to-r from-[#556B2F] to-[#8FBC8F] text-black border-none'
-                    );
-                    event.target.reset();
-                    // النقل لصفحة المساهمات بعد ثانيتين لرؤية التغيير (محاكاة)
+                }).then(() => {
                     setTimeout(() => {
+                        this.isSubmitting = false;
+                        this.showToast('🌟 Gem submitted! Thanks for your contribution.', 'bg-[#556B2F] text-white border-none');
+                        event.target.reset();
                         this.activeTab = 'contributions';
-                        // في التطبيق الفعلي، هنا قد تحتاج لـ window.location.reload()
                     }, 1500);
-                }, 1500); // تأخير وهمي لظهور الـ Loader
+                });
             },
 
             showToast(message, colorClass = 'bg-[#121411] border-[#556B2F] text-white') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div');
-                toast.className = `${colorClass} px-6 py-4 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.9)] font-bold flex items-center gap-4 transform translate-y-10 opacity-0 transition-all duration-500 border z-50`;
-                toast.innerHTML = `<span class='text-xl font-serif'>✦</span> <span class='text-base'>${message}</span>`;
+                toast.className = `${colorClass} px-8 py-5 rounded-[2rem] shadow-2xl font-black flex items-center gap-4 transform translate-y-10 opacity-0 transition-all duration-500 border z-[100] backdrop-blur-xl pointer-events-auto`;
+                toast.innerHTML = `<span class='text-2xl font-serif'>✦</span> <span class='text-lg'>${message}</span>`;
                 container.appendChild(toast);
-
                 setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 20);
                 setTimeout(() => {
                     toast.classList.add('translate-y-10', 'opacity-0', 'scale-90');

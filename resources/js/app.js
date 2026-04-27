@@ -466,6 +466,47 @@ const adminUsers = [
 
 
 // --- Initialization ---
+document.addEventListener('alpine:init', () => {
+    // Wikipedia Dynamic Image Store
+    Alpine.store('wiki', {
+        cache: {},
+        async fetch(title) {
+            if (!title) return 'https://via.placeholder.com/800x600?text=Jordan+Pattern';
+            if (this.cache[title]) return this.cache[title];
+            try {
+                const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+                if (!response.ok) throw new Error('Wiki fetch failed');
+                const data = await response.json();
+                const imgUrl = data.originalimage?.source || data.thumbnail?.source || 'https://via.placeholder.com/800x600?text=Jordan+Pattern';
+                this.cache[title] = imgUrl;
+                return imgUrl;
+            } catch (e) {
+                console.warn(`Wiki image failed for ${title}`, e);
+                return 'https://via.placeholder.com/800x600?text=Jordan+Pattern';
+            }
+        }
+    });
+
+    // Wikipedia Image Directive (Global)
+    // Usage: <div x-wiki-image="'Amman_Citadel'"><img src="" ...></div>
+    Alpine.directive('wiki-image', (el, { expression }, { evaluate }) => {
+        const title = evaluate(expression);
+        const img = el.querySelector('img');
+        
+        Alpine.store('wiki').fetch(title).then(url => {
+            if (img) {
+                img.src = url;
+                img.onload = () => {
+                    img.classList.add('loaded');
+                    if (img.parentElement && img.parentElement.classList.contains('skeleton')) {
+                        img.parentElement.classList.remove('skeleton');
+                    }
+                };
+            }
+        });
+    });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   // Global things
   updateLanguage();
@@ -490,25 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const wikiImageCache = {};
 
 async function fetchWikiImage(articleTitle) {
-  if (wikiImageCache[articleTitle]) return wikiImageCache[articleTitle];
-  try {
-    const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(articleTitle)}`);
-    if (!res.ok) throw new Error('Wiki fetch failed');
-    const data = await res.json();
-    let imgUrl = '';
-    if (data.originalimage && data.originalimage.source) {
-      imgUrl = data.originalimage.source;
-    } else if (data.thumbnail && data.thumbnail.source) {
-      imgUrl = data.thumbnail.source;
-    } else {
-      throw new Error('No image in wiki response');
-    }
-    wikiImageCache[articleTitle] = imgUrl;
-    return imgUrl;
-  } catch (error) {
-    console.warn(`Failed to fetch image for ${articleTitle}`, error);
-    return 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Jordan_collage.jpg/800px-Jordan_collage.jpg';
-  }
+  return await Alpine.store('wiki').fetch(articleTitle);
 }
 
 function processWikiImages(container = document) {
@@ -519,6 +542,7 @@ function processWikiImages(container = document) {
     const url = await fetchWikiImage(title);
     img.src = url;
     img.removeAttribute('data-wiki');
+    img.classList.add('loaded');
   });
 }
 

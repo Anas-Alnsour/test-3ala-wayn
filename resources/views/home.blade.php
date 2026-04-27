@@ -112,12 +112,6 @@
 </head>
 <body @mousemove="updateGlow($event)">
 
-    <div class="jordan-flag-bar">
-        <div class="h-1/3 w-full bg-black"></div>
-        <div class="h-1/3 w-full bg-white"></div>
-        <div class="h-1/3 w-full bg-[#007A3D]"></div>
-        <div class="jordan-triangle"></div>
-    </div>
 
     <div class="bg-grid"></div>
     <div class="glow-blob" :style="`top: ${mouseY}px; left: ${mouseX}px; transform: translate(-50%, -50%);`"></div>
@@ -155,9 +149,16 @@
                     </a>
                 @else
                     <div class="flex items-center gap-4">
-                        <a href="{{ route('login') }}" class="text-sm font-bold text-gray-300 hover:text-white no-underline" x-text="language === 'ar' ? 'تسجيل الدخول' : 'Sign In'"></a>
-                        <a href="{{ route('register') }}" class="border border-[#c17551] text-[#c17551] hover:bg-[#c17551] hover:text-white px-5 py-2 rounded-full font-bold transition-all no-underline" x-text="language === 'ar' ? 'حساب جديد' : 'Sign Up'"></a>
-                    </div>
+    @guest
+        <a href="{{ route('login') }}" class="text-sm font-bold text-gray-300 hover:text-[#c17551] no-underline" x-text="language === 'ar' ? 'تسجيل الدخول' : 'Sign In'"></a>
+        <a href="{{ route('register') }}" class="border border-[#c17551] text-[#c17551] hover:bg-[#c17551] hover:text-white px-5 py-2 rounded-full font-bold transition-all no-underline" x-text="language === 'ar' ? 'حساب جديد' : 'Sign Up'"></a>
+    @else
+        <form method="POST" action="{{ route('logout') }}" class="inline">
+            @csrf
+            <button type="submit" class="text-sm font-bold text-gray-400 hover:text-red-500 bg-transparent border-none cursor-pointer" x-text="language === 'ar' ? 'خروج' : 'Logout'"></button>
+        </form>
+    @endguest
+</div>
                 @endauth
 
                 <button @click="toggleLang()" class="w-10 h-10 rounded-full border border-[#3a251c] bg-[#1f130e]/50 hover:border-[#c17551] text-gray-300 hover:text-[#c17551] flex items-center justify-center font-bold transition-colors cursor-pointer">
@@ -377,9 +378,13 @@
                 <div>
                     <h4 class="text-white font-bold mb-4 uppercase tracking-wider" x-text="language === 'ar' ? 'المنصة' : 'Platform'"></h4>
                     <ul class="space-y-3">
-                        <li><a href="{{ route('login') }}" class="text-gray-400 hover:text-[#c17551] transition-colors text-sm no-underline" x-text="language === 'ar' ? 'تسجيل الدخول' : 'Sign In'"></a></li>
-                        <li><a href="{{ route('register') }}" class="text-gray-400 hover:text-[#c17551] transition-colors text-sm no-underline" x-text="language === 'ar' ? 'انضم إلينا كشريك' : 'Join as Partner'"></a></li>
-                    </ul>
+    <li>
+        <a href="{{ route('login') }}" class="text-gray-400 hover:text-[#c17551] transition-colors text-sm no-underline" x-text="language === 'ar' ? 'تسجيل الدخول' : 'Sign In'"></a>
+    </li>
+    <li>
+        <a href="{{ route('register') }}" class="text-gray-400 hover:text-[#c17551] transition-colors text-sm no-underline" x-text="language === 'ar' ? 'انضم إلينا كشريك' : 'Join as Partner'"></a>
+    </li>
+</ul>
                 </div>
             </div>
             <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
