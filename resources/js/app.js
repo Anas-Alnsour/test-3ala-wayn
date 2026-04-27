@@ -467,24 +467,24 @@ const adminUsers = [
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
-  initNavigation();
-  initInteractions();
-  initCurrencyConverter();
-  initAdminPanel();
-  initParallax();
+  // Global things
+  updateLanguage();
   initImageLoading();
   
-  // Set initial i18n
-  updateLanguage();
-  
-  // Render dynamic data
-  renderCities();
-  convertCurrency();
+  if (document.getElementById('mainContainer')) {
+    initNavigation();
+    initInteractions();
+    initCurrencyConverter();
+    initAdminPanel();
+    initParallax();
+    renderCities();
+    convertCurrency();
 
-  // FIX FOR INITIAL RENDER BUG & WIKI FETCH
-  state.currentSection = null;
-  switchSection('home');
-  processWikiImages();
+    // FIX FOR INITIAL RENDER BUG & WIKI FETCH
+    state.currentSection = null;
+    switchSection('home');
+    processWikiImages();
+  }
 });
 
 const wikiImageCache = {};
@@ -569,10 +569,10 @@ function updateLanguage() {
   document.documentElement.lang = mode;
 
   // Toggle Nav Buttons
-  document.getElementById('modeEn').classList.toggle('active', mode === 'en');
-  document.getElementById('modeAr').classList.toggle('active', mode === 'ar');
-  document.getElementById('modeEnMobile').classList.toggle('active', mode === 'en');
-  document.getElementById('modeArMobile').classList.toggle('active', mode === 'ar');
+  document.getElementById('modeEn')?.classList.toggle('active', mode === 'en');
+  document.getElementById('modeAr')?.classList.toggle('active', mode === 'ar');
+  document.getElementById('modeEnMobile')?.classList.toggle('active', mode === 'en');
+  document.getElementById('modeArMobile')?.classList.toggle('active', mode === 'ar');
 
   // Static Text
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -594,7 +594,7 @@ function updateLanguage() {
   renderCities();
   renderAdminUsers();
   
-  if (state.currentSection === 'cities' && !document.getElementById('cityDetail').classList.contains('hidden-view')) {
+  if (state.currentSection === 'cities' && document.getElementById('cityDetail') && !document.getElementById('cityDetail').classList.contains('hidden-view')) {
     if(state.currentCityId) showCityDetail(state.currentCityId);
   }
 }
@@ -631,16 +631,16 @@ function initNavigation() {
     logoBtn.addEventListener('click', () => switchSection('home'));
   }
 
-  document.getElementById('modeEn').addEventListener('click', () => setLanguageMode('en'));
-  document.getElementById('modeAr').addEventListener('click', () => setLanguageMode('ar'));
-  document.getElementById('modeEnMobile').addEventListener('click', () => setLanguageMode('en'));
-  document.getElementById('modeArMobile').addEventListener('click', () => setLanguageMode('ar'));
+  document.getElementById('modeEn')?.addEventListener('click', () => setLanguageMode('en'));
+  document.getElementById('modeAr')?.addEventListener('click', () => setLanguageMode('ar'));
+  document.getElementById('modeEnMobile')?.addEventListener('click', () => setLanguageMode('en'));
+  document.getElementById('modeArMobile')?.addEventListener('click', () => setLanguageMode('ar'));
 
-  document.getElementById('btnPlanHero').addEventListener('click', () => switchSection('planner'));
-  document.getElementById('btnExploreHero').addEventListener('click', () => switchSection('cities'));
+  document.getElementById('btnPlanHero')?.addEventListener('click', () => switchSection('planner'));
+  document.getElementById('btnExploreHero')?.addEventListener('click', () => switchSection('cities'));
   
-  document.getElementById('btnModeArAction').addEventListener('click', () => { setLanguageMode('ar'); switchSection('cities'); });
-  document.getElementById('btnModeEnAction').addEventListener('click', () => { setLanguageMode('en'); switchSection('planner'); });
+  document.getElementById('btnModeArAction')?.addEventListener('click', () => { setLanguageMode('ar'); switchSection('cities'); });
+  document.getElementById('btnModeEnAction')?.addEventListener('click', () => { setLanguageMode('en'); switchSection('planner'); });
 }
 
 function switchSection(id) {
@@ -652,7 +652,7 @@ function switchSection(id) {
   if (state.isAnimating) return;
   state.isAnimating = true;
 
-  const currentSec = document.getElementById(`sec-${state.currentSection}`);
+  const currentSec = state.currentSection ? document.getElementById(`sec-${state.currentSection}`) : null;
   const targetSec = document.getElementById(`sec-${id}`);
   
   state.currentSection = id;
@@ -688,8 +688,8 @@ function switchSection(id) {
   });
 
   if (id === 'cities') {
-    document.getElementById('citiesMain').classList.remove('hidden-view');
-    document.getElementById('cityDetail').classList.add('hidden-view');
+    document.getElementById('citiesMain')?.classList.remove('hidden-view');
+    document.getElementById('cityDetail')?.classList.add('hidden-view');
     state.currentCityId = null;
     renderCities(); // re-render to ensure elements are ready for stagger
   }
@@ -717,9 +717,9 @@ function initInteractions() {
     tag.addEventListener('click', () => tag.classList.toggle('selected'));
   });
 
-  document.getElementById('generateBtn').addEventListener('click', handleGenerateItinerary);
-  document.getElementById('askCurrencyBtn').addEventListener('click', handleAskCurrencyAI);
-  document.getElementById('askAdminBtn').addEventListener('click', handleAskAdminAI);
+  document.getElementById('generateBtn')?.addEventListener('click', handleGenerateItinerary);
+  document.getElementById('askCurrencyBtn')?.addEventListener('click', handleAskCurrencyAI);
+  document.getElementById('askAdminBtn')?.addEventListener('click', handleAskAdminAI);
 }
 
 function initParallax() {
@@ -774,8 +774,9 @@ function showCityDetail(id) {
   const mode = state.currentMode;
   state.currentCityId = id;
 
-  document.getElementById('citiesMain').classList.add('hidden-view');
+  document.getElementById('citiesMain')?.classList.add('hidden-view');
   const detailContainer = document.getElementById('cityDetail');
+  if (!detailContainer) return;
   detailContainer.classList.remove('hidden-view');
   
   detailContainer.innerHTML = `
@@ -812,13 +813,14 @@ function showCityDetail(id) {
     </article>
   `;
 
-  document.getElementById('btnBackToCities').addEventListener('click', () => {
+  document.getElementById('btnBackToCities')?.addEventListener('click', () => {
     switchSection('cities');
   });
 
-  document.getElementById('btnPlanForCity').addEventListener('click', () => {
+  document.getElementById('btnPlanForCity')?.addEventListener('click', () => {
     switchSection('planner');
     const select = document.getElementById('planCity');
+    if (!select) return;
     for (let i = 0; i < select.options.length; i++) {
       if (select.options[i].value === city.id) {
         select.selectedIndex = i;
@@ -836,10 +838,15 @@ function showCityDetail(id) {
 // --- AI API Integrations ---
 
 async function handleGenerateItinerary() {
-  const city = document.getElementById('planCity').value;
-  const days = document.getElementById('planDays').value;
+  const cityEl = document.getElementById('planCity');
+  const daysEl = document.getElementById('planDays');
   const out = document.getElementById('itineraryOutput');
   const btn = document.getElementById('generateBtn');
+  
+  if (!cityEl || !daysEl || !out || !btn) return;
+  
+  const city = cityEl.value;
+  const days = daysEl.value;
   const mode = state.currentMode;
   
   out.classList.remove('hidden-view');
@@ -851,7 +858,8 @@ async function handleGenerateItinerary() {
   `;
   btn.disabled = true;
 
-  const cityName = city === 'all' ? translations[mode].plan_dest_all : document.querySelector(`#planCity option[value="${city}"]`).textContent;
+  const cityNameEl = document.querySelector(`#planCity option[value="${city}"]`);
+  const cityName = city === 'all' ? translations[mode].plan_dest_all : (cityNameEl ? cityNameEl.textContent : city);
 
   setTimeout(() => {
     const mockEn = `${translations.en.ai_mock_pre_itinerary} ${days}-day itinerary for ${cityName}:
@@ -897,11 +905,15 @@ style.innerHTML = `@keyframes spin { to { transform: rotate(360deg); } }`;
 document.head.appendChild(style);
 
 async function handleAskCurrencyAI() {
-  const query = document.getElementById('currencyQ').value.trim();
-  if(!query) return;
-  
+  const qEl = document.getElementById('currencyQ');
   const out = document.getElementById('currencyAIResp');
   const btn = document.getElementById('askCurrencyBtn');
+  
+  if (!qEl || !out || !btn) return;
+  
+  const query = qEl.value.trim();
+  if(!query) return;
+  
   const mode = state.currentMode;
   
   out.classList.remove('hidden-view');
@@ -915,11 +927,15 @@ async function handleAskCurrencyAI() {
 }
 
 async function handleAskAdminAI() {
-  const query = document.getElementById('adminAIQ').value.trim();
-  if(!query) return;
-  
+  const qEl = document.getElementById('adminAIQ');
   const out = document.getElementById('adminAIResp');
   const btn = document.getElementById('askAdminBtn');
+  
+  if (!qEl || !out || !btn) return;
+  
+  const query = qEl.value.trim();
+  if(!query) return;
+  
   const mode = state.currentMode;
   
   out.classList.remove('hidden-view');
@@ -936,19 +952,25 @@ async function handleAskAdminAI() {
 // --- Currency Conversion ---
 
 function initCurrencyConverter() {
-  document.getElementById('currFrom').addEventListener('change', convertCurrency);
-  document.getElementById('currAmount').addEventListener('input', convertCurrency);
+  document.getElementById('currFrom')?.addEventListener('change', convertCurrency);
+  document.getElementById('currAmount')?.addEventListener('input', convertCurrency);
 }
 
 function convertCurrency() {
-  const from = document.getElementById('currFrom').value;
-  const amount = parseFloat(document.getElementById('currAmount').value) || 0;
+  const currFrom = document.getElementById('currFrom');
+  const currAmount = document.getElementById('currAmount');
+  if (!currFrom || !currAmount) return;
+
+  const from = currFrom.value;
+  const amount = parseFloat(currAmount.value) || 0;
   
   const rate = state.rates[from];
   const result = (amount * rate).toFixed(2);
   
-  document.getElementById('currResult').textContent = result;
-  document.getElementById('rateLabel').textContent = `1 ${from} = ${rate} JOD`;
+  const currResult = document.getElementById('currResult');
+  const rateLabel = document.getElementById('rateLabel');
+  if (currResult) currResult.textContent = result;
+  if (rateLabel) rateLabel.textContent = `1 ${from} = ${rate} JOD`;
 }
 
 
@@ -962,7 +984,7 @@ function initAdminPanel() {
       
       const tabId = e.target.getAttribute('data-tab');
       document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden-view'));
-      document.getElementById(`admin-${tabId}`).classList.remove('hidden-view');
+      document.getElementById(`admin-${tabId}`)?.classList.remove('hidden-view');
       
       if(tabId === 'analytics') renderAnalytics();
     });
