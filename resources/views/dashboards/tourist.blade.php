@@ -1,233 +1,286 @@
 @php
-    $cities = \App\Models\City::with('attractions')->get();
-    $savedLocations = $cities->take(4); 
-    
-    $itinerarySteps = [
-        (object)[
-            'id' => 1, 
-            'name' => 'Amman Citadel', 
-            'name_ar' => 'جبل القلعة', 
-            'time' => '09:00 AM', 
-            'desc' => 'Start your day exploring ancient ruins with panoramic views of the city.', 
-            'desc_ar' => 'ابدأ يومك باستكشاف الآثار القديمة مع إطلالة بانورامية على المدينة.', 
-            'tags' => ['History', 'Photography'], 
-            'type' => 'sightseeing'
-        ],
-        (object)[
-            'id' => 2, 
-            'name' => 'Hashem Restaurant', 
-            'name_ar' => 'مطعم هاشم', 
-            'time' => '01:00 PM', 
-            'desc' => 'Authentic falafel and hummus experience in Downtown Amman.', 
-            'desc_ar' => 'تجربة فلافل وحمص أصيلة في وسط البلد.', 
-            'tags' => ['Food', 'Local Vibe'], 
-            'type' => 'food'
-        ],
-        (object)[
-            'id' => 3, 
-            'name' => 'Roman Theater', 
-            'name_ar' => 'المدرج الروماني', 
-            'time' => '03:30 PM', 
-            'desc' => 'A 2nd-century Roman theater that seats 6,000 people.', 
-            'desc_ar' => 'مدرج روماني من القرن الثاني يتسع لـ 6000 شخص.', 
-            'tags' => [], 
-            'type' => 'sightseeing'
-        ],
-    ];
+    $wishlistCities = \App\Models\City::with('attractions')->take(4)->get();
 @endphp
 @extends('layouts.dashboard')
 
-@section('sidebar_links')
-    <a href="#" @click.prevent="activeTab = 'overview'" class="nav-link" :class="{ 'active': activeTab === 'overview' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-        <span class="en-text">Active Itinerary</span>
-        <span class="ar-text">مسار رحلتي</span>
-    </a>
-    <a href="#" @click.prevent="activeTab = 'wishlist'" class="nav-link" :class="{ 'active': activeTab === 'wishlist' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-        <span class="en-text">Saved Locations</span>
-        <span class="ar-text">الأماكن المحفوظة</span>
-    </a>
-    <a href="#" @click.prevent="activeTab = 'tools'" class="nav-link" :class="{ 'active': activeTab === 'tools' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span class="en-text">Tools & Safety</span>
-        <span class="ar-text">أدوات وطوارئ</span>
-    </a>
-@endsection
-
 @section('content')
-<div x-data="{
-    activeTab: 'overview',
-    usd: 100,
-    get jod() { return (this.usd * 0.709).toFixed(2); },
-    addToPlanner(name) {
-        this.showToast(name + ' added to your planner!', 'تمت إضافة ' + name + ' للجدول بنجاح!');
+<div class="flex h-screen w-full bg-gray-900" x-data="{ 
+    activeTab: 'overview', 
+    sidebarOpen: false,
+    
+    // Tools logic
+    amountJod: 1,
+    amountUsd: 1.41,
+    updateFromJod() { this.amountUsd = (this.amountJod * 1.41).toFixed(2); },
+    updateFromUsd() { this.amountJod = (this.amountUsd / 1.41).toFixed(2); },
+    
+    callEmergency() {
+        this.showToast('Calling 911 / 11777 Tourist Police...', 'جاري الاتصال بشرطة السياحة 11777...');
     },
-    removeLocation(name, event) {
-        event.target.closest('.city-card-wrapper').style.display = 'none';
-        this.showToast(name + ' removed from saved locations.', 'تم إزالة ' + name + ' من الأماكن المحفوظة.');
+
+    // Wiki Image Logic
+    initWikiImages() {
+        const images = document.querySelectorAll('.city-img');
+        images.forEach(img => {
+            const title = img.getAttribute('data-wiki');
+            if (title) {
+                fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.thumbnail && data.thumbnail.source) {
+                            img.src = data.thumbnail.source;
+                        } else if (data.originalimage && data.originalimage.source) {
+                            img.src = data.originalimage.source;
+                        }
+                    })
+                    .catch(err => console.error('Wiki image load error:', err));
+            }
+        });
     }
-}">
+}" x-init="initWikiImages(); $watch('activeTab', value => { if(value === 'wishlist') setTimeout(() => initWikiImages(), 100); })">
 
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold font-serif text-white mb-2">
-            <span class="en-text">Welcome to Jordan</span>
-            <span class="ar-text">يا هلا بضيوف الأردن</span>
-        </h1>
-        <p class="text-gray-400">
-            <span class="en-text">Manage your journey, view saved spots, and access essential tools.</span>
-            <span class="ar-text">أدر رحلتك، استعرض الأماكن المحفوظة، وادخل على الأدوات المهمة.</span>
-        </p>
-    </div>
+    <aside class="w-72 bg-[#1a1513] border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col z-20" :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
+        <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+             <a href="/" class="flex items-center gap-2 no-underline group">
+                <svg viewBox="0 0 100 100" fill="none" class="w-8 h-8 transition-transform duration-500 group-hover:rotate-45">
+                    <path d="M50 0L57.5 35L93.3 25L70 50L93.3 75L57.5 65L50 100L42.5 65L6.7 75L30 50L6.7 25L42.5 35L50 0Z" class="fill-dynamic"/>
+                    <circle cx="50" cy="50" r="15" fill="#111827"/>
+                    <circle cx="50" cy="50" r="5" class="fill-dynamic"/>
+                </svg>
+                <span class="text-xl font-bold text-white en-text">Wayn?</span>
+                <span class="text-xl font-bold text-white ar-text">وين؟</span>
+             </a>
+             <button @click="sidebarOpen = false" class="md:hidden text-gray-400 hover:text-white bg-transparent border-none cursor-pointer">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
+        </div>
 
-    <!-- Overview Tab (Active Itinerary) -->
-    <div x-cloak x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
-        <div class="max-w-4xl">
-            <h3 class="text-xl font-bold text-dynamic mb-6 flex items-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-                <span class="en-text">Today's Itinerary</span>
-                <span class="ar-text">مسار رحلتي اليوم</span>
-            </h3>
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <button @click="activeTab = 'overview'" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
+                    :class="activeTab === 'overview' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span class="font-medium en-text">My Itinerary</span>
+                <span class="font-medium ar-text">خطتي اليومية</span>
+            </button>
+            <button @click="activeTab = 'wishlist'" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
+                    :class="activeTab === 'wishlist' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                <span class="font-medium en-text">My Wishlist</span>
+                <span class="font-medium ar-text">المفضلة</span>
+            </button>
+            <button @click="activeTab = 'tools'" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
+                    :class="activeTab === 'tools' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                <span class="font-medium en-text">Tourist Tools</span>
+                <span class="font-medium ar-text">أدوات السياح</span>
+            </button>
+        </nav>
+        
+        <div class="p-4 border-t border-gray-800">
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors no-underline">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span class="font-medium">
+                    <span class="en-text">Back to Explore</span>
+                    <span class="ar-text">العودة للاستكشاف</span>
+                </span>
+            </a>
+        </div>
+    </aside>
 
-            <div class="solid-panel p-6 lg:p-8 relative">
-                <!-- Vertical Timeline Line -->
-                <div class="absolute left-10 lg:left-12 top-10 bottom-10 w-0.5 bg-gray-700 rtl:left-auto rtl:right-10 lg:rtl:right-12"></div>
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+        <header class="h-20 bg-[#1a1513]/80 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-6 z-10 sticky top-0">
+             <button @click="sidebarOpen = true" class="md:hidden text-gray-400 hover:text-white bg-transparent border-none cursor-pointer">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+             </button>
+             
+             <div class="flex-1"></div>
+             
+             <div class="flex items-center gap-4 sm:gap-6">
+                <!-- Language Toggle -->
+                <button @click="toggleLang()" class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-gray-800 hover:bg-gray-700 transition-colors text-sm font-bold text-gray-200 cursor-pointer">
+                    <span class="en-text font-arabic">ع</span>
+                    <span class="ar-text">EN</span>
+                </button>
 
-                <div class="space-y-8 relative z-10">
-                    @foreach($itinerarySteps as $index => $step)
-                    <!-- Timeline Item -->
-                    <div class="flex gap-4 lg:gap-6">
-                        <div class="w-8 h-8 rounded-full {{ $index === 0 ? 'bg-dynamic border-4 border-[#1F2937]' : 'bg-gray-700 border-4 border-[#1F2937]' }} flex-shrink-0 flex items-center justify-center {{ $index === 0 ? 'text-white' : 'text-gray-400' }} font-bold text-xs z-10 {{ $index === 0 ? 'shadow-lg' : '' }}" @if($index === 0) style="box-shadow: 0 0 10px var(--dynamic-primary);" @endif>
-                            {{ $step->id }}
+                <!-- Profile Dropdown -->
+                <div x-data="{ profileOpen: false }" class="relative">
+                    <button @click="profileOpen = !profileOpen" class="flex items-center gap-3 focus:outline-none bg-transparent border-none p-0 cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-dynamic border border-white/20 flex items-center justify-center text-white font-bold shadow-lg">
+                            {{ substr(Auth::user()->name ?? 'T', 0, 1) }}
                         </div>
-                        <div class="glass-panel p-4 rounded-xl flex-1 hover:border-dynamic transition-colors">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-bold text-white text-lg">
-                                    <span class="en-text">{{ $step->name }}</span>
-                                    <span class="ar-text">{{ $step->name_ar }}</span>
-                                </h4>
-                                <span class="text-dynamic text-sm font-medium">{{ $step->time }}</span>
+                        <div class="hidden md:block ltr:text-left rtl:text-right">
+                            <div class="text-sm font-bold text-white leading-tight">{{ Auth::user()->name ?? 'Explorer' }}</div>
+                            <div class="text-xs text-dynamic capitalize leading-tight">Tourist</div>
+                        </div>
+                    </button>
+
+                    <div x-show="profileOpen" @click.away="profileOpen = false" class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-48 bg-gray-800 rounded-xl border border-gray-700 shadow-2xl py-2 z-50" x-transition.opacity style="display: none;">
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="w-full ltr:text-left rtl:text-right px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition-colors cursor-pointer bg-transparent border-none">
+                                <span class="en-text">Sign Out</span>
+                                <span class="ar-text">تسجيل خروج</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative">
+            
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold font-serif text-white mb-2">
+                    <span class="en-text">Your Jordanian Adventure</span>
+                    <span class="ar-text">مغامرتك الأردنية</span>
+                </h1>
+                <p class="text-gray-400">
+                    <span class="en-text">Follow your AI-generated itinerary and explore safely.</span>
+                    <span class="ar-text">اتبع خطتك المخصصة واستكشف الأردن بأمان.</span>
+                </p>
+            </div>
+
+            <div x-show="activeTab === 'overview'" x-transition x-cloak>
+                <div class="max-w-3xl">
+                    <h3 class="text-xl font-bold text-white mb-8 border-b border-gray-800 pb-4">Today's Schedule / جدول اليوم</h3>
+                    
+                    <div class="relative ltr:pl-8 rtl:pr-8 ltr:border-l rtl:border-r border-dynamic/30 space-y-10">
+                        <div class="relative">
+                            <div class="absolute ltr:-left-10 rtl:-right-10 top-0 w-4 h-4 rounded-full bg-dynamic shadow-[0_0_10px_var(--dynamic-primary)] border-2 border-gray-900"></div>
+                            <div class="text-dynamic text-sm font-bold mb-1">09:00 AM</div>
+                            <div class="solid-panel p-5 border border-gray-800 hover:border-dynamic/50 transition-colors bg-[#1F2937]">
+                                <h4 class="text-lg font-bold text-white mb-2">Amman Citadel</h4>
+                                <p class="text-gray-400 text-sm">Start your morning exploring the historic ruins of Jabal Al Qal'a. Don't miss the Temple of Hercules and the Umayyad Palace.</p>
                             </div>
-                            <p class="text-gray-400 text-sm mb-3">
-                                <span class="en-text">{{ $step->desc }}</span>
-                                <span class="ar-text">{{ $step->desc_ar }}</span>
-                            </p>
-                            @if(!empty($step->tags))
-                            <div class="flex gap-2">
-                                @foreach($step->tags as $tag)
-                                <span class="px-2 py-1 bg-white/5 text-gray-300 text-xs rounded border border-white/10">{{ $tag }}</span>
-                                @endforeach
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute ltr:-left-10 rtl:-right-10 top-0 w-4 h-4 rounded-full bg-gray-700 border-2 border-gray-900"></div>
+                            <div class="text-gray-400 text-sm font-bold mb-1">12:30 PM</div>
+                            <div class="solid-panel p-5 border border-gray-800 hover:border-dynamic/50 transition-colors bg-[#1F2937]">
+                                <h4 class="text-lg font-bold text-white mb-2">Lunch at Hashem Restaurant</h4>
+                                <p class="text-gray-400 text-sm">Head down to Downtown Amman (Al-Balad) for the most famous falafel and hummus in the city.</p>
                             </div>
-                            @endif
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute ltr:-left-10 rtl:-right-10 top-0 w-4 h-4 rounded-full bg-gray-700 border-2 border-gray-900"></div>
+                            <div class="text-gray-400 text-sm font-bold mb-1">03:00 PM</div>
+                            <div class="solid-panel p-5 border border-gray-800 hover:border-dynamic/50 transition-colors bg-[#1F2937]">
+                                <h4 class="text-lg font-bold text-white mb-2">Roman Theater & Souq</h4>
+                                <p class="text-gray-400 text-sm">Walk to the 6,000-seat Roman Theater, then explore the surrounding old markets for authentic souvenirs.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="activeTab === 'wishlist'" x-transition x-cloak>
+                <h3 class="text-xl font-bold text-white mb-6">
+                    <span class="en-text">Saved Destinations</span>
+                    <span class="ar-text">الوجهات المحفوظة</span>
+                </h3>
+                
+                <div class="cities-grid">
+                    @foreach($wishlistCities as $city)
+                    <div class="solid-panel rounded-2xl overflow-hidden group cursor-pointer border border-gray-800 hover:border-dynamic transition-colors relative bg-[#1F2937]">
+                        <button class="absolute top-3 ltr:right-3 rtl:left-3 z-10 w-8 h-8 rounded-full bg-black/50 text-white hover:bg-red-600 transition-colors flex items-center justify-center border border-white/20 backdrop-blur-sm" @click.stop="$el.closest('.solid-panel').remove(); showToast('Removed from wishlist', 'تمت الإزالة من المفضلة')">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                        
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                                 data-wiki="{{ $city->wiki_title }}" 
+                                 class="city-img w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                 alt="{{ $city->name }}">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/40 to-transparent"></div>
+                            <div class="absolute bottom-4 ltr:left-4 rtl:right-4">
+                                <h4 class="text-xl font-bold font-serif text-white shadow-sm">{{ $city->name }}</h4>
+                                <div class="text-sm text-dynamic font-bold">{{ $city->attractions->count() }} Attractions</div>
+                            </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Wishlist Tab -->
-    <div x-cloak x-show="activeTab === 'wishlist'" x-transition.opacity.duration.300ms>
-        <div class="cities-grid">
-            @forelse($savedLocations as $location)
-            <!-- Saved Location -->
-            <div class="city-card-wrapper solid-panel overflow-hidden group relative h-64 hover:border-dynamic transition-colors">
-                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-wiki="{{ $location->wiki_name ?? $location->name }}" class="city-img absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $location->name }}">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                <div class="absolute top-4 right-4 rtl:left-4 rtl:right-auto z-10">
-                    <button @click="removeLocation('{{ addslashes($location->name) }}', $event)" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors border-none cursor-pointer">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
-                    </button>
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 p-5 z-10">
-                    <h4 class="text-xl font-bold text-white mb-1">
-                        <span class="en-text">{{ $location->name }}</span>
-                        <span class="ar-text">{{ $location->name_ar ?? $location->name }}</span>
-                    </h4>
-                    <p class="text-gray-300 text-sm mb-3">
-                        <span class="en-text">{{ Str::limit($location->description ?? 'Beautiful destination in Jordan.', 50) }}</span>
-                        <span class="ar-text">{{ Str::limit($location->description_ar ?? 'وجهة جميلة في الأردن.', 50) }}</span>
-                    </p>
-                    <button @click="addToPlanner('{{ addslashes($location->name) }}')" class="text-dynamic text-sm font-bold hover:opacity-80 bg-transparent border-none cursor-pointer flex items-center gap-1">
-                        <span class="en-text">Add to Planner &rarr;</span>
-                        <span class="ar-text">&larr; أضف للجدول</span>
-                    </button>
-                </div>
-            </div>
-            @empty
-            <div class="col-span-full text-center text-gray-500 py-10">No saved locations found.</div>
-            @endforelse
-        </div>
-    </div>
-
-    <!-- Tools Tab -->
-    <div x-cloak x-show="activeTab === 'tools'" x-transition.opacity.duration.300ms>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <!-- Currency Converter -->
-            <div class="solid-panel p-6 border-t-4 border-dynamic">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-dynamic" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span class="en-text">Currency Converter</span>
-                    <span class="ar-text">محول العملات</span>
-                </h3>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">From (USD/EUR)</label>
-                        <input type="number" x-model="usd" class="glass-input-premium text-lg" min="0">
-                    </div>
-                    <div class="flex justify-center text-gray-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">To JOD (Jordanian Dinar)</label>
-                        <input type="text" :value="jod" class="glass-input-premium text-lg text-dynamic font-bold" readonly>
-                    </div>
-                    <p class="text-xs text-gray-500 text-center mt-2">1 USD ≈ 0.709 JOD</p>
-                </div>
-            </div>
-
-            <!-- Emergency & Safety -->
-            <div class="solid-panel p-6 border-t-4 border-t-red-600 bg-red-900/10">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    <span class="en-text">Emergency & Safety</span>
-                    <span class="ar-text">فزعة وطوارئ</span>
-                </h3>
-                
-                <div class="space-y-4 mt-6">
-                    <div class="bg-red-900/20 border border-red-500/20 p-4 rounded-xl flex items-center justify-between group hover:bg-red-900/30 transition-colors">
-                        <div>
-                            <div class="text-white font-bold text-lg mb-1">
-                                <span class="en-text">General Emergency</span>
-                                <span class="ar-text">الطوارئ العامة</span>
+            <div x-show="activeTab === 'tools'" x-transition x-cloak>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    
+                    <div class="solid-panel p-8 border-t-4 border-dynamic bg-[#1F2937]">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full bg-dynamic/20 flex items-center justify-center text-dynamic">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <div class="text-red-400 text-sm">Police, Fire, Ambulance</div>
+                            <h3 class="text-xl font-bold text-white">
+                                <span class="en-text">Currency Converter</span>
+                                <span class="ar-text">محول العملات</span>
+                            </h3>
                         </div>
-                        <a href="tel:911" @click="showToast('Calling 911...', 'جاري الاتصال بـ 911...')" class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(220,38,38,0.5)] group-hover:scale-110 transition-transform no-underline">
-                            911
-                        </a>
+
+                        <div class="space-y-6">
+                            <div class="bg-gray-900 border border-gray-700 rounded-xl p-4 flex items-center">
+                                <div class="text-gray-400 font-bold ltr:mr-4 rtl:ml-4">JOD</div>
+                                <input type="number" x-model="amountJod" @input="updateFromJod" class="w-full bg-transparent border-none text-white text-2xl font-bold ltr:text-right rtl:text-left focus:outline-none focus:ring-0">
+                            </div>
+                            
+                            <div class="flex justify-center text-dynamic">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-700 rounded-xl p-4 flex items-center">
+                                <div class="text-gray-400 font-bold ltr:mr-4 rtl:ml-4">USD</div>
+                                <input type="number" x-model="amountUsd" @input="updateFromUsd" class="w-full bg-transparent border-none text-white text-2xl font-bold ltr:text-right rtl:text-left focus:outline-none focus:ring-0">
+                            </div>
+
+                            <p class="text-sm text-gray-500 text-center">Fixed Peg Rate: 1 JOD = 1.41 USD</p>
+                        </div>
                     </div>
 
-                    <div class="bg-amber-900/20 border border-amber-500/20 p-4 rounded-xl flex items-center justify-between group hover:bg-amber-900/30 transition-colors">
-                        <div>
-                            <div class="text-white font-bold text-lg mb-1">
-                                <span class="en-text">Tourist Police</span>
-                                <span class="ar-text">الشرطة السياحية</span>
-                            </div>
-                            <div class="text-amber-400 text-sm">Dedicated help for tourists</div>
+                    <div class="solid-panel p-8 border-t-4 border-red-500 relative overflow-hidden bg-[#1F2937]">
+                        <div class="absolute top-0 right-0 p-8 opacity-10">
+                            <svg class="w-32 h-32 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
                         </div>
-                        <a href="tel:11777" @click="showToast('Calling Tourist Police...', 'جاري الاتصال بالشرطة السياحية...')" class="w-14 h-14 rounded-full bg-amber-600 flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(217,119,6,0.5)] group-hover:scale-110 transition-transform tracking-wider no-underline">
-                            11777
-                        </a>
+
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-bold text-white mb-2">
+                                <span class="en-text">Emergency Services</span>
+                                <span class="ar-text">الطوارئ وفزعة</span>
+                            </h3>
+                            <p class="text-gray-400 mb-8">
+                                <span class="en-text">Immediate assistance across Jordan.</span>
+                                <span class="ar-text">مساعدة فورية في جميع أنحاء الأردن.</span>
+                            </p>
+
+                            <div class="space-y-4">
+                                <button @click="callEmergency" class="w-full bg-red-600 hover:bg-red-700 text-white p-4 rounded-xl font-bold text-lg flex items-center justify-between transition-colors cursor-pointer border-none shadow-lg">
+                                    <div class="flex items-center gap-3">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                        <span class="en-text">Tourist Police (11777)</span>
+                                        <span class="ar-text">الشرطة السياحية</span>
+                                    </div>
+                                    <span class="opacity-50">CALL</span>
+                                </button>
+
+                                <button @click="callEmergency" class="w-full bg-gray-900 border border-gray-700 hover:border-gray-500 text-white p-4 rounded-xl font-bold text-lg flex items-center justify-between transition-colors cursor-pointer shadow-lg">
+                                    <div class="flex items-center gap-3">
+                                        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                        <span class="en-text">General Emergency (911)</span>
+                                        <span class="ar-text">الطوارئ العامة</span>
+                                    </div>
+                                    <span class="opacity-50">CALL</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
 
-        </div>
+        </main>
     </div>
-
 </div>
 @endsection

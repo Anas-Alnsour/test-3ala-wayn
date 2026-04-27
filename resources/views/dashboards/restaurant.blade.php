@@ -1,221 +1,295 @@
 @php
-    $menuScans = number_format(rand(1000, 3000));
-    $platformReferrals = number_format(rand(200, 800));
+    $activeOffers = \App\Models\DailyOffer::where('user_id', auth()->id())->latest()->get();
     
-    // Simulated active offers
-    $activeOffers = [
-        (object)[
-            'name' => 'Mansaf Friday Special', 
-            'name_ar' => 'عرض منسف يوم الجمعة', 
-            'original_price' => 20.00, 
-            'discount_price' => 14.00, 
-            'valid_until' => '18:00', 
-            'active' => true
-        ],
-        (object)[
-            'name' => 'Authentic Mixed Grill', 
-            'name_ar' => 'مشاوي مشكلة أصيلة', 
-            'original_price' => 30.00, 
-            'discount_price' => 22.00, 
-            'valid_until' => '23:00', 
-            'active' => false
-        ],
-        (object)[
-            'name' => 'Kunafa & Turkish Coffee', 
-            'name_ar' => 'كنافة وقهوة تركية', 
-            'original_price' => 8.00, 
-            'discount_price' => 5.00, 
-            'valid_until' => '16:00', 
-            'active' => true
-        ],
-    ];
+    // Simulated Stats
+    $profileViews = rand(1200, 4500);
+    $menuScans = rand(500, 1200);
 @endphp
 @extends('layouts.dashboard')
 
-@section('sidebar_links')
-    <a href="#" @click.prevent="activeTab = 'overview'" class="nav-link" :class="{ 'active': activeTab === 'overview' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
-        <span class="en-text">Metrics</span>
-        <span class="ar-text">الإحصائيات</span>
-    </a>
-    <a href="#" @click.prevent="activeTab = 'post_offer'" class="nav-link" :class="{ 'active': activeTab === 'post_offer' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-        <span class="en-text">Post Offer</span>
-        <span class="ar-text">إضافة عرض</span>
-    </a>
-    <a href="#" @click.prevent="activeTab = 'active_offers'" class="nav-link" :class="{ 'active': activeTab === 'active_offers' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-        <span class="en-text">Active Offers</span>
-        <span class="ar-text">العروض النشطة</span>
-    </a>
-@endsection
-
 @section('content')
-<div x-data="{
-    formOffer: { name: '', original: '', discount: '', time: '', audience: 'all' },
-    offers: {{ json_encode($activeOffers) }},
-    postOffer() {
-        if (!this.formOffer.name || !this.formOffer.discount) {
-            this.showToast('Please fill all required fields.', 'الرجاء تعبئة جميع الحقول المطلوبة.');
-            return;
-        }
-        this.offers.unshift({
-            name: this.formOffer.name,
-            name_ar: this.formOffer.name,
-            original_price: parseFloat(this.formOffer.original) || 0,
-            discount_price: parseFloat(this.formOffer.discount) || 0,
-            valid_until: this.formOffer.time || '23:59',
-            active: true
+<div class="flex h-screen w-full bg-gray-900" x-data="{ 
+    activeTab: 'overview', 
+    sidebarOpen: false,
+    
+    offerForm: { name: '', original_price: '', discount_price: '', valid_until: '', audience: 'all' },
+    
+    submitOffer() {
+        fetch('{{ route('restaurant.offers.store') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(this.offerForm)
+        }).then(res => res.json()).then(data => {
+            this.showToast(data.message, data.message);
+            this.offerForm = { name: '', original_price: '', discount_price: '', valid_until: '', audience: 'all' };
+            this.activeTab = 'active_offers';
+            setTimeout(() => window.location.reload(), 1500);
         });
-        this.showToast('Offer Published Successfully!', 'تم نشر العرض بنجاح!');
-        this.formOffer = { name: '', original: '', discount: '', time: '', audience: 'all' };
-        this.activeTab = 'active_offers';
     },
-    toggleOffer(index) {
-        this.offers[index].active = !this.offers[index].active;
-        if(this.offers[index].active) {
-            this.showToast('Offer Activated', 'تم تفعيل العرض');
-        } else {
-            this.showToast('Offer Paused', 'تم إيقاف العرض');
-        }
+
+    toggleOffer(id) {
+        fetch(`/restaurant/offers/${id}/toggle`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                'Accept': 'application/json'
+            }
+        }).then(res => res.json()).then(data => {
+            this.showToast(data.message, data.message);
+            setTimeout(() => window.location.reload(), 1000);
+        });
     }
 }">
 
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold font-serif text-white mb-2">
-            <span class="en-text">Restaurant Partner Center</span>
-            <span class="ar-text">مركز شركاء المطاعم</span>
-        </h1>
-        <p class="text-gray-400">
-            <span class="en-text">Drive food tourism via limited-time offers and analyze your performance.</span>
-            <span class="ar-text">عزز السياحة الغذائية عبر عروض محدودة الوقت وحلل أداءك.</span>
-        </p>
-    </div>
-
-    <!-- Overview Tab -->
-    <div x-cloak x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="stat-card">
-                <div class="text-gray-400 text-sm font-medium mb-1">
-                    <span class="en-text">Menu Scans</span>
-                    <span class="ar-text">مسحات المنيو</span>
-                </div>
-                <div class="text-4xl font-bold text-white mb-2">{{ $menuScans }}</div>
-                <div class="text-emerald-500 text-sm flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                    <span>+24% <span class="en-text">this week</span><span class="ar-text">هذا الأسبوع</span></span>
-                </div>
-            </div>
-            
-            <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)]">
-                <div class="text-gray-400 text-sm font-medium mb-1">
-                    <span class="en-text">Platform Referrals</span>
-                    <span class="ar-text">زوار من وين؟</span>
-                </div>
-                <div class="text-4xl font-bold text-dynamic mb-2">{{ $platformReferrals }}</div>
-                <div class="text-emerald-500 text-sm flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                    <span>+12% <span class="en-text">this week</span><span class="ar-text">هذا الأسبوع</span></span>
-                </div>
-            </div>
+    <aside class="w-72 bg-[#1a1513] border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col z-20" :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
+        <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+             <a href="/" class="flex items-center gap-2 no-underline group">
+                <svg viewBox="0 0 100 100" fill="none" class="w-8 h-8 transition-transform duration-500 group-hover:rotate-45">
+                    <path d="M50 0L57.5 35L93.3 25L70 50L93.3 75L57.5 65L50 100L42.5 65L6.7 75L30 50L6.7 25L42.5 35L50 0Z" class="fill-dynamic"/>
+                    <circle cx="50" cy="50" r="15" fill="#111827"/>
+                    <circle cx="50" cy="50" r="5" class="fill-dynamic"/>
+                </svg>
+                <span class="text-xl font-bold text-white en-text">Wayn?</span>
+                <span class="text-xl font-bold text-white ar-text">وين؟</span>
+             </a>
+             <button @click="sidebarOpen = false" class="md:hidden text-gray-400 hover:text-white bg-transparent border-none cursor-pointer">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
         </div>
-    </div>
 
-    <!-- Post Offer Tab -->
-    <div x-cloak x-show="activeTab === 'post_offer'" x-transition.opacity.duration.300ms>
-        <div class="solid-panel p-6 lg:p-10 max-w-4xl mx-auto border-t-4 border-dynamic">
-            <h3 class="text-2xl font-bold text-white mb-6">
-                <span class="en-text">Post Daily Offer</span>
-                <span class="ar-text">نشر عرض يومي</span>
-            </h3>
-            
-            <form class="space-y-6" @submit.prevent="postOffer">
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">
-                        <span class="en-text">Meal / Offer Name</span><span class="ar-text">اسم الوجبة / العرض</span>
-                    </label>
-                    <input type="text" x-model="formOffer.name" required class="glass-input-premium" placeholder="e.g. Traditional Mansaf Experience / تجربة المنسف الأصيل">
-                </div>
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <button @click="activeTab = 'overview'" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
+                    :class="activeTab === 'overview' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span class="font-medium en-text">Analytics</span>
+                <span class="font-medium ar-text">التحليلات</span>
+            </button>
+            <button @click="activeTab = 'post_offer'" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
+                    :class="activeTab === 'post_offer' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                <span class="font-medium en-text">Post Offer</span>
+                <span class="font-medium ar-text">إضافة عرض</span>
+            </button>
+            <button @click="activeTab = 'active_offers'" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
+                    :class="activeTab === 'active_offers' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <span class="font-medium en-text">Active Offers</span>
+                <span class="font-medium ar-text">العروض الفعالة</span>
+            </button>
+        </nav>
+        
+        <div class="p-4 border-t border-gray-800">
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors no-underline">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span class="font-medium">
+                    <span class="en-text">Back to Explore</span>
+                    <span class="ar-text">العودة للاستكشاف</span>
+                </span>
+            </a>
+        </div>
+    </aside>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">
-                            <span class="en-text">Original Price (JOD)</span><span class="ar-text">السعر الأصلي (دينار)</span>
-                        </label>
-                        <input type="number" step="0.5" x-model="formOffer.original" required class="glass-input-premium" placeholder="15.00">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">
-                            <span class="en-text">Discounted Price (JOD)</span><span class="ar-text">السعر بعد الخصم (دينار)</span>
-                        </label>
-                        <input type="number" step="0.5" x-model="formOffer.discount" required class="glass-input-premium border-dynamic" placeholder="10.00">
-                    </div>
-                </div>
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+        <header class="h-20 bg-[#1a1513]/80 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-6 z-10 sticky top-0">
+             <button @click="sidebarOpen = true" class="md:hidden text-gray-400 hover:text-white bg-transparent border-none cursor-pointer">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+             </button>
+             
+             <div class="flex-1"></div>
+             
+             <div class="flex items-center gap-4 sm:gap-6">
+                <!-- Language Toggle -->
+                <button @click="toggleLang()" class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-gray-800 hover:bg-gray-700 transition-colors text-sm font-bold text-gray-200 cursor-pointer">
+                    <span class="en-text font-arabic">ع</span>
+                    <span class="ar-text">EN</span>
+                </button>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">
-                            <span class="en-text">Valid Until</span><span class="ar-text">صالح حتى</span>
-                        </label>
-                        <input type="time" x-model="formOffer.time" required class="glass-input-premium">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">
-                            <span class="en-text">Target Audience</span><span class="ar-text">الجمهور المستهدف</span>
-                        </label>
-                        <select x-model="formOffer.audience" class="glass-input-premium">
-                            <option value="all">Everyone / الجميع</option>
-                            <option value="tourists">Tourists Only / السياح فقط</option>
-                            <option value="locals">Locals Only / الأردنيين فقط</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="pt-4">
-                    <button type="submit" class="w-full py-3 btn-dynamic text-lg font-bold rounded-lg transition-all shadow-lg">
-                        <span class="en-text">Publish Offer</span>
-                        <span class="ar-text">نشر العرض</span>
+                <!-- Profile Dropdown -->
+                <div x-data="{ profileOpen: false }" class="relative">
+                    <button @click="profileOpen = !profileOpen" class="flex items-center gap-3 focus:outline-none bg-transparent border-none p-0 cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-dynamic border border-white/20 flex items-center justify-center text-white font-bold shadow-lg">
+                            {{ substr(Auth::user()->name ?? 'R', 0, 1) }}
+                        </div>
+                        <div class="hidden md:block ltr:text-left rtl:text-right">
+                            <div class="text-sm font-bold text-white leading-tight">{{ Auth::user()->name ?? 'Restaurant Owner' }}</div>
+                            <div class="text-xs text-dynamic capitalize leading-tight">Partner</div>
+                        </div>
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Active Offers Tab -->
-    <div x-cloak x-show="activeTab === 'active_offers'" x-transition.opacity.duration.300ms>
-        <div class="cities-grid">
-            <template x-for="(offer, index) in offers" :key="index">
-                <!-- Offer Card -->
-                <div class="solid-panel p-5 relative overflow-hidden transition-colors" :class="offer.active ? 'border-dynamic' : 'border-transparent'">
-                    <div class="absolute top-0 right-0 w-16 h-16 rounded-bl-full rtl:left-0 rtl:right-auto rtl:rounded-bl-none rtl:rounded-br-full z-0 transition-colors" :class="offer.active ? 'bg-dynamic/20' : 'bg-gray-600/20'"></div>
-                    <div class="relative z-10">
-                        <div class="flex justify-between items-start mb-4">
-                            <h4 class="text-lg font-bold text-white pr-8 rtl:pr-0 rtl:pl-8 leading-tight">
-                                <span class="en-text" x-text="offer.name"></span>
-                                <span class="ar-text" x-text="offer.name_ar"></span>
-                            </h4>
-                            <span x-show="offer.active" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-500 text-xs font-bold shrink-0">LIVE</span>
-                            <span x-show="!offer.active" class="px-2 py-1 rounded bg-gray-500/20 text-gray-500 text-xs font-bold shrink-0" style="display:none">PAUSED</span>
+                    <div x-show="profileOpen" @click.away="profileOpen = false" class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-48 bg-gray-800 rounded-xl border border-gray-700 shadow-2xl py-2 z-50" x-transition.opacity style="display: none;">
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="w-full ltr:text-left rtl:text-right px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition-colors cursor-pointer bg-transparent border-none">
+                                <span class="en-text">Sign Out</span>
+                                <span class="ar-text">تسجيل خروج</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative">
+            
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold font-serif text-white mb-2">
+                    <span class="en-text">Restaurant Partner Center</span>
+                    <span class="ar-text">مركز الشركاء - المطاعم</span>
+                </h1>
+                <p class="text-gray-400">
+                    <span class="en-text">Manage your real-time offers and drive foot traffic.</span>
+                    <span class="ar-text">إدارة العروض المباشرة وزيادة الزوار.</span>
+                </p>
+            </div>
+
+            <div x-show="activeTab === 'overview'" x-transition x-cloak>
+                <div class="stats-bar mb-10">
+                    <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)]">
+                        <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
+                            <span class="en-text">Profile Views</span>
+                            <span class="ar-text">مشاهدات الصفحة</span>
                         </div>
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="text-gray-500 line-through text-sm"><span x-text="offer.original_price.toFixed(2)"></span> JOD</div>
-                            <div class="text-2xl font-bold text-dynamic"><span x-text="offer.discount_price.toFixed(2)"></span> JOD</div>
+                        <div class="text-4xl font-bold text-dynamic mb-2">{{ number_format($profileViews) }}</div>
+                        <div class="text-sm text-emerald-400">+12% from last week</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
+                            <span class="en-text">Menu Scans (QR)</span>
+                            <span class="ar-text">مسح قائمة الطعام (QR)</span>
                         </div>
-                        <div class="flex items-center justify-between border-t border-white/10 pt-4">
-                            <div class="text-xs text-gray-400">
-                                Valid till: <span class="text-white font-medium" x-text="offer.valid_until"></span>
+                        <div class="text-4xl font-bold text-white mb-2">{{ number_format($menuScans) }}</div>
+                        <div class="text-sm text-emerald-400">+8% from last week</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="text-gray-400 text-sm font-medium mb-1 uppercase tracking-wider">
+                            <span class="en-text">Active Offers</span>
+                            <span class="ar-text">العروض الفعالة</span>
+                        </div>
+                        <div class="text-4xl font-bold text-white mb-2">{{ $activeOffers->where('is_active', true)->count() }}</div>
+                        <div class="text-sm text-gray-500">Currently live on the app</div>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="activeTab === 'post_offer'" x-transition x-cloak>
+                <div class="solid-panel p-6 md:p-10 max-w-4xl mx-auto rounded-2xl border-t-4 border-dynamic shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+                    <h2 class="text-2xl font-bold font-serif text-white mb-6">
+                        <span class="en-text">Create Flash Deal</span>
+                        <span class="ar-text">إنشاء عرض سريع</span>
+                    </h2>
+                    
+                    <form @submit.prevent="submitOffer" class="space-y-6">
+                        @csrf
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                <span class="en-text">Meal / Offer Name</span>
+                                <span class="ar-text">اسم الوجبة / العرض</span>
+                            </label>
+                            <input type="text" x-model="offerForm.name" required class="glass-input-premium w-full bg-gray-900 border border-gray-700" placeholder="e.g. Mansaf Friday Special">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    <span class="en-text">Original Price (JOD)</span>
+                                    <span class="ar-text">السعر الأصلي (دينار)</span>
+                                </label>
+                                <input type="number" step="0.01" x-model="offerForm.original_price" required class="glass-input-premium w-full bg-gray-900 border border-gray-700" placeholder="15.00">
                             </div>
-                            <button @click="toggleOffer(index)" class="text-xs font-bold px-3 py-1 rounded border transition-colors cursor-pointer bg-transparent" :class="offer.active ? 'border-red-500 text-red-500 hover:bg-red-500/10' : 'border-emerald-500 text-emerald-500 hover:bg-emerald-500/10'">
-                                <span x-text="offer.active ? 'Deactivate' : 'Activate'"></span>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    <span class="en-text">Discount Price (JOD)</span>
+                                    <span class="ar-text">سعر الخصم (دينار)</span>
+                                </label>
+                                <input type="number" step="0.01" x-model="offerForm.discount_price" required class="glass-input-premium w-full bg-gray-900 border-dynamic focus:ring-dynamic focus:border-dynamic text-dynamic" placeholder="9.99">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    <span class="en-text">Valid Until</span>
+                                    <span class="ar-text">صالح حتى</span>
+                                </label>
+                                <input type="time" x-model="offerForm.valid_until" required class="glass-input-premium w-full bg-gray-900 border border-gray-700">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    <span class="en-text">Target Audience</span>
+                                    <span class="ar-text">الفئة المستهدفة</span>
+                                </label>
+                                <select x-model="offerForm.audience" required class="glass-input-premium w-full bg-gray-900 border border-gray-700">
+                                    <option value="all">Everyone / الجميع</option>
+                                    <option value="tourist">Tourists Only / السياح فقط</option>
+                                    <option value="local">Locals Only / أبناء البلد فقط</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" class="w-full py-4 btn-dynamic text-lg font-bold rounded-xl transition-all shadow-lg border-none cursor-pointer">
+                                <span class="en-text">Publish Immediately</span>
+                                <span class="ar-text">نشر العرض فوراً</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div x-show="activeTab === 'active_offers'" x-transition x-cloak>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    @forelse($activeOffers as $offer)
+                    <div class="solid-panel p-6 border-l-4 {{ $offer->is_active ? 'border-emerald-500' : 'border-gray-600' }} flex flex-col justify-between bg-[#1F2937]">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-white mb-1">
+                                    <span class="en-text">{{ $offer->name }}</span>
+                                    <span class="ar-text">{{ $offer->name_ar ?? $offer->name }}</span>
+                                </h3>
+                                <div class="text-sm text-gray-400">Valid until {{ $offer->valid_until }} • Target: <span class="capitalize">{{ $offer->audience }}</span></div>
+                            </div>
+                            <div class="text-right rtl:text-left bg-gray-800 p-2 rounded-lg border border-white/10">
+                                <div class="text-xs text-gray-500 line-through">{{ $offer->original_price }} JOD</div>
+                                <div class="text-lg font-bold text-dynamic">{{ $offer->discount_price }} JOD</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-800">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full {{ $offer->is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-gray-600' }}"></div>
+                                <span class="text-sm font-bold {{ $offer->is_active ? 'text-emerald-500' : 'text-gray-500' }}">
+                                    {{ $offer->is_active ? 'LIVE' : 'PAUSED' }}
+                                </span>
+                            </div>
+                            
+                            <button @click="toggleOffer({{ $offer->id }})" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white text-sm font-bold rounded-lg transition-colors cursor-pointer">
+                                @if($offer->is_active)
+                                    <span class="en-text">Pause Offer</span><span class="ar-text">إيقاف العرض</span>
+                                @else
+                                    <span class="en-text text-dynamic">Reactivate</span><span class="ar-text text-dynamic">تفعيل العرض</span>
+                                @endif
                             </button>
                         </div>
                     </div>
+                    @empty
+                    <div class="col-span-full solid-panel p-10 text-center border border-gray-700 border-dashed bg-[#1F2937]">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        <p class="text-gray-400 text-lg">No offers created yet. Start driving traffic by posting a flash deal!</p>
+                    </div>
+                    @endforelse
                 </div>
-            </template>
-            <div x-show="offers.length === 0" style="display:none" class="col-span-full text-center text-gray-500 py-10">No active offers.</div>
-        </div>
-    </div>
+            </div>
 
+        </main>
+    </div>
 </div>
 @endsection

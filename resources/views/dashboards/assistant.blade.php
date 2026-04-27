@@ -1,281 +1,250 @@
 @php
+    // Simulated Data for Assistant
     $upcomingTours = [
         (object)[
             'id' => 1, 
-            'name' => 'Wadi Mujib Siq Trail', 
-            'name_ar' => 'مسار السيق في وادي الموجب', 
-            'date' => now()->addDays(2)->format('M d'), 
+            'tourist_name' => 'Michael Smith',
+            'route_name' => 'Wadi Mujib Siq Trail', 
+            'route_name_ar' => 'مسار السيق في وادي الموجب', 
+            'date' => now()->addDays(2)->format('M d, Y'), 
             'day_num' => now()->addDays(2)->format('d'),
             'month_short' => now()->addDays(2)->format('M'),
             'time' => '08:00 AM - 12:00 PM', 
             'group_size' => 4, 
-            'lead' => 'Sarah Jenkins'
         ],
         (object)[
             'id' => 2, 
-            'name' => 'Dana Biosphere Reserve Hike', 
-            'name_ar' => 'مسار محمية ضانا', 
-            'date' => now()->addDays(4)->format('M d'), 
+            'tourist_name' => 'Elena Rossi',
+            'route_name' => 'Dana Biosphere Reserve Hike', 
+            'route_name_ar' => 'مسار محمية ضانا', 
+            'date' => now()->addDays(4)->format('M d, Y'), 
             'day_num' => now()->addDays(4)->format('d'),
             'month_short' => now()->addDays(4)->format('M'),
             'time' => '06:00 AM - 02:00 PM', 
             'group_size' => 2, 
-            'lead' => 'Mike O\'Connor'
-        ],
-        (object)[
-            'id' => 3, 
-            'name' => 'Petra Backdoor Hike', 
-            'name_ar' => 'مسار البتراء الخلفي', 
-            'date' => now()->addDays(7)->format('M d'), 
-            'day_num' => now()->addDays(7)->format('d'),
-            'month_short' => now()->addDays(7)->format('M'),
-            'time' => '05:00 AM - 04:00 PM', 
-            'group_size' => 6, 
-            'lead' => 'David Lee'
         ],
     ];
 @endphp
 @extends('layouts.dashboard')
 
-@section('sidebar_links')
-    <a href="#" @click.prevent="activeTab = 'overview'" class="nav-link" :class="{ 'active': activeTab === 'overview' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-        <span class="en-text">Upcoming Tours</span>
-        <span class="ar-text">جولاتي الجاية</span>
-    </a>
-    <a href="#" @click.prevent="activeTab = 'availability'" class="nav-link" :class="{ 'active': activeTab === 'availability' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-        <span class="en-text">Set Availability</span>
-        <span class="ar-text">أوقات الفراغ</span>
-    </a>
-    <a href="#" @click.prevent="activeTab = 'routes'" class="nav-link" :class="{ 'active': activeTab === 'routes' }">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-        <span class="en-text">Hiking Routes</span>
-        <span class="ar-text">المسارات</span>
-    </a>
-@endsection
-
 @section('content')
-<div x-data="{
-    formRoute: { name: '', difficulty: 'Moderate / متوسط', duration: '', price: '', desc: '' },
-    submitRoute() {
-        if (!this.formRoute.name || !this.formRoute.duration) {
-            this.showToast('Please fill all required fields.', 'الرجاء تعبئة جميع الحقول المطلوبة.');
+<div class="flex h-screen w-full bg-gray-900" x-data="{ 
+    activeTab: 'overview', 
+    sidebarOpen: false,
+    
+    slotForm: { date: '', shift: 'morning', capacity: 4 },
+    
+    saveAvailability() {
+        if (!this.slotForm.date) {
+            this.showToast('Please select a date', 'الرجاء اختيار تاريخ');
             return;
         }
-        this.showToast('Route submitted for approval!', 'تم إرسال المسار للموافقة!');
-        this.formRoute = { name: '', difficulty: 'Moderate / متوسط', duration: '', price: '', desc: '' };
+        this.showToast('Availability slot opened successfully!', 'تم فتح موعد جديد بنجاح!');
+        this.slotForm = { date: '', shift: 'morning', capacity: 4 };
         this.activeTab = 'overview';
     },
-    saveAvailability() {
-        this.showToast('Availability schedule saved successfully!', 'تم حفظ أوقات الفراغ بنجاح!');
-    },
+
     viewTourDetails(name) {
         this.showToast('Loading details for ' + name + '...', 'جاري تحميل تفاصيل ' + name + '...');
     }
 }">
 
-    <!-- Overview Tab (Cinematic Blended Header) -->
-    <div x-cloak x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
+    <aside class="w-72 bg-[#1a1513] border-r border-gray-800 flex-shrink-0 hidden md:flex flex-col z-20" :class="{'block absolute inset-y-0 left-0': sidebarOpen, 'hidden': !sidebarOpen}">
+        <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+             <a href="/" class="flex items-center gap-2 no-underline group">
+                <svg viewBox="0 0 100 100" fill="none" class="w-8 h-8 transition-transform duration-500 group-hover:rotate-45">
+                    <path d="M50 0L57.5 35L93.3 25L70 50L93.3 75L57.5 65L50 100L42.5 65L6.7 75L30 50L6.7 25L42.5 35L50 0Z" class="fill-dynamic"/>
+                    <circle cx="50" cy="50" r="15" fill="#111827"/>
+                    <circle cx="50" cy="50" r="5" class="fill-dynamic"/>
+                </svg>
+                <span class="text-xl font-bold text-white en-text">Wayn?</span>
+                <span class="text-xl font-bold text-white ar-text">وين؟</span>
+             </a>
+             <button @click="sidebarOpen = false" class="md:hidden text-gray-400 hover:text-white bg-transparent border-none cursor-pointer">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+             </button>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <button @click="activeTab = 'overview'" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
+                    :class="activeTab === 'overview' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                <span class="font-medium en-text">Upcoming Tours</span>
+                <span class="font-medium ar-text">جولاتي الجاية</span>
+            </button>
+            <button @click="activeTab = 'availability'" 
+                    class="w-full flex items-center gap-3 p-3 rounded-xl transition-all border-none cursor-pointer ltr:text-left rtl:text-right"
+                    :class="activeTab === 'availability' ? 'sidebar-active' : 'text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent'">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span class="font-medium en-text">Set Availability</span>
+                <span class="font-medium ar-text">أوقات الفراغ</span>
+            </button>
+        </nav>
         
-        <!-- Cinematic Header -->
-        <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-8 border border-white/10 shadow-2xl">
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-wiki="Wadi_Rum" class="city-img absolute inset-0 w-full h-full object-cover" alt="Wadi Rum Guide">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/70 to-transparent"></div>
-            
-            <div class="absolute bottom-0 left-0 right-0 p-8">
-                <div class="flex items-end justify-between">
-                    <div>
-                        <span class="px-3 py-1 bg-dynamic/20 text-dynamic text-xs font-bold rounded-full mb-3 inline-block border border-dynamic/30 uppercase tracking-wider">Top Rated Guide</span>
-                        <h1 class="text-3xl md:text-4xl font-bold font-serif text-white mb-2">
-                            <span class="en-text">Welcome Back, Captain</span>
-                            <span class="ar-text">يا هلا بالكابتن</span>
-                        </h1>
-                        <p class="text-gray-300 max-w-xl">
-                            <span class="en-text">You have {{ count($upcomingTours) }} upcoming tours this week. Let's show them the real Jordan.</span>
-                            <span class="ar-text">عندك {{ count($upcomingTours) }} جولات قادمة هذا الأسبوع. خلينا نورجيهم الأردن الحقيقي.</span>
-                        </p>
+        <div class="p-4 border-t border-gray-800">
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors no-underline">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span class="font-medium">
+                    <span class="en-text">Back to Explore</span>
+                    <span class="ar-text">العودة للاستكشاف</span>
+                </span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+        <header class="h-20 bg-[#1a1513]/80 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-6 z-10 sticky top-0">
+             <button @click="sidebarOpen = true" class="md:hidden text-gray-400 hover:text-white bg-transparent border-none cursor-pointer">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+             </button>
+             
+             <div class="flex-1"></div>
+             
+             <div class="flex items-center gap-4 sm:gap-6">
+                <!-- Language Toggle -->
+                <button @click="toggleLang()" class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 bg-gray-800 hover:bg-gray-700 transition-colors text-sm font-bold text-gray-200 cursor-pointer">
+                    <span class="en-text font-arabic">ع</span>
+                    <span class="ar-text">EN</span>
+                </button>
+
+                <!-- Profile Dropdown -->
+                <div x-data="{ profileOpen: false }" class="relative">
+                    <button @click="profileOpen = !profileOpen" class="flex items-center gap-3 focus:outline-none bg-transparent border-none p-0 cursor-pointer">
+                        <div class="w-10 h-10 rounded-full bg-dynamic border border-white/20 flex items-center justify-center text-white font-bold shadow-lg">
+                            {{ substr(Auth::user()->name ?? 'C', 0, 1) }}
+                        </div>
+                        <div class="hidden md:block ltr:text-left rtl:text-right">
+                            <div class="text-sm font-bold text-white leading-tight">{{ Auth::user()->name ?? 'Captain Guide' }}</div>
+                            <div class="text-xs text-dynamic capitalize leading-tight">Assistant</div>
+                        </div>
+                    </button>
+
+                    <div x-show="profileOpen" @click.away="profileOpen = false" class="absolute top-full mt-2 ltr:right-0 rtl:left-0 w-48 bg-gray-800 rounded-xl border border-gray-700 shadow-2xl py-2 z-50" x-transition.opacity style="display: none;">
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="w-full ltr:text-left rtl:text-right px-4 py-2 text-sm text-red-400 hover:bg-gray-700 transition-colors cursor-pointer bg-transparent border-none">
+                                <span class="en-text">Sign Out</span>
+                                <span class="ar-text">تسجيل خروج</span>
+                            </button>
+                        </form>
                     </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 relative">
+            
+            <div x-show="activeTab === 'overview'" x-transition x-cloak class="mb-8">
+                <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-8 border border-gray-800 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1540202404-b71180fb78d8?auto=format&fit=crop&w=1200&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Wadi Rum Guide">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/70 to-transparent"></div>
                     
-                    <div class="hidden md:flex gap-4">
-                        <div class="text-center px-4 border-r border-white/20 rtl:border-r-0 rtl:border-l">
-                            <div class="text-3xl font-bold text-white">4.9</div>
-                            <div class="text-xs text-dynamic flex gap-1 justify-center mt-1">
-                                <svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                <svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                <svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                    <div class="absolute bottom-0 left-0 right-0 p-8">
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <span class="px-3 py-1 bg-dynamic/20 text-dynamic text-xs font-bold rounded-full mb-3 inline-block border border-dynamic/30 uppercase tracking-wider">Top Rated Guide</span>
+                                <h1 class="text-3xl md:text-4xl font-bold font-serif text-white mb-2">
+                                    <span class="en-text">Welcome Back, Captain</span>
+                                    <span class="ar-text">يا هلا بالكابتن</span>
+                                </h1>
+                                <p class="text-gray-300 max-w-xl">
+                                    <span class="en-text">You have {{ count($upcomingTours) }} upcoming tours this week. Let's show them the real Jordan.</span>
+                                    <span class="ar-text">عندك {{ count($upcomingTours) }} جولات قادمة هذا الأسبوع. خلينا نورجيهم الأردن الحقيقي.</span>
+                                </p>
                             </div>
                         </div>
-                        <div class="text-center px-4">
-                            <div class="text-3xl font-bold text-white">42</div>
-                            <div class="text-xs text-gray-400 mt-1 uppercase tracking-wider">Tours Done</div>
-                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <h3 class="text-xl font-bold text-white mb-6">
-            <span class="en-text">Upcoming Tours</span>
-            <span class="ar-text">الجولات القادمة</span>
-        </h3>
+                <h3 class="text-xl font-bold text-white mb-6">
+                    <span class="en-text">Upcoming Tours</span>
+                    <span class="ar-text">الجولات القادمة</span>
+                </h3>
 
-        <div class="space-y-4">
-            @foreach($upcomingTours as $tour)
-            <!-- Tour Card -->
-            <div class="solid-panel p-5 border-l-4 border-dynamic rtl:border-l-0 rtl:border-r-4 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors hover:bg-gray-800">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-lg bg-gray-800 border border-white/10 flex flex-col items-center justify-center text-center">
-                        <span class="text-xs text-dynamic font-bold uppercase">{{ $tour->month_short }}</span>
-                        <span class="text-xl text-white font-bold leading-none">{{ $tour->day_num }}</span>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-bold text-white mb-1">
-                            <span class="en-text">{{ $tour->name }}</span>
-                            <span class="ar-text">{{ $tour->name_ar }}</span>
-                        </h4>
-                        <div class="text-sm text-gray-400 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            {{ $tour->time }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-6">
-                    <div class="text-right rtl:text-left">
-                        <div class="text-sm text-white font-medium">Group of {{ $tour->group_size }}</div>
-                        <div class="text-xs text-gray-400">Lead: {{ $tour->lead }}</div>
-                    </div>
-                    <button @click="viewTourDetails('{{ addslashes($tour->name) }}')" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-bold rounded-lg transition-colors cursor-pointer">
-                        <span class="en-text">View Details</span>
-                        <span class="ar-text">التفاصيل</span>
-                    </button>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-
-    <!-- Availability Tab -->
-    <div x-cloak x-show="activeTab === 'availability'" x-transition.opacity.duration.300ms>
-        <div class="solid-panel p-6 max-w-4xl mx-auto">
-            <h3 class="text-xl font-bold text-white mb-6">
-                <span class="en-text">Set Availability</span>
-                <span class="ar-text">تحديد أوقات الفراغ</span>
-            </h3>
-
-            <form class="grid grid-cols-1 md:grid-cols-2 gap-8" @submit.prevent="saveAvailability">
-                <!-- Simple toggle list for days -->
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between p-4 border border-white/10 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors">
-                        <div class="font-bold text-white">Sunday / الأحد</div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                        </label>
+                    @foreach($upcomingTours as $tour)
+                    <div class="solid-panel p-5 border-l-4 border-dynamic rtl:border-l-0 rtl:border-r-4 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors hover:bg-gray-800 bg-[#1F2937]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-lg bg-gray-800 border border-gray-700 flex flex-col items-center justify-center text-center shadow-inner">
+                                <span class="text-xs text-dynamic font-bold uppercase">{{ $tour->month_short }}</span>
+                                <span class="text-xl text-white font-bold leading-none">{{ $tour->day_num }}</span>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-white mb-1">
+                                    <span class="en-text">{{ $tour->route_name }}</span>
+                                    <span class="ar-text">{{ $tour->route_name_ar }}</span>
+                                </h4>
+                                <div class="text-sm text-gray-400 flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    {{ $tour->time }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-6">
+                            <div class="text-right rtl:text-left">
+                                <div class="text-sm text-white font-medium">Tourist: {{ $tour->tourist_name }}</div>
+                                <div class="text-xs text-dynamic font-bold">Group of {{ $tour->group_size }}</div>
+                            </div>
+                            <button @click="viewTourDetails('{{ addslashes($tour->route_name) }}')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white text-sm font-bold rounded-lg transition-colors cursor-pointer shadow-md">
+                                <span class="en-text">View Details</span>
+                                <span class="ar-text">التفاصيل</span>
+                            </button>
+                        </div>
                     </div>
-                    
-                    <div class="flex items-center justify-between p-4 border rounded-lg" style="background-color: color-mix(in srgb, var(--dynamic-primary) 10%, transparent); border-color: color-mix(in srgb, var(--dynamic-primary) 30%, transparent);">
-                        <div class="font-bold text-white">Monday / الإثنين</div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                        </label>
-                    </div>
-
-                    <div class="flex items-center justify-between p-4 border border-white/10 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors">
-                        <div class="font-bold text-white">Tuesday / الثلاثاء</div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                        </label>
-                    </div>
+                    @endforeach
                 </div>
+            </div>
 
-                <div class="border-l border-white/10 rtl:border-l-0 rtl:border-r md:pl-8 md:rtl:pr-8">
-                    <h4 class="font-bold text-white mb-4">Monday Time Slots</h4>
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3 text-gray-300 cursor-pointer">
-                            <input type="checkbox" checked class="w-4 h-4 rounded border-gray-600 focus:ring-dynamic bg-gray-700" style="color: var(--dynamic-primary)">
-                            08:00 AM - 12:00 PM (Morning)
-                        </label>
-                        <label class="flex items-center gap-3 text-gray-300 cursor-pointer">
-                            <input type="checkbox" class="w-4 h-4 rounded border-gray-600 focus:ring-dynamic bg-gray-700" style="color: var(--dynamic-primary)">
-                            01:00 PM - 05:00 PM (Afternoon)
-                        </label>
-                        <label class="flex items-center gap-3 text-gray-300 cursor-pointer">
-                            <input type="checkbox" checked class="w-4 h-4 rounded border-gray-600 focus:ring-dynamic bg-gray-700" style="color: var(--dynamic-primary)">
-                            06:00 PM - 10:00 PM (Evening/Night)
-                        </label>
-                    </div>
-                    
-                    <button type="submit" class="mt-8 w-full py-3 btn-dynamic text-lg font-bold rounded-lg transition-all shadow-lg">
-                        <span class="en-text">Save Availability</span>
-                        <span class="ar-text">حفظ الأوقات</span>
-                    </button>
+            <div x-show="activeTab === 'availability'" x-transition x-cloak>
+                <div class="solid-panel p-6 md:p-10 max-w-4xl mx-auto rounded-2xl border-t-4 border-dynamic shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+                    <h3 class="text-2xl font-bold font-serif text-white mb-6">
+                        <span class="en-text">Open New Slot</span>
+                        <span class="ar-text">فتح موعد جديد</span>
+                    </h3>
+
+                    <form @submit.prevent="saveAvailability" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    <span class="en-text">Select Date</span>
+                                    <span class="ar-text">اختر التاريخ</span>
+                                </label>
+                                <input type="date" x-model="slotForm.date" required class="glass-input-premium w-full bg-gray-900 border border-gray-700">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">
+                                    <span class="en-text">Shift</span>
+                                    <span class="ar-text">الفترة</span>
+                                </label>
+                                <select x-model="slotForm.shift" required class="glass-input-premium w-full bg-gray-900 border border-gray-700">
+                                    <option value="morning">Morning / صباحي</option>
+                                    <option value="afternoon">Afternoon / مسائي</option>
+                                    <option value="full_day">Full Day / يوم كامل</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">
+                                <span class="en-text">Max Capacity (Tourists)</span>
+                                <span class="ar-text">الحد الأقصى للسياح</span>
+                            </label>
+                            <input type="number" x-model="slotForm.capacity" min="1" max="20" required class="glass-input-premium w-full md:w-1/2 bg-gray-900 border border-gray-700" placeholder="4">
+                        </div>
+
+                        <div class="pt-4 border-t border-gray-800 mt-6">
+                            <button type="submit" class="w-full md:w-auto px-8 py-3 btn-dynamic text-lg font-bold rounded-xl transition-all shadow-lg border-none cursor-pointer">
+                                <span class="en-text">Open Availability</span>
+                                <span class="ar-text">حفظ الأوقات</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </form>
-        </div>
+            </div>
+
+        </main>
     </div>
-
-    <!-- Routes Tab -->
-    <div x-cloak x-show="activeTab === 'routes'" x-transition.opacity.duration.300ms>
-        <div class="solid-panel p-6 lg:p-10 max-w-4xl mx-auto border-t-4 border-dynamic">
-            <h3 class="text-2xl font-bold text-white mb-6">
-                <span class="en-text">Define New Hiking Route</span>
-                <span class="ar-text">إضافة مسار جديد</span>
-            </h3>
-            
-            <form class="space-y-6" @submit.prevent="submitRoute">
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">
-                        <span class="en-text">Route Name</span><span class="ar-text">اسم المسار</span>
-                    </label>
-                    <input type="text" x-model="formRoute.name" required class="glass-input-premium" placeholder="e.g. Dana to Feynan Trail">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">
-                            <span class="en-text">Difficulty</span><span class="ar-text">الصعوبة</span>
-                        </label>
-                        <select x-model="formRoute.difficulty" class="glass-input-premium">
-                            <option>Easy / سهل</option>
-                            <option>Moderate / متوسط</option>
-                            <option>Hard / صعب</option>
-                            <option>Extreme / شديد الصعوبة</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">
-                            <span class="en-text">Duration (Hours)</span><span class="ar-text">المدة (ساعات)</span>
-                        </label>
-                        <input type="number" x-model="formRoute.duration" required class="glass-input-premium" placeholder="4">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">
-                            <span class="en-text">Price (JOD)</span><span class="ar-text">السعر (دينار)</span>
-                        </label>
-                        <input type="number" x-model="formRoute.price" class="glass-input-premium" placeholder="25">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">
-                        <span class="en-text">Description</span><span class="ar-text">الوصف</span>
-                    </label>
-                    <textarea x-model="formRoute.desc" class="glass-input-premium h-32 resize-none" placeholder="Describe the terrain, what they need to bring, etc."></textarea>
-                </div>
-
-                <div class="pt-4">
-                    <button type="submit" class="w-full py-3 btn-dynamic text-lg font-bold rounded-lg transition-all shadow-lg">
-                        <span class="en-text">Submit Route for Approval</span>
-                        <span class="ar-text">إرسال المسار للموافقة</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
 </div>
 @endsection
