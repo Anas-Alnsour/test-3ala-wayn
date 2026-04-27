@@ -1,484 +1,432 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" x-data="landingPage()">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="page_title">Wayn? | Authentic Jordan</title>
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Lato:wght@300;400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Wayn?') }} | Authentic Jordan</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700;900&family=Lato:wght@300;400;700;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        html[dir="rtl"] { font-family: 'Tajawal', sans-serif; }
+        html[dir="ltr"] { font-family: 'Lato', sans-serif; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        html[dir="rtl"] .font-serif { font-family: 'Tajawal', sans-serif; font-weight: 900; }
+
+        [x-cloak] { display: none !important; }
+
+        body {
+            /* خلفية بني داكن جداً دافئة */
+            background-color: #140b08;
+            color: #F9FAFB;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* شريط العلم الأردني العلوي */
+        .jordan-flag-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        .jordan-triangle {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 80px;
+            background-color: #CE1126; /* أحمر العلم */
+            z-index: 1001;
+        }
+        html[dir="ltr"] .jordan-triangle {
+            left: 0;
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+        }
+        html[dir="rtl"] .jordan-triangle {
+            right: 0;
+            clip-path: polygon(100% 0, 0 50%, 100% 100%);
+        }
+
+        /* شبكة خلفية فاخرة */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(to right, rgba(193,117,81,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(193,117,81,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* تأثير التوهج المتبع للماوس (لون بني بتراوي) */
+        .glow-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(193, 117, 81, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            transition: top 0.2s ease, left 0.2s ease;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: rgba(30, 20, 15, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(193, 117, 81, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(193, 117, 81, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            border-color: #c17551;
+            box-shadow: 0 0 0 2px rgba(193, 117, 81, 0.2);
+            outline: none;
+        }
+
+        /* ألوان الأقسام والهوية البنية */
+        .text-gradient-brown {
+            background: linear-gradient(135deg, #c17551, #8E3D1D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
 </head>
-<body>
+<body @mousemove="updateGlow($event)">
 
-  <!-- HEADER -->
-  <header class="header">
-<div class="logo" id="logoBtn">
-      <div class="logo-icon-svg">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="premium-logo-svg">
-          <defs>
-            <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="var(--secondary-accent)" />
-              <stop offset="100%" stop-color="var(--primary-accent)" />
-            </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-          <circle cx="50" cy="50" r="45" fill="none" stroke="url(#goldGradient)" stroke-width="1.5" opacity="0.5" stroke-dasharray="2 4"/>
-          <g class="star-group" filter="url(#glow)">
-            <rect x="25" y="25" width="50" height="50" fill="none" stroke="url(#goldGradient)" stroke-width="2" transform="rotate(0 50 50)"/>
-            <rect x="25" y="25" width="50" height="50" fill="none" stroke="url(#goldGradient)" stroke-width="2" transform="rotate(45 50 50)"/>
-          </g>
-          <g class="compass-needles">
-            <polygon points="50,5 55,45 50,50 45,45" fill="url(#goldGradient)"/>
-            <polygon points="50,95 55,55 50,50 45,55" fill="url(#goldGradient)" opacity="0.6"/>
-            <polygon points="95,50 55,55 50,50 55,45" fill="url(#goldGradient)"/>
-            <polygon points="5,50 45,55 50,50 45,45" fill="url(#goldGradient)" opacity="0.6"/>
-          </g>
-          <circle cx="50" cy="50" r="5" fill="var(--bg-dark)" stroke="url(#goldGradient)" stroke-width="2"/>
-        </svg>
-      </div>
-      <div class="logo-text-group">
-        <div class="logo-text" data-i18n="logo_text">Wayn?</div>
-        <div class="logo-sub" data-i18n="logo_sub">Authentic Travel · Jordan</div>
-      </div>
+    <div class="jordan-flag-bar">
+        <div class="h-1/3 w-full bg-black"></div>
+        <div class="h-1/3 w-full bg-white"></div>
+        <div class="h-1/3 w-full bg-[#007A3D]"></div>
+        <div class="jordan-triangle"></div>
     </div>
 
-    <div class="header-mobile-controls">
-      <div class="auth-buttons-mobile" style="display: flex; gap: 10px; align-items: center;">
-          @guest
-              <a href="{{ route('login') }}" style="color: var(--secondary-accent); font-size: 0.9rem; font-weight: 600; text-decoration: none;" data-i18n="nav_login">Login</a>
-          @endguest
-          @auth
-              @php
-                  $dashRoute = match(Auth::user()->role) {
-                      'admin' => route('admin.dashboard'),
-                      'local' => route('local.dashboard'),
-                      default => route('tourist.dashboard'),
-                  };
-              @endphp
-              <a href="{{ $dashRoute }}" style="color: var(--secondary-accent); font-size: 0.9rem; font-weight: 600; text-decoration: none;" data-i18n="nav_dashboard">Dashboard</a>
-          @endauth
-      </div>
-      <div class="mode-toggle" style="display:flex; margin-left: 10px;">
-        <button class="mode-btn active" id="modeEnMobile" data-mode="en">EN</button>
-        <button class="mode-btn" id="modeArMobile" data-mode="ar">عربي</button>
-      </div>
-    </div>
+    <div class="bg-grid"></div>
+    <div class="glow-blob" :style="`top: ${mouseY}px; left: ${mouseX}px; transform: translate(-50%, -50%);`"></div>
 
-    <nav class="header-nav" id="mainNav">
-      <button class="nav-btn active" data-target="home" data-i18n="nav_explore">Explore</button>
-      <button class="nav-btn" data-target="cities" data-i18n="nav_cities">Cities</button>
-      <button class="nav-btn" data-target="planner" data-i18n="nav_planner">AI Planner</button>
-      <button class="nav-btn" data-target="currency" data-i18n="nav_currency">Currency</button>
+    <header class="fixed top-0 w-full z-50 transition-all duration-500 mt-[6px]" :class="scrolled ? 'bg-[#140b08]/90 backdrop-blur-xl border-b border-[#3a251c] py-3' : 'bg-transparent py-5'">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex justify-between items-center">
 
-      <div class="auth-buttons desktop-only" style="display: flex; gap: 10px; align-items: center; margin-left: 1rem;">
-          @guest
-              <a href="{{ route('login') }}" class="btn-secondary ripple" style="padding: 6px 16px; font-size: 0.85rem; border: 1px solid var(--secondary-accent); color: var(--secondary-accent); border-radius: 20px; text-decoration: none; background: transparent;" data-i18n="nav_login">Login</a>
-              <a href="{{ route('register') }}" class="btn-primary ripple" style="padding: 6px 16px; font-size: 0.85rem; border-radius: 20px; text-decoration: none;" data-i18n="nav_register">Register</a>
-          @endguest
-          @auth
-              @php
-                  $dashRoute = match(Auth::user()->role) {
-                      'admin' => route('admin.dashboard'),
-                      'local' => route('local.dashboard'),
-                      default => route('tourist.dashboard'),
-                  };
-              @endphp
-              <a href="{{ $dashRoute }}" class="btn-primary ripple" style="padding: 6px 16px; font-size: 0.85rem; border-radius: 20px; text-decoration: none;" data-i18n="nav_dashboard">Dashboard</a>
-              <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-                  @csrf
-                  <button type="submit" class="btn-secondary ripple" style="padding: 6px 16px; font-size: 0.85rem; border: 1px solid var(--text-secondary); color: var(--text-secondary); background: transparent; border-radius: 20px;" data-i18n="nav_logout">Logout</button>
-              </form>
-          @endauth
-      </div>
-
-      <div class="mode-toggle desktop-only" id="desktopModeToggle">
-        <button class="mode-btn active" id="modeEn" data-mode="en">EN</button>
-        <button class="mode-btn" id="modeAr" data-mode="ar">عربي</button>
-      </div>
-    </nav>
-  </header>
-
-  <main id="mainContainer">
-    <!-- HOME SECTION -->
-    <section id="sec-home" class="view-section active">
-      <!-- HERO -->
-      <article class="hero">
-        <div class="parallax-bg" data-speed="0.2"></div>
-        <div class="hero-content">
-          <div class="hero-badge parallax-element" data-speed="0.05" data-i18n="hero_badge">✦ Authentic Jordanian Experience</div>
-          <h1 id="heroTitle" class="parallax-element" data-speed="0.15" data-i18n="hero_title">Discover <span class="gradient-text">Jordan</span>,<br>Your Way</h1>
-          <p id="heroDesc" class="parallax-element" data-speed="0.1" data-i18n="hero_desc">From the ancient streets of Petra to the crystal waters of Aqaba — plan your perfect Jordanian journey.</p>
-          <div class="hero-actions parallax-element" data-speed="0.05">
-            <button class="btn-primary ripple" id="btnPlanHero" data-i18n="btn_plan_hero">✦ Plan My Trip</button>
-            <button class="btn-secondary ripple" id="btnExploreHero" data-i18n="btn_explore_hero">Explore Cities &rarr;</button>
-          </div>
-        </div>
-      </article>
-
-      <!-- STATS -->
-      <article class="stats-bar stagger-item">
-        <div class="stat-item"><div class="stat-num" data-i18n="stat_cities_val">17+</div><div class="stat-label" data-i18n="stat_cities_lbl">Cities</div></div>
-        <div class="stat-item"><div class="stat-num" data-i18n="stat_attr_val">480+</div><div class="stat-label" data-i18n="stat_attr_lbl">Attractions</div></div>
-        <div class="stat-item"><div class="stat-num" data-i18n="stat_rest_val">250+</div><div class="stat-label" data-i18n="stat_rest_lbl">Restaurants</div></div>
-        <div class="stat-item"><div class="stat-num" data-i18n="stat_ai_val">AI</div><div class="stat-label" data-i18n="stat_ai_lbl">Powered</div></div>
-        <div class="stat-item"><div class="stat-num" data-i18n="stat_247_val">24/7</div><div class="stat-label" data-i18n="stat_247_lbl">Smart Guide</div></div>
-      </article>
-
-      <!-- DUAL MODE -->
-      <article class="section">
-        <div class="section-header"><h2 class="section-title stagger-item" data-i18n="sec_choose_exp">Choose Your <span class="gradient-text">Experience</span></h2></div>
-        <div class="dual-mode">
-          <div class="mode-card local stagger-item">
-            <div class="mode-card-title" data-i18n="mode_local_title">وين طشّتنا اليوم؟</div>
-            <div class="mode-card-sub" data-i18n="mode_local_sub">للمواطن الأردني</div>
-            <ul class="mode-features">
-              <li data-i18n="mode_local_f1">أماكن قريبة منك هسّا</li>
-              <li data-i18n="mode_local_f2">طشّات بتجنن على قد الجيبة</li>
-              <li data-i18n="mode_local_f3">مناطق مخفية ما بتعرفها</li>
-              <li data-i18n="mode_local_f4">مطاعم شعبية بتفتح النفس</li>
-            </ul>
-            <button class="mode-card-btn ripple" id="btnModeArAction" data-i18n="btn_mode_local">يلّا نبلّش &larr;</button>
-          </div>
-          <div class="mode-card tourist stagger-item">
-            <div class="mode-card-title" data-i18n="mode_tourist_title">Where To, Traveler?</div>
-            <div class="mode-card-sub" data-i18n="mode_tourist_sub">For International Visitors</div>
-            <ul class="mode-features">
-              <li data-i18n="mode_tourist_f1">Full guided itineraries</li>
-              <li data-i18n="mode_tourist_f2">Cultural context & tips</li>
-              <li data-i18n="mode_tourist_f3">Curated experiences</li>
-              <li data-i18n="mode_tourist_f4">Safety & logistics info</li>
-            </ul>
-            <button class="mode-card-btn ripple" id="btnModeEnAction" data-i18n="btn_mode_tourist">Start Planning &rarr;</button>
-          </div>
-        </div>
-
-        <!-- CATEGORIES -->
-        <div class="section-header"><h2 class="section-title stagger-item" data-i18n="sec_categories">Travel <span class="gradient-text">Categories</span></h2></div>
-        <div class="categories-row stagger-item">
-          <div class="cat-btn active ripple"><div class="cat-icon skeleton"><img data-wiki="History_of_Jordan" alt="History" loading="lazy"></div><div class="cat-label" data-i18n="cat_history">History</div></div>
-          <div class="cat-btn ripple"><div class="cat-icon skeleton"><img data-wiki="Jordanian_cuisine" alt="Food" loading="lazy"></div><div class="cat-label" data-i18n="cat_food">Food</div></div>
-          <div class="cat-btn ripple"><div class="cat-icon skeleton"><img data-wiki="Hotel" alt="Hotels" loading="lazy"></div><div class="cat-label" data-i18n="cat_hotels">Hotels</div></div>
-          <div class="cat-btn ripple"><div class="cat-icon skeleton"><img data-wiki="Jordan_Trail" alt="Hiking" loading="lazy"></div><div class="cat-label" data-i18n="cat_hiking">Hiking</div></div>
-          <div class="cat-btn ripple"><div class="cat-icon skeleton"><img data-wiki="Wadi_Rum" alt="Desert" loading="lazy"></div><div class="cat-label" data-i18n="cat_desert">Desert</div></div>
-          <div class="cat-btn ripple"><div class="cat-icon skeleton"><img data-wiki="Gulf_of_Aqaba" alt="Water" loading="lazy"></div><div class="cat-label" data-i18n="cat_water">Water</div></div>
-          <div class="cat-btn ripple"><div class="cat-icon skeleton"><img data-wiki="Agriculture_in_Jordan" alt="Farms" loading="lazy"></div><div class="cat-label" data-i18n="cat_farms">Farms</div></div>
-          <div class="cat-btn ripple"><div class="cat-icon skeleton"><img data-wiki="Culture_of_Jordan" alt="Culture" loading="lazy"></div><div class="cat-label" data-i18n="cat_culture">Culture</div></div>
-        </div>
-
-        <!-- JORDANIAN FOOD -->
-        <div class="section-header"><h2 class="section-title stagger-item" data-i18n="sec_flavors">Jordanian <span class="gradient-text">Flavors</span></h2></div>
-        <div class="food-grid">
-          <div class="food-card stagger-item">
-            <div class="food-image skeleton"><img data-wiki="Mansaf" alt="Mansaf" loading="lazy"></div>
-            <div class="food-body">
-              <div class="food-name" data-i18n="food_mansaf">Mansaf</div>
-              <div class="food-desc" data-i18n="food_mansaf_desc">Jordan's national dish — slow-cooked lamb in dried yogurt sauce, served on fragrant rice</div>
-            </div>
-          </div>
-          <div class="food-card stagger-item">
-            <div class="food-image skeleton"><img data-wiki="Falafel" alt="Falafel" loading="lazy"></div>
-            <div class="food-body">
-              <div class="food-name" data-i18n="food_falafel">Falafel</div>
-              <div class="food-desc" data-i18n="food_falafel_desc">Crispy fried chickpea fritters, best enjoyed fresh from street vendors in Amman</div>
-            </div>
-          </div>
-          <div class="food-card stagger-item">
-            <div class="food-image skeleton"><img data-wiki="Knafeh" alt="Knafeh" loading="lazy"></div>
-            <div class="food-body">
-              <div class="food-name" data-i18n="food_knafeh">Knafeh</div>
-              <div class="food-desc" data-i18n="food_knafeh_desc">Sweet shredded pastry soaked in sugar syrup with soft white cheese — a Levantine legend</div>
-            </div>
-          </div>
-          <div class="food-card stagger-item">
-            <div class="food-image skeleton"><img data-wiki="Arabic_coffee" alt="Arabic Coffee" loading="lazy"></div>
-            <div class="food-body">
-              <div class="food-name" data-i18n="food_coffee">Arabic Coffee</div>
-              <div class="food-desc" data-i18n="food_coffee_desc">Cardamom-infused qahwa served in small cups — a gesture of Jordanian hospitality</div>
-            </div>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <!-- CITIES SECTION -->
-    <section id="sec-cities" class="view-section">
-      <div id="citiesMain">
-        <article class="section">
-          <div class="section-header">
-            <h2 class="section-title stagger-item" data-i18n="sec_explore_cities">Explore <span class="gradient-text">Jordan's Cities</span></h2>
-          </div>
-          <div class="cities-grid" id="citiesGrid">
-            <!-- Rendered dynamically by app.js -->
-          </div>
-        </article>
-      </div>
-      <div id="cityDetail" class="hidden-view">
-        <!-- Rendered by JS -->
-      </div>
-    </section>
-
-    <!-- AI PLANNER SECTION -->
-    <section id="sec-planner" class="view-section">
-      <article class="section">
-        <div class="ai-planner stagger-item">
-          <div class="ai-header">
-            <div class="ai-icon">🤖</div>
-            <div>
-              <h2 data-i18n="ai_planner_title">AI Smart Trip Planner</h2>
-              <p data-i18n="ai_planner_desc">Generate a full personalized itinerary powered by AI intelligence</p>
-            </div>
-          </div>
-          <div class="ai-body">
-            <div class="planner-grid">
-              <div class="planner-field">
-                <label data-i18n="plan_dest">Destination</label>
-                <select id="planCity" class="glass-input">
-                  <option value="all" data-i18n="plan_dest_all">All Jordan</option>
-                  @php $cities = \App\Models\City::all(); @endphp
-                  @foreach($cities as $city)
-                    <option value="{{ $city->id }}" class="en-text">{{ $city->name }}</option>
-                    <option value="{{ $city->id }}" class="ar-text hidden-view">{{ $city->name_ar }}</option>
-                  @endforeach
-                </select>
-              </div>
-              <div class="planner-field">
-                <label data-i18n="plan_dur">Duration</label>
-                <select id="planDays" class="glass-input">
-                  <option value="1" data-i18n="plan_dur_1">1 Day</option>
-                  <option value="3" selected data-i18n="plan_dur_3">3 Days</option>
-                  <option value="5" data-i18n="plan_dur_5">5 Days</option>
-                  <option value="7" data-i18n="plan_dur_7">1 Week</option>
-                  <option value="14" data-i18n="plan_dur_14">2 Weeks</option>
-                </select>
-              </div>
-              <div class="planner-field">
-                <label data-i18n="plan_budget">Budget (USD)</label>
-                <select id="planBudget" class="glass-input">
-                  <option value="budget" data-i18n="plan_bud_budget">Budget ($30-80/day)</option>
-                  <option value="mid" selected data-i18n="plan_bud_mid">Mid-range ($80-200/day)</option>
-                  <option value="luxury" data-i18n="plan_bud_lux">Luxury ($200+/day)</option>
-                </select>
-              </div>
-              <div class="planner-field">
-                <label data-i18n="plan_style">Travel Style</label>
-                <select id="planStyle" class="glass-input">
-                  <option value="solo" data-i18n="plan_style_solo">Solo Traveler</option>
-                  <option value="couple" data-i18n="plan_style_couple">Couple</option>
-                  <option value="family" selected data-i18n="plan_style_family">Family</option>
-                  <option value="group" data-i18n="plan_style_group">Group</option>
-                </select>
-              </div>
-            </div>
-            <div class="tags-label" data-i18n="tags_label" style="margin-bottom: 15px; display: block; color: var(--text-secondary);">Your Interests</div>
-            <div class="interest-tags" id="interestTags">
-              <div class="tag selected ripple" data-i18n="tag_hist">History & Ruins</div>
-              <div class="tag selected ripple" data-i18n="tag_food">Local Food</div>
-              <div class="tag ripple" data-i18n="tag_adv">Adventure</div>
-              <div class="tag ripple" data-i18n="tag_camp">Desert Camping</div>
-              <div class="tag ripple" data-i18n="tag_water">Swimming & Water</div>
-              <div class="tag ripple" data-i18n="tag_photo">Photography</div>
-              <div class="tag ripple" data-i18n="tag_rel">Religious Sites</div>
-              <div class="tag ripple" data-i18n="tag_hike">Hiking</div>
-              <div class="tag ripple" data-i18n="tag_market">Local Markets</div>
-              <div class="tag ripple" data-i18n="tag_art">Mosaics & Arts</div>
-            </div>
-            <button class="btn-primary ripple" style="width: 100%; margin-top: 1rem;" id="generateBtn" data-i18n="btn_gen_itinerary">✦ Generate My Itinerary</button>
-            <div id="itineraryOutput" class="hidden-view itinerary-box stagger-item"></div>
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <!-- CURRENCY SECTION -->
-    <section id="sec-currency" class="view-section">
-      <article class="section">
-        <div class="section-header"><h2 class="section-title stagger-item" data-i18n="sec_currency">Currency <span class="gradient-text">Converter</span></h2></div>
-
-        <div class="currency-container">
-          <div class="currency-card stagger-item">
-            <div class="currency-grid">
-              <div class="curr-input-wrap">
-                <div class="curr-label" data-i18n="curr_from">From</div>
-                <div class="curr-input glass-input-wrap">
-                  <select id="currFrom" class="transparent-select">
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="GBP">GBP</option>
-                    <option value="SAR">SAR</option>
-                    <option value="AED">AED</option>
-                    <option value="QAR">QAR</option>
-                    <option value="KWD">KWD</option>
-                    <option value="CAD">CAD</option>
-                  </select>
-                  <input type="number" id="currAmount" class="transparent-input" value="100" />
+            <a href="#" @click.prevent="scrollTo('hero')" class="flex items-center gap-3 cursor-pointer group no-underline">
+                <div class="w-12 h-12 relative flex-shrink-0">
+                    <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-[0_0_15px_rgba(193,117,81,0.4)] group-hover:rotate-90 transition-transform duration-700 ease-out">
+                        <defs><linearGradient id="brownGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c17551" /><stop offset="100%" stop-color="#8E3D1D" /></linearGradient></defs>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="url(#brownGrad)" stroke-width="2" opacity="0.3" stroke-dasharray="4 4" class="animate-[spin_10s_linear_infinite]"/>
+                        <polygon points="50,10 58,42 50,50 42,42" fill="url(#brownGrad)"/>
+                        <polygon points="50,90 58,58 50,50 42,58" fill="url(#brownGrad)" opacity="0.6"/>
+                        <polygon points="90,50 58,58 50,50 58,42" fill="url(#brownGrad)"/>
+                        <polygon points="10,50 42,58 50,50 42,42" fill="url(#brownGrad)" opacity="0.6"/>
+                        <circle cx="50" cy="50" r="6" fill="#140b08" stroke="url(#brownGrad)" stroke-width="2"/>
+                    </svg>
                 </div>
-              </div>
-              <div class="curr-arrow">⇄</div>
-              <div class="curr-input-wrap">
-                <div class="curr-label" data-i18n="curr_to">To JOD</div>
-                <div class="curr-input glass-input-wrap highlight-wrap">
-                  <span class="curr-result-val" id="currResult">70.90</span>
-                  <span class="curr-currency">JOD</span>
+                <div>
+                    <div class="font-serif text-2xl font-black text-gradient-brown tracking-tight">Wayn?</div>
                 </div>
-              </div>
-            </div>
-            <div class="rate-info">
-              <span id="rateLabel">1 USD = 0.709 JOD</span>
-              <span class="rate-note" data-i18n="rate_note">Approx. rate &middot; Verify locally</span>
-            </div>
-            <div class="exchange-tips">
-              <div class="tips-title" data-i18n="tips_title">💡 Exchange Tips for Jordan</div>
-              <div class="tips-desc" data-i18n="tips_desc">Exchange at licensed money changers in downtown Amman for best rates. Avoid airport exchanges. JOD is pegged to USD. Keep small bills for local markets and taxis.</div>
-            </div>
-          </div>
+            </a>
 
-          <div class="ai-advisor-wrapper stagger-item">
-            <div class="advisor-box">
-              <div class="ai-header" style="margin-bottom: 2rem;">
-                <div class="ai-icon" style="width: 50px; height: 50px; font-size: 24px;">🤖</div>
-                <h3 style="margin:0; font-family:var(--font-serif); font-size:24px;" data-i18n="ai_adv_title">AI Currency <span class="gradient-text">Advisor</span></h3>
-              </div>
-              <p class="advisor-prompt" data-i18n="ai_adv_prompt">Ask about exchange rates, safety tips, or best places to exchange money in Jordan:</p>
-              <div class="advisor-input-group">
-                <input id="currencyQ" class="glass-input" type="text" data-i18n-placeholder="placeholder_currency" placeholder="e.g. Where's the best place to exchange in Amman?" />
-                <button id="askCurrencyBtn" class="btn-primary ripple" data-i18n="btn_ask_ai">Ask AI</button>
-              </div>
-              <div id="currencyAIResp" class="hidden-view response-box"></div>
-            </div>
-          </div>
-        </div>
-      </article>
-    </section>
+            <nav class="hidden md:flex items-center gap-8">
+                <button @click="scrollTo('modes')" class="text-sm font-bold text-gray-300 hover:text-[#c17551] transition-colors border-none bg-transparent cursor-pointer" x-text="language === 'ar' ? 'التجارب' : 'Experiences'"></button>
+                <button @click="scrollTo('planner')" class="text-sm font-bold text-gray-300 hover:text-[#c17551] transition-colors border-none bg-transparent cursor-pointer" x-text="language === 'ar' ? 'مخطط الذكاء الاصطناعي' : 'AI Planner'"></button>
+                <button @click="scrollTo('currency')" class="text-sm font-bold text-gray-300 hover:text-[#c17551] transition-colors border-none bg-transparent cursor-pointer" x-text="language === 'ar' ? 'العملات' : 'Currency'"></button>
 
-    <!-- ADMIN SECTION -->
-    <section id="sec-admin" class="view-section">
-      <article class="section">
-        <div class="admin-panel stagger-item">
-          <div class="admin-header-bar">
-            <div class="admin-title" data-i18n="admin_title">Admin Dashboard — Wayn?</div>
-            <div class="admin-badge" data-i18n="admin_badge">Admin</div>
-          </div>
-          <div class="admin-body">
-            <div class="admin-grid">
-              <div class="admin-card"><div class="admin-num">17</div><div class="admin-label" data-i18n="stat_cities_lbl">Cities</div></div>
-              <div class="admin-card"><div class="admin-num">480</div><div class="admin-label" data-i18n="stat_attr_lbl">Attractions</div></div>
-              <div class="admin-card"><div class="admin-num">1,894</div><div class="admin-label" data-i18n="admin_users">Users</div></div>
-              <div class="admin-card"><div class="admin-num">124</div><div class="admin-label" data-i18n="admin_active_trips">Active Trips</div></div>
-              <div class="admin-card"><div class="admin-num">250</div><div class="admin-label" data-i18n="stat_rest_lbl">Restaurants</div></div>
-              <div class="admin-card"><div class="admin-num">4.8★</div><div class="admin-label" data-i18n="admin_avg_rating">Avg Rating</div></div>
-            </div>
+                <div class="w-px h-6 bg-[#3a251c]"></div>
 
-            <div class="tabs">
-              <button class="tab-btn active ripple" data-tab="content" data-i18n="tab_content">Content</button>
-              <button class="tab-btn ripple" data-tab="users" data-i18n="tab_users">Users</button>
-              <button class="tab-btn ripple" data-tab="analytics" data-i18n="tab_analytics">Analytics</button>
-              <button class="tab-btn ripple" data-tab="ai" data-i18n="tab_ai">AI Insights</button>
-            </div>
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="bg-gradient-to-r from-[#c17551] to-[#8E3D1D] text-white px-6 py-2.5 rounded-full font-black hover:shadow-[0_0_20px_rgba(193,117,81,0.4)] hover:-translate-y-0.5 transition-all no-underline">
+                        <span x-text="language === 'ar' ? 'لوحة التحكم' : 'Dashboard'"></span>
+                    </a>
+                @else
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('login') }}" class="text-sm font-bold text-gray-300 hover:text-white no-underline" x-text="language === 'ar' ? 'تسجيل الدخول' : 'Sign In'"></a>
+                        <a href="{{ route('register') }}" class="border border-[#c17551] text-[#c17551] hover:bg-[#c17551] hover:text-white px-5 py-2 rounded-full font-bold transition-all no-underline" x-text="language === 'ar' ? 'حساب جديد' : 'Sign Up'"></a>
+                    </div>
+                @endauth
 
-            <!-- ADMIN CONTENT -->
-            <div id="admin-content" class="admin-tab-content">
-              <div class="admin-content-grid">
-                <button class="admin-action-btn ripple" data-action="cities">
-                  <div class="action-icon">🏙️</div>
-                  <div class="action-title" data-i18n="act_cities">Manage Cities</div>
-                  <div class="action-desc" data-i18n="act_cities_desc">Add, edit, delete city content</div>
+                <button @click="toggleLang()" class="w-10 h-10 rounded-full border border-[#3a251c] bg-[#1f130e]/50 hover:border-[#c17551] text-gray-300 hover:text-[#c17551] flex items-center justify-center font-bold transition-colors cursor-pointer">
+                    <span x-show="language === 'en'" class="font-arabic">ع</span>
+                    <span x-show="language === 'ar'" class="text-xs">EN</span>
                 </button>
-                <button class="admin-action-btn ripple" data-action="restaurants">
-                  <div class="action-icon">🍽️</div>
-                  <div class="action-title" data-i18n="act_rest">Manage Restaurants</div>
-                  <div class="action-desc" data-i18n="act_rest_desc">250 restaurants listed</div>
-                </button>
-                <button class="admin-action-btn ripple" data-action="hotels">
-                  <div class="action-icon">🏨</div>
-                  <div class="action-title" data-i18n="act_hot">Manage Hotels</div>
-                  <div class="action-desc" data-i18n="act_hot_desc">156 hotels & guesthouses</div>
-                </button>
-                <button class="admin-action-btn ripple" data-action="experiences">
-                  <div class="action-icon">🎭</div>
-                  <div class="action-title" data-i18n="act_exp">Experiences</div>
-                  <div class="action-desc" data-i18n="act_exp_desc">Local & cultural activities</div>
-                </button>
-              </div>
-            </div>
-
-            <!-- ADMIN USERS -->
-            <div id="admin-users" class="admin-tab-content hidden-view">
-              <div class="table-wrapper">
-                <table class="users-table">
-                  <thead>
-                    <tr>
-                      <th data-i18n="th_user">User</th>
-                      <th data-i18n="th_mode">Mode</th>
-                      <th data-i18n="th_trips">Trips</th>
-                      <th data-i18n="th_status">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="usersTable">
-                    <!-- Rendered by JS -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- ADMIN ANALYTICS -->
-            <div id="admin-analytics" class="admin-tab-content hidden-view">
-              <div class="analytics-grid">
-                <div class="analytics-card">
-                  <div class="analytics-title" data-i18n="top_dest">Top Destinations</div>
-                  <div id="analyticsDestinations">
-                    <!-- Rendered by JS -->
-                  </div>
-                </div>
-                <div class="analytics-card">
-                  <div class="analytics-title" data-i18n="user_breakdown">User Breakdown</div>
-                  <div class="analytics-row">
-                    <div class="analytics-color intl-color"></div>
-                    <div class="analytics-label" data-i18n="lbl_intl">International</div>
-                    <div class="analytics-val">65%</div>
-                  </div>
-                  <div class="analytics-row">
-                    <div class="analytics-color local-color"></div>
-                    <div class="analytics-label" data-i18n="lbl_local">Local Jordanian</div>
-                    <div class="analytics-val">35%</div>
-                  </div>
-                  <div class="analytics-note" data-i18n="peak_month" style="margin-top: 1rem; color: var(--text-secondary); font-size: 13px;">Peak month: March–April</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- ADMIN AI -->
-            <div id="admin-ai" class="admin-tab-content hidden-view">
-              <div class="advisor-box">
-                <p class="advisor-prompt" data-i18n="ai_admin_prompt">Ask the AI admin assistant for insights on tourism trends, content gaps, or recommendations:</p>
-                <div class="advisor-input-group">
-                  <input id="adminAIQ" class="glass-input" type="text" data-i18n-placeholder="placeholder_admin" placeholder="e.g. What content should we add for summer 2026?" />
-                  <button id="askAdminBtn" class="btn-primary ripple" data-i18n="btn_analyze">Analyze</button>
-                </div>
-                <div id="adminAIResp" class="hidden-view response-box"></div>
-              </div>
-            </div>
-          </div>
+            </nav>
         </div>
-      </article>
-    </section>
-  </main>
+    </header>
 
-  <!-- FOOTER -->
-  <footer class="footer" style="background-color: var(--bg-dark); position: relative; overflow: hidden; padding: 60px 20px; text-align: center; border-top: 1px solid var(--border-highlight); margin-top: auto;">
-    <!-- Geometric/Sadu pattern background element -->
-    <div class="sadu-pattern" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.03; pointer-events: none; background-image: url('data:image/svg+xml;utf8,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M30 0L60 30L30 60L0 30L30 0ZM30 15L45 30L30 45L15 30L30 15Z\" fill=\"%23D4A373\" fill-rule=\"evenodd\"/></svg> </div>
+    <main>
+        <section id="hero" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(193,117,81,0.1)_0%,transparent_70%)]"></div>
 
-    <div style="position: relative; z-index: 2;">
-        <div data-i18n="footer_text" style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--primary-accent); margin-bottom: 15px; font-weight: 600;">Wayn? | وين؟ — Authentic Tourism Platform for Jordan</div>
-        <div class="footer-sub" data-i18n="footer_sub" style="font-size: 1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Powered by AI &middot; Built with &hearts; for Jordan</div>
-    </div>
-  </footer>
+            <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center relative z-10">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+                    <span class="w-2 h-2 rounded-full bg-[#CE1126] animate-pulse"></span>
+                    <span class="text-sm font-bold text-gray-300" x-text="language === 'ar' ? 'منصة السياحة الأردنية الأصيلة' : 'Authentic Jordanian Tourism Platform'"></span>
+                </div>
+
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-black font-serif mb-6 leading-tight">
+                    <span x-text="language === 'ar' ? 'اكتشف ' : 'Discover '"></span>
+                    <span class="text-gradient-brown">Jordan</span><br>
+                    <span x-text="language === 'ar' ? 'على طريقتك.' : 'Your Way.'"></span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed" x-text="language === 'ar' ? 'من شوارع عمان القديمة إلى سحر البتراء ورم، خطط لرحلتك، اكتشف الأماكن المخفية، واستفد من عروض لا تفوت.' : 'From the ancient streets of Petra to the crystal waters of Aqaba — plan your perfect journey with locals and AI.'"></p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button @click="scrollTo('planner')" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#c17551] to-[#8E3D1D] text-white rounded-full font-black text-lg hover:shadow-[0_0_30px_rgba(193,117,81,0.5)] hover:-translate-y-1 transition-all border-none cursor-pointer">
+                        <span x-text="language === 'ar' ? 'خطط رحلتك بالذكاء الاصطناعي ✦' : 'Plan Trip with AI ✦'"></span>
+                    </button>
+                    <button @click="scrollTo('modes')" class="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-[#3a251c] text-white rounded-full font-bold text-lg hover:border-[#c17551] hover:text-[#c17551] transition-all cursor-pointer">
+                        <span x-text="language === 'ar' ? 'استكشف المنصة' : 'Explore Platform'"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="absolute bottom-0 left-0 w-full border-t border-white/5 bg-[#0a0605]/60 backdrop-blur-md">
+                <div class="max-w-7xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/5 rtl:divide-x-reverse">
+                    <div>
+                        <div class="text-3xl font-black text-[#c17551] mb-1">12+</div>
+                        <div class="text-xs text-gray-400 font-bold uppercase tracking-widest" x-text="language === 'ar' ? 'مدينة مغطاة' : 'Cities Covered'"></div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black text-[#c17551] mb-1">500+</div>
+                        <div class="text-xs text-gray-400 font-bold uppercase tracking-widest" x-text="language === 'ar' ? 'معلم سياحي' : 'Attractions'"></div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black text-[#c17551] mb-1">250+</div>
+                        <div class="text-xs text-gray-400 font-bold uppercase tracking-widest" x-text="language === 'ar' ? 'مطعم وفندق' : 'Partners'"></div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black text-[#c17551] mb-1">24/7</div>
+                        <div class="text-xs text-gray-400 font-bold uppercase tracking-widest" x-text="language === 'ar' ? 'دعم ذكي' : 'AI Support'"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="modes" class="py-24 relative z-10">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-black font-serif text-white mb-4">
+                        <span x-text="language === 'ar' ? 'اختر ' : 'Choose Your '"></span>
+                        <span class="text-gradient-brown" x-text="language === 'ar' ? 'تجربتك' : 'Experience'"></span>
+                    </h2>
+                    <p class="text-gray-400" x-text="language === 'ar' ? 'هل أنت سائح تزور الأردن، أم ابن بلد تبحث عن الفزعة والخصومات؟' : 'Are you a visitor exploring Jordan, or a local looking for exclusive deals?'"></p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass-card rounded-3xl p-8 border-t-4 border-t-[#c17551] hover:-translate-y-2 transition-transform duration-500 group flex flex-col h-full relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#c17551] opacity-10 rounded-full blur-3xl group-hover:opacity-30 transition-opacity"></div>
+                        <div class="mb-6">
+                            <h3 class="text-3xl font-black text-white mb-2 font-serif">Where To, Traveler?</h3>
+                            <p class="text-[#c17551] font-bold text-sm uppercase tracking-widest mb-6">For International Visitors</p>
+                            <ul class="space-y-4 text-gray-300">
+                                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#c17551]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span x-text="language==='ar'?'مسارات سياحية كاملة وموجهة':'Full guided itineraries'"></span></li>
+                                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#c17551]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span x-text="language==='ar'?'معلومات ثقافية ونصائح أمان':'Cultural context & safety tips'"></span></li>
+                                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#c17551]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span x-text="language==='ar'?'حجز أدلاء محليين':'Curated local guides'"></span></li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto pt-8">
+                            <a href="{{ route('register') }}" class="block text-center w-full bg-[#1f130e] hover:bg-[#c17551] border border-[#3a251c] hover:border-transparent text-[#c17551] hover:text-white py-4 rounded-xl font-black transition-colors no-underline">
+                                <span x-text="language === 'ar' ? 'ابدأ التخطيط الآن' : 'Start Planning &rarr;'"></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-3xl p-8 border-t-4 border-t-[#8E3D1D] hover:-translate-y-2 transition-transform duration-500 group flex flex-col h-full relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-[#8E3D1D] opacity-10 rounded-full blur-3xl group-hover:opacity-30 transition-opacity"></div>
+                        <div class="mb-6">
+                            <h3 class="text-3xl font-black text-white mb-2 font-serif">وين طشّتنا اليوم؟</h3>
+                            <p class="text-[#8E3D1D] font-bold text-sm uppercase tracking-widest mb-6">للمواطن الأردني (Locals)</p>
+                            <ul class="space-y-4 text-gray-300">
+                                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#8E3D1D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span x-text="language==='ar'?'أماكن قريبة منك هسّا':'Nearby hidden places'"></span></li>
+                                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#8E3D1D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span x-text="language==='ar'?'طشّات بتجنن على قد الجيبة':'Budget-friendly trips'"></span></li>
+                                <li class="flex items-center gap-3"><svg class="w-5 h-5 text-[#8E3D1D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span x-text="language==='ar'?'عروض مطاعم حصرية (فزعة)':'Exclusive flash deals'"></span></li>
+                            </ul>
+                        </div>
+                        <div class="mt-auto pt-8">
+                            <a href="{{ route('register') }}" class="block text-center w-full bg-[#1f130e] hover:bg-[#8E3D1D] border border-[#3a251c] hover:border-transparent text-[#8E3D1D] hover:text-white py-4 rounded-xl font-black transition-colors no-underline">
+                                <span x-text="language === 'ar' ? 'يلّا نبلّش &larr;' : 'Explore Deals'"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="planner" class="py-24 relative z-10 border-y border-white/5 bg-[#0a0605]/40">
+            <div class="max-w-5xl mx-auto px-6 lg:px-8">
+                <div class="glass-card rounded-3xl p-8 md:p-12">
+                    <div class="flex flex-col md:flex-row items-center gap-6 mb-10">
+                        <div class="w-20 h-20 bg-gradient-to-br from-[#c17551] to-[#8E3D1D] rounded-2xl flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(193,117,81,0.3)]">🤖</div>
+                        <div class="text-center md:text-left rtl:md:text-right">
+                            <h2 class="text-3xl font-black text-white mb-2" x-text="language === 'ar' ? 'المخطط الذكي للرحلات' : 'AI Smart Trip Planner'"></h2>
+                            <p class="text-gray-400" x-text="language === 'ar' ? 'حدد تفضيلاتك وسنقوم ببناء خطة رحلة كاملة في ثوانٍ.' : 'Generate a personalized itinerary powered by artificial intelligence.'"></p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 mb-2" x-text="language === 'ar' ? 'الوجهة' : 'Destination'"></label>
+                            <select class="glass-input w-full px-4 py-3 rounded-xl appearance-none cursor-pointer">
+                                <option x-text="language === 'ar' ? 'كل الأردن' : 'All Jordan'"></option>
+                                <option x-text="language === 'ar' ? 'عمان' : 'Amman'"></option>
+                                <option x-text="language === 'ar' ? 'البتراء' : 'Petra'"></option>
+                                <option x-text="language === 'ar' ? 'العقبة' : 'Aqaba'"></option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 mb-2" x-text="language === 'ar' ? 'المدة' : 'Duration'"></label>
+                            <select class="glass-input w-full px-4 py-3 rounded-xl appearance-none cursor-pointer">
+                                <option x-text="language === 'ar' ? 'يوم واحد' : '1 Day'"></option>
+                                <option x-text="language === 'ar' ? '3 أيام' : '3 Days'"></option>
+                                <option x-text="language === 'ar' ? 'أسبوع' : '1 Week'"></option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-400 mb-2" x-text="language === 'ar' ? 'أسلوب السفر' : 'Travel Style'"></label>
+                            <select class="glass-input w-full px-4 py-3 rounded-xl appearance-none cursor-pointer">
+                                <option x-text="language === 'ar' ? 'عائلة' : 'Family'"></option>
+                                <option x-text="language === 'ar' ? 'شباب / مغامرة' : 'Adventure'"></option>
+                                <option x-text="language === 'ar' ? 'تاريخ وثقافة' : 'History & Culture'"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div x-data="{ isGenerating: false, generated: false }">
+                        <button @click="isGenerating = true; setTimeout(() => { isGenerating = false; generated = true; }, 2000)"
+                                :disabled="isGenerating || generated"
+                                class="w-full bg-gradient-to-r from-[#c17551] to-[#8E3D1D] text-white py-4 rounded-xl font-black text-lg hover:shadow-[0_0_20px_rgba(193,117,81,0.4)] transition-all flex items-center justify-center gap-3 border-none cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed">
+
+                            <svg x-show="isGenerating" class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+
+                            <span x-show="!isGenerating && !generated" x-text="language === 'ar' ? 'اصنع خطتي الآن ✦' : 'Generate My Itinerary ✦'"></span>
+                            <span x-show="isGenerating" x-text="language === 'ar' ? 'الذكاء الاصطناعي يفكر...' : 'AI is thinking...'"></span>
+                            <span x-show="generated" x-text="language === 'ar' ? 'تم إنشاء الخطة!' : 'Itinerary Ready!'"></span>
+                        </button>
+
+                        <div x-show="generated" x-transition.duration.500ms class="mt-8 bg-black/40 p-6 rounded-2xl border border-[#c17551]/30">
+                            <h4 class="text-[#c17551] font-bold mb-4" x-text="language === 'ar' ? 'مقتطف من خطتك:' : 'Snippet of your plan:'"></h4>
+                            <div class="space-y-4 border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#3a251c] ltr:pl-4 rtl:pr-4">
+                                <div><span class="text-white font-bold">09:00 AM</span> - <span class="text-gray-400" x-text="language === 'ar' ? 'زيارة قلعة عمان' : 'Visit Amman Citadel'"></span></div>
+                                <div><span class="text-white font-bold">01:00 PM</span> - <span class="text-gray-400" x-text="language === 'ar' ? 'غداء في مطعم هاشم (عضو في منصة وين)' : 'Lunch at Hashem Restaurant (Wayn Partner)'"></span></div>
+                                <div><span class="text-white font-bold">04:00 PM</span> - <span class="text-gray-400" x-text="language === 'ar' ? 'المدرج الروماني' : 'Roman Theater'"></span></div>
+                            </div>
+                            <div class="mt-6 text-center">
+                                <a href="{{ route('register') }}" class="text-[#c17551] hover:underline font-bold text-sm" x-text="language === 'ar' ? 'سجل حسابك لرؤية الخطة الكاملة' : 'Sign up to see the full plan and map'"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="currency" class="py-24 relative z-10">
+            <div class="max-w-7xl mx-auto px-6 lg:px-8">
+                <div class="section-header text-center mb-16">
+                    <h2 class="text-4xl font-black font-serif text-white mb-2">
+                        <span x-text="language === 'ar' ? 'محول ' : 'Currency '"></span>
+                        <span class="text-gradient-brown" x-text="language === 'ar' ? 'العملات' : 'Converter'"></span>
+                    </h2>
+                    <p class="text-gray-400" x-text="language === 'ar' ? 'أسعار الصرف المباشرة والدقيقة في الأردن.' : 'Live exchange rates in Jordan. 1 JOD is pegged to 1.41 USD.'"></p>
+                </div>
+
+                <div class="max-w-lg mx-auto glass-card rounded-3xl p-8 text-center" x-data="{ usd: 100, jod: 70.92 }">
+                    <div class="flex items-center justify-between bg-black/40 border border-[#3a251c] rounded-2xl p-4 mb-4">
+                        <span class="text-2xl font-black text-gray-400">USD</span>
+                        <input type="number" x-model="usd" @input="jod = (usd / 1.41).toFixed(2)" class="bg-transparent border-none text-right text-3xl font-black text-white focus:outline-none w-1/2">
+                    </div>
+
+                    <div class="w-10 h-10 bg-[#c17551] rounded-full flex items-center justify-center text-white mx-auto -my-4 relative z-10 shadow-lg border-4 border-[#140b08]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                    </div>
+
+                    <div class="flex items-center justify-between bg-gradient-to-r from-[#c17551]/10 to-transparent border border-[#c17551]/30 rounded-2xl p-4 mt-4">
+                        <span class="text-2xl font-black text-[#c17551]">JOD</span>
+                        <input type="number" x-model="jod" @input="usd = (jod * 1.41).toFixed(2)" class="bg-transparent border-none text-right text-3xl font-black text-[#c17551] focus:outline-none w-1/2">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-6" x-text="language === 'ar' ? '* الدينار الأردني مرتبط بالدولار الأمريكي.' : '* JOD is strictly pegged to the US Dollar.'"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#050302] border-t border-white/10 pt-16 pb-8 relative overflow-hidden z-10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="font-serif text-3xl font-black text-[#c17551]">Wayn?</span>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-relaxed max-w-md" x-text="language === 'ar' ? 'منصة السياحة الأردنية الأولى التي تجمع بين التكنولوجيا المتقدمة والأصالة الأردنية، لتقديم تجربة سياحية لا مثيل لها.' : 'The ultimate Jordanian tourism platform combining advanced tech with authentic hospitality.'"></p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase tracking-wider" x-text="language === 'ar' ? 'المنصة' : 'Platform'"></h4>
+                    <ul class="space-y-3">
+                        <li><a href="{{ route('login') }}" class="text-gray-400 hover:text-[#c17551] transition-colors text-sm no-underline" x-text="language === 'ar' ? 'تسجيل الدخول' : 'Sign In'"></a></li>
+                        <li><a href="{{ route('register') }}" class="text-gray-400 hover:text-[#c17551] transition-colors text-sm no-underline" x-text="language === 'ar' ? 'انضم إلينا كشريك' : 'Join as Partner'"></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-600 text-sm font-medium">&copy; 2026 Wayn Platform. All rights reserved.</p>
+                <div class="flex items-center gap-2 text-gray-600 text-sm font-medium">
+                    Built with <svg class="w-4 h-4 text-[#CE1126] fill-current animate-pulse" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg> in Jordan 🇯🇴
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function landingPage() {
+            return {
+                language: localStorage.getItem('wayn_lang') || 'ar',
+                scrolled: false,
+                mouseX: 0,
+                mouseY: 0,
+
+                init() {
+                    document.documentElement.dir = this.language === 'ar' ? 'rtl' : 'ltr';
+
+                    window.addEventListener('scroll', () => {
+                        this.scrolled = window.scrollY > 20;
+                    });
+
+                    this.$watch('language', val => {
+                        localStorage.setItem('wayn_lang', val);
+                        document.documentElement.dir = val === 'ar' ? 'rtl' : 'ltr';
+                    });
+                },
+
+                toggleLang() {
+                    this.language = this.language === 'ar' ? 'en' : 'ar';
+                },
+
+                scrollTo(id) {
+                    const el = document.getElementById(id);
+                    if(el) el.scrollIntoView({ behavior: 'smooth' });
+                },
+
+                updateGlow(e) {
+                    this.mouseX = e.clientX;
+                    this.mouseY = e.clientY + window.scrollY;
+                }
+            }
+        }
+    </script>
 </body>
 </html>
