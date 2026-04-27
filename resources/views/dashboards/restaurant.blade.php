@@ -1,86 +1,77 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="admin-panel">
-    <div class="admin-header-bar" style="background: linear-gradient(135deg, rgba(193, 117, 81, 0.1), rgba(18, 14, 12, 0.8));">
-        <div>
-            <h2 class="admin-title" style="color: var(--primary-accent);">
-                <span class="en-text">Welcome, Restaurant Partner</span>
-                <span class="ar-text">يا هلا بصاحب المنشأة</span>
-            </h2>
-            <p style="color: var(--text-secondary); margin-top: 5px;">
-                <span class="en-text">Manage your menu and track Wayn-driven visits.</span>
-                <span class="ar-text">أدر قائمة طعامك وتابع الزيارات القادمة من وين.</span>
-            </p>
-        </div>
-        <span class="admin-badge" style="background: var(--highlight);">Verified Partner</span>
+<div class="admin-panel" style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
+    
+    <!-- Header -->
+    <div style="margin-bottom: 3rem; border-bottom: 1px solid rgba(193, 117, 81, 0.3); padding-bottom: 2rem;">
+        <h1 style="color: var(--highlight); margin-bottom: 0.5rem; font-size: 2.5rem;">
+            <span class="en-text">Restaurant Portal</span>
+            <span class="ar-text">يا هلا بصاحب المنشأة</span>
+        </h1>
+        <p style="color: var(--text-secondary); font-size: 1.1rem;">
+            <span class="en-text">Manage your daily offers and track visitor engagement.</span>
+            <span class="ar-text">إدارة العروض اليومية ومتابعة تفاعل الزوار.</span>
+        </p>
     </div>
 
-    <!-- Today's Menu Traffic Stats -->
-    <div class="stats-bar" style="border-top: none; background: transparent;">
-        <div class="stat-item">
-            <div class="stat-num">142</div>
-            <div class="stat-label">
-                <span class="en-text">Menu Views Today</span>
-                <span class="ar-text">مشاهدات القائمة اليوم</span>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num" style="color: var(--highlight);">28</div>
-            <div class="stat-label">
-                <span class="en-text">Wayn Referrals</span>
-                <span class="ar-text">زوار عبر المنصة</span>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">Mansaf</div>
-            <div class="stat-label">
-                <span class="en-text">Most Popular Dish</span>
-                <span class="ar-text">الطبق الأكثر طلباً</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="admin-body">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-            <!-- Publish New Offer Form -->
-            <div style="background: var(--bg-card); padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border);">
-                <h3 style="margin-bottom: 20px; color: var(--text-main);">
-                    <span class="en-text">Publish New Daily Offer</span>
-                    <span class="ar-text">نشر عرض يومي جديد</span>
-                </h3>
-                <form style="display: flex; flex-direction: column; gap: 15px;">
-                    <div>
-                        <label style="color: var(--text-secondary); font-size: 14px; margin-bottom: 5px; display: block;">Offer Title / عنوان العرض</label>
-                        <input type="text" class="glass-input" placeholder="e.g. 20% off Zarb tonight">
-                    </div>
-                    <div>
-                        <label style="color: var(--text-secondary); font-size: 14px; margin-bottom: 5px; display: block;">Description / التفاصيل</label>
-                        <textarea class="glass-input" rows="3" placeholder="Describe the meal and discount..."></textarea>
-                    </div>
-                    <div>
-                        <label style="color: var(--text-secondary); font-size: 14px; margin-bottom: 5px; display: block;">Valid Until / صالح حتى</label>
-                        <input type="time" class="glass-input">
-                    </div>
-                    <button type="button" class="btn-primary" style="margin-top: 10px; border: none;">Publish Offer / نشر العرض</button>
-                </form>
-            </div>
-
-            <!-- Active Offers List -->
-            <div>
-                <h3 style="margin-bottom: 20px; color: var(--text-main);">
-                    <span class="en-text">Active Offers</span>
-                    <span class="ar-text">العروض النشطة</span>
-                </h3>
-                <div class="admin-action-btn" style="margin-bottom: 15px; border-color: var(--primary-accent);">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                            <div class="action-title" style="color: var(--secondary-accent);">Free Arabic Coffee with Any Meal</div>
-                            <div class="action-desc">Valid until 11:00 PM tonight. Over 45 tourists claimed this.</div>
-                        </div>
-                        <span class="status-badge status-active">Live</span>
-                    </div>
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 3rem;">
+        <!-- Stats Sidebar -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="background: rgba(30, 23, 21, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 2rem; border-radius: 16px; text-align: center;">
+                <div style="font-size: 3.5rem; font-weight: bold; color: var(--primary-accent); margin-bottom: 0.5rem;">1,204</div>
+                <div style="color: var(--secondary-accent); font-size: 1.1rem;">
+                    <span class="en-text">Menu Views</span>
+                    <span class="ar-text">مشاهدات المنيو</span>
                 </div>
+            </div>
+            <div style="background: rgba(30, 23, 21, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); padding: 2rem; border-radius: 16px; text-align: center;">
+                <div style="font-size: 3.5rem; font-weight: bold; color: var(--highlight); margin-bottom: 0.5rem;">85</div>
+                <div style="color: var(--secondary-accent); font-size: 1.1rem;">
+                    <span class="en-text">Today's Referrals</span>
+                    <span class="ar-text">زوار من المنصة اليوم</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Offer Form -->
+        <div>
+            <div style="background: rgba(30, 23, 21, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(193, 117, 81, 0.2); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border-radius: 24px; padding: 3rem;">
+                <h3 style="color: var(--primary-accent); margin-bottom: 2rem; font-size: 1.8rem;">
+                    <span class="en-text">Post Daily Offer</span>
+                    <span class="ar-text">نزل عرض اليوم</span>
+                </h3>
+                <form style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div>
+                        <label class="form-label" style="color: var(--secondary-accent); display: block; margin-bottom: 0.5rem;">
+                            <span class="en-text">Offer Title</span>
+                            <span class="ar-text">عنوان العرض</span>
+                        </label>
+                        <input type="text" class="glass-input-premium" placeholder="..." />
+                    </div>
+                    <div>
+                        <label class="form-label" style="color: var(--secondary-accent); display: block; margin-bottom: 0.5rem;">
+                            <span class="en-text">Details & Conditions</span>
+                            <span class="ar-text">التفاصيل والشروط</span>
+                        </label>
+                        <textarea class="glass-input-premium" rows="4" placeholder="..."></textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <label class="form-label" style="color: var(--secondary-accent); display: block; margin-bottom: 0.5rem;">
+                                <span class="en-text">Valid Until</span>
+                                <span class="ar-text">صالح لغاية</span>
+                            </label>
+                            <input type="time" class="glass-input-premium" />
+                        </div>
+                        <div style="display: flex; align-items: flex-end;">
+                            <button type="button" class="btn-premium">
+                                <span class="en-text">Publish Live</span>
+                                <span class="ar-text">انشر العرض</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

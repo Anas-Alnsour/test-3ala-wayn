@@ -1,85 +1,104 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="admin-panel">
-    <div class="admin-header-bar" style="background: linear-gradient(135deg, rgba(42, 32, 29, 0.8), rgba(193, 117, 81, 0.2));">
+<div class="admin-panel" style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
+    
+    <!-- Header -->
+    <div style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: center;">
         <div>
-            <h2 class="admin-title" style="color: var(--text-main);">
-                <span class="en-text">Welcome, Hotel Partner</span>
-                <span class="ar-text">يا هلا بضيوف الرحمن</span>
-            </h2>
-            <p style="color: var(--text-secondary); margin-top: 5px;">
-                <span class="en-text">Manage your property, occupancy, and guest requests.</span>
-                <span class="ar-text">أدر منشأتك، نسبة الإشغال، وطلبات النزلاء.</span>
+            <h1 style="color: var(--highlight); margin-bottom: 0.5rem; font-size: 2.5rem;">
+                <span class="en-text">Hotel Management</span>
+                <span class="ar-text">لوحة إدارة الفندق</span>
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">
+                <span class="en-text">Monitor live guests and manage bookings.</span>
+                <span class="ar-text">متابعة النزلاء وإدارة الحجوزات.</span>
             </p>
         </div>
-        <button class="btn-secondary" style="border-radius: 20px;">Manage Property Details</button>
-    </div>
-
-    <!-- Current Occupancy Stats -->
-    <div class="stats-bar" style="border-top: none; background: transparent;">
-        <div class="stat-item">
-            <div class="stat-num" style="color: var(--primary-accent);">85%</div>
-            <div class="stat-label">
-                <span class="en-text">Current Occupancy</span>
-                <span class="ar-text">نسبة الإشغال الحالية</span>
+        <div style="display: flex; gap: 1rem;">
+            <div style="background: rgba(30, 23, 21, 0.7); border: 1px solid var(--primary-accent); padding: 1rem 2rem; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: bold; color: #fff;">85%</div>
+                <div style="color: var(--secondary-accent); font-size: 0.9rem;">
+                    <span class="en-text">Current Occupancy</span>
+                    <span class="ar-text">الإشغال الحالي</span>
+                </div>
             </div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num">12</div>
-            <div class="stat-label">
-                <span class="en-text">Check-ins Today</span>
-                <span class="ar-text">تسجيل الدخول اليوم</span>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-num" style="color: var(--highlight);">5</div>
-            <div class="stat-label">
-                <span class="en-text">Pending Requests</span>
-                <span class="ar-text">طلبات قيد الانتظار</span>
+            <div style="background: rgba(30, 23, 21, 0.7); border: 1px solid var(--highlight); padding: 1rem 2rem; border-radius: 12px; text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: bold; color: #fff;">12</div>
+                <div style="color: var(--secondary-accent); font-size: 0.9rem;">
+                    <span class="en-text">Pending Check-ins</span>
+                    <span class="ar-text">وصول اليوم</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="admin-body">
-        <h3 style="margin-bottom: 20px; color: var(--secondary-accent);">
+    <!-- Live Requests Table -->
+    <div>
+        <h3 style="color: var(--primary-accent); margin-bottom: 1.5rem; font-size: 1.8rem;">
             <span class="en-text">Live Guest Requests</span>
-            <span class="ar-text">طلبات النزلاء المباشرة</span>
+            <span class="ar-text">طلبات النزلاء الحالية</span>
         </h3>
         
-        <div class="table-wrapper" style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--glass-border); padding: 10px;">
-            <table class="users-table">
+        <div style="background: rgba(30, 23, 21, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead>
-                    <tr>
-                        <th><span class="en-text">Room</span><span class="ar-text">الغرفة</span></th>
-                        <th><span class="en-text">Guest Name</span><span class="ar-text">اسم النزيل</span></th>
-                        <th><span class="en-text">Request Details</span><span class="ar-text">تفاصيل الطلب</span></th>
-                        <th><span class="en-text">Status / Action</span><span class="ar-text">الحالة / الإجراء</span></th>
+                    <tr style="background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <th style="padding: 1.5rem; color: var(--secondary-accent);">
+                            <span class="en-text">Room</span>
+                            <span class="ar-text">رقم الغرفة</span>
+                        </th>
+                        <th style="padding: 1.5rem; color: var(--secondary-accent);">
+                            <span class="en-text">Request Type</span>
+                            <span class="ar-text">نوع الطلب</span>
+                        </th>
+                        <th style="padding: 1.5rem; color: var(--secondary-accent);">
+                            <span class="en-text">Status</span>
+                            <span class="ar-text">الحالة</span>
+                        </th>
+                        <th style="padding: 1.5rem; color: var(--secondary-accent); text-align: right;">
+                            <span class="en-text">Action</span>
+                            <span class="ar-text">إجراء</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td style="color: var(--secondary-accent); font-weight: bold;">402</td>
-                        <td>Mr. Smith</td>
-                        <td>Extra pillows and towels</td>
-                        <td>
-                            <button class="btn-primary" style="padding: 4px 12px; font-size: 12px; border: none;">Mark Done</button>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1.5rem; color: #fff; font-weight: bold; font-size: 1.2rem;">304</td>
+                        <td style="padding: 1.5rem; color: #a3a3a3;">
+                            <span class="en-text">Late Checkout</span>
+                            <span class="ar-text">تأخير خروج</span>
+                        </td>
+                        <td style="padding: 1.5rem;">
+                            <span style="background: rgba(193, 117, 81, 0.2); color: var(--primary-accent); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">
+                                <span class="en-text">Pending</span>
+                                <span class="ar-text">قيد الانتظار</span>
+                            </span>
+                        </td>
+                        <td style="padding: 1.5rem; text-align: right;">
+                            <button class="btn-premium" style="padding: 0.5rem 1rem; font-size: 0.9rem; width: auto; display: inline-block;">
+                                <span class="en-text">Approve</span>
+                                <span class="ar-text">موافقة</span>
+                            </button>
                         </td>
                     </tr>
                     <tr>
-                        <td style="color: var(--secondary-accent); font-weight: bold;">115</td>
-                        <td>Family Al-Qadi</td>
-                        <td>Book a local guide for Jerash tomorrow</td>
-                        <td>
-                            <button class="btn-secondary" style="padding: 4px 12px; font-size: 12px;">Contact Guide</button>
+                        <td style="padding: 1.5rem; color: #fff; font-weight: bold; font-size: 1.2rem;">512</td>
+                        <td style="padding: 1.5rem; color: #a3a3a3;">
+                            <span class="en-text">Room Service (Towels)</span>
+                            <span class="ar-text">خدمة غرف (مناشف)</span>
                         </td>
-                    </tr>
-                    <tr>
-                        <td style="color: var(--secondary-accent); font-weight: bold;">308</td>
-                        <td>Sarah J.</td>
-                        <td>Late checkout request (2:00 PM)</td>
-                        <td>
-                            <span class="status-badge status-active" style="margin-right: 10px;">Approved</span>
+                        <td style="padding: 1.5rem;">
+                            <span style="background: rgba(230, 184, 133, 0.2); color: var(--highlight); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">
+                                <span class="en-text">In Progress</span>
+                                <span class="ar-text">جاري التنفيذ</span>
+                            </span>
+                        </td>
+                        <td style="padding: 1.5rem; text-align: right;">
+                            <button class="btn-premium" style="padding: 0.5rem 1rem; font-size: 0.9rem; width: auto; display: inline-block; background: rgba(0,0,0,0.5) !important; border: 1px solid rgba(255,255,255,0.2) !important;">
+                                <span class="en-text">Mark Done</span>
+                                <span class="ar-text">تم الإنجاز</span>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
