@@ -569,3 +569,11 @@ select.glass-input { appearance: none; background-image: url('data:image/svg+xml
   .stat-num { font-size: 28px; }
   .hero { height: 70vh; }
 }
+
+/* --- Dynamic Role Utilities --- */
+.text-dynamic { color: var(--dynamic-primary) !important; }
+.bg-dynamic { background-color: var(--dynamic-primary) !important; }
+.border-dynamic { border-color: var(--dynamic-primary) !important; }
+.fill-dynamic { fill: var(--dynamic-primary) !important; }
+.btn-dynamic { background: var(--dynamic-primary) !important; color: #fff !important; transition: all 0.3s; border: none; cursor: pointer; }
+.btn-dynamic:hover { box-shadow: 0 0 15px var(--dynamic-primary); transform: translateY(-2px); }

@@ -1,7 +1,5 @@
 @php
     $cities = \App\Models\City::with('attractions')->get();
-    // In a real scenario, this would be auth()->user()->savedLocations()->get()
-    // but we use cities as requested
     $savedLocations = $cities->take(4); 
     
     $itinerarySteps = [
@@ -58,7 +56,18 @@
 @endsection
 
 @section('content')
-<div x-data="{ activeTab: 'overview' }">
+<div x-data="{
+    activeTab: 'overview',
+    usd: 100,
+    get jod() { return (this.usd * 0.709).toFixed(2); },
+    addToPlanner(name) {
+        this.showToast(name + ' added to your planner!', 'تمت إضافة ' + name + ' للجدول بنجاح!');
+    },
+    removeLocation(name, event) {
+        event.target.closest('.city-card-wrapper').style.display = 'none';
+        this.showToast(name + ' removed from saved locations.', 'تم إزالة ' + name + ' من الأماكن المحفوظة.');
+    }
+}">
 
     <!-- Header -->
     <div class="mb-8">
@@ -73,7 +82,7 @@
     </div>
 
     <!-- Overview Tab (Active Itinerary) -->
-    <div x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
         <div class="max-w-4xl">
             <h3 class="text-xl font-bold text-dynamic mb-6 flex items-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
@@ -120,15 +129,15 @@
     </div>
 
     <!-- Wishlist Tab -->
-    <div x-show="activeTab === 'wishlist'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'wishlist'" x-transition.opacity.duration.300ms>
         <div class="cities-grid">
             @forelse($savedLocations as $location)
             <!-- Saved Location -->
-            <div class="solid-panel overflow-hidden group relative h-64 hover:border-dynamic transition-colors">
+            <div class="city-card-wrapper solid-panel overflow-hidden group relative h-64 hover:border-dynamic transition-colors">
                 <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-wiki="{{ $location->wiki_name ?? $location->name }}" class="city-img absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="{{ $location->name }}">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                 <div class="absolute top-4 right-4 rtl:left-4 rtl:right-auto z-10">
-                    <button class="w-8 h-8 rounded-full bg-black/50 backdrop-blur text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors">
+                    <button @click="removeLocation('{{ addslashes($location->name) }}', $event)" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors border-none cursor-pointer">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
                     </button>
                 </div>
@@ -141,7 +150,7 @@
                         <span class="en-text">{{ Str::limit($location->description ?? 'Beautiful destination in Jordan.', 50) }}</span>
                         <span class="ar-text">{{ Str::limit($location->description_ar ?? 'وجهة جميلة في الأردن.', 50) }}</span>
                     </p>
-                    <button class="text-dynamic text-sm font-bold hover:opacity-80">
+                    <button @click="addToPlanner('{{ addslashes($location->name) }}')" class="text-dynamic text-sm font-bold hover:opacity-80 bg-transparent border-none cursor-pointer flex items-center gap-1">
                         <span class="en-text">Add to Planner &rarr;</span>
                         <span class="ar-text">&larr; أضف للجدول</span>
                     </button>
@@ -154,7 +163,7 @@
     </div>
 
     <!-- Tools Tab -->
-    <div x-show="activeTab === 'tools'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'tools'" x-transition.opacity.duration.300ms>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             <!-- Currency Converter -->
@@ -164,7 +173,7 @@
                     <span class="en-text">Currency Converter</span>
                     <span class="ar-text">محول العملات</span>
                 </h3>
-                <div class="space-y-4" x-data="{ usd: 100, get jod() { return (this.usd * 0.709).toFixed(2); } }">
+                <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">From (USD/EUR)</label>
                         <input type="number" x-model="usd" class="glass-input-premium text-lg" min="0">
@@ -197,7 +206,7 @@
                             </div>
                             <div class="text-red-400 text-sm">Police, Fire, Ambulance</div>
                         </div>
-                        <a href="tel:911" class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(220,38,38,0.5)] group-hover:scale-110 transition-transform">
+                        <a href="tel:911" @click="showToast('Calling 911...', 'جاري الاتصال بـ 911...')" class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-xl shadow-[0_0_15px_rgba(220,38,38,0.5)] group-hover:scale-110 transition-transform no-underline">
                             911
                         </a>
                     </div>
@@ -210,7 +219,7 @@
                             </div>
                             <div class="text-amber-400 text-sm">Dedicated help for tourists</div>
                         </div>
-                        <a href="tel:11777" class="w-14 h-14 rounded-full bg-amber-600 flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(217,119,6,0.5)] group-hover:scale-110 transition-transform tracking-wider">
+                        <a href="tel:11777" @click="showToast('Calling Tourist Police...', 'جاري الاتصال بالشرطة السياحية...')" class="w-14 h-14 rounded-full bg-amber-600 flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(217,119,6,0.5)] group-hover:scale-110 transition-transform tracking-wider no-underline">
                             11777
                         </a>
                     </div>

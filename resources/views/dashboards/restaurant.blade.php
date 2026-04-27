@@ -5,7 +5,6 @@
     // Simulated active offers
     $activeOffers = [
         (object)[
-            'id' => 1, 
             'name' => 'Mansaf Friday Special', 
             'name_ar' => 'عرض منسف يوم الجمعة', 
             'original_price' => 20.00, 
@@ -14,7 +13,6 @@
             'active' => true
         ],
         (object)[
-            'id' => 2, 
             'name' => 'Authentic Mixed Grill', 
             'name_ar' => 'مشاوي مشكلة أصيلة', 
             'original_price' => 30.00, 
@@ -23,7 +21,6 @@
             'active' => false
         ],
         (object)[
-            'id' => 3, 
             'name' => 'Kunafa & Turkish Coffee', 
             'name_ar' => 'كنافة وقهوة تركية', 
             'original_price' => 8.00, 
@@ -54,7 +51,35 @@
 @endsection
 
 @section('content')
-<div x-data="{ activeTab: 'overview' }">
+<div x-data="{
+    formOffer: { name: '', original: '', discount: '', time: '', audience: 'all' },
+    offers: {{ json_encode($activeOffers) }},
+    postOffer() {
+        if (!this.formOffer.name || !this.formOffer.discount) {
+            this.showToast('Please fill all required fields.', 'الرجاء تعبئة جميع الحقول المطلوبة.');
+            return;
+        }
+        this.offers.unshift({
+            name: this.formOffer.name,
+            name_ar: this.formOffer.name,
+            original_price: parseFloat(this.formOffer.original) || 0,
+            discount_price: parseFloat(this.formOffer.discount) || 0,
+            valid_until: this.formOffer.time || '23:59',
+            active: true
+        });
+        this.showToast('Offer Published Successfully!', 'تم نشر العرض بنجاح!');
+        this.formOffer = { name: '', original: '', discount: '', time: '', audience: 'all' };
+        this.activeTab = 'active_offers';
+    },
+    toggleOffer(index) {
+        this.offers[index].active = !this.offers[index].active;
+        if(this.offers[index].active) {
+            this.showToast('Offer Activated', 'تم تفعيل العرض');
+        } else {
+            this.showToast('Offer Paused', 'تم إيقاف العرض');
+        }
+    }
+}">
 
     <!-- Header -->
     <div class="mb-8">
@@ -69,7 +94,7 @@
     </div>
 
     <!-- Overview Tab -->
-    <div x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="stat-card">
                 <div class="text-gray-400 text-sm font-medium mb-1">
@@ -98,19 +123,19 @@
     </div>
 
     <!-- Post Offer Tab -->
-    <div x-show="activeTab === 'post_offer'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'post_offer'" x-transition.opacity.duration.300ms>
         <div class="solid-panel p-6 lg:p-10 max-w-4xl mx-auto border-t-4 border-dynamic">
             <h3 class="text-2xl font-bold text-white mb-6">
                 <span class="en-text">Post Daily Offer</span>
                 <span class="ar-text">نشر عرض يومي</span>
             </h3>
             
-            <form class="space-y-6">
+            <form class="space-y-6" @submit.prevent="postOffer">
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         <span class="en-text">Meal / Offer Name</span><span class="ar-text">اسم الوجبة / العرض</span>
                     </label>
-                    <input type="text" class="glass-input-premium" placeholder="e.g. Traditional Mansaf Experience / تجربة المنسف الأصيل">
+                    <input type="text" x-model="formOffer.name" required class="glass-input-premium" placeholder="e.g. Traditional Mansaf Experience / تجربة المنسف الأصيل">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -118,13 +143,13 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Original Price (JOD)</span><span class="ar-text">السعر الأصلي (دينار)</span>
                         </label>
-                        <input type="number" step="0.5" class="glass-input-premium" placeholder="15.00">
+                        <input type="number" step="0.5" x-model="formOffer.original" required class="glass-input-premium" placeholder="15.00">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Discounted Price (JOD)</span><span class="ar-text">السعر بعد الخصم (دينار)</span>
                         </label>
-                        <input type="number" step="0.5" class="glass-input-premium border-dynamic" placeholder="10.00">
+                        <input type="number" step="0.5" x-model="formOffer.discount" required class="glass-input-premium border-dynamic" placeholder="10.00">
                     </div>
                 </div>
 
@@ -133,13 +158,13 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Valid Until</span><span class="ar-text">صالح حتى</span>
                         </label>
-                        <input type="time" class="glass-input-premium">
+                        <input type="time" x-model="formOffer.time" required class="glass-input-premium">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Target Audience</span><span class="ar-text">الجمهور المستهدف</span>
                         </label>
-                        <select class="glass-input-premium">
+                        <select x-model="formOffer.audience" class="glass-input-premium">
                             <option value="all">Everyone / الجميع</option>
                             <option value="tourists">Tourists Only / السياح فقط</option>
                             <option value="locals">Locals Only / الأردنيين فقط</option>
@@ -148,7 +173,7 @@
                 </div>
 
                 <div class="pt-4">
-                    <button type="button" class="w-full py-3 bg-dynamic hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-lg">
+                    <button type="submit" class="w-full py-3 btn-dynamic text-lg font-bold rounded-lg transition-all shadow-lg">
                         <span class="en-text">Publish Offer</span>
                         <span class="ar-text">نشر العرض</span>
                     </button>
@@ -158,36 +183,37 @@
     </div>
 
     <!-- Active Offers Tab -->
-    <div x-show="activeTab === 'active_offers'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'active_offers'" x-transition.opacity.duration.300ms>
         <div class="cities-grid">
-            @foreach($activeOffers as $offer)
-            <!-- Offer Card -->
-            <div class="solid-panel p-5 relative overflow-hidden" x-data="{ active: {{ $offer->active ? 'true' : 'false' }} }">
-                <div class="absolute top-0 right-0 w-16 h-16 rounded-bl-full rtl:left-0 rtl:right-auto rtl:rounded-bl-none rtl:rounded-br-full z-0 transition-colors" :class="active ? 'bg-dynamic/20' : 'bg-gray-600/20'"></div>
-                <div class="relative z-10">
-                    <div class="flex justify-between items-start mb-4">
-                        <h4 class="text-lg font-bold text-white pr-8 rtl:pr-0 rtl:pl-8 leading-tight">
-                            <span class="en-text">{{ $offer->name }}</span>
-                            <span class="ar-text">{{ $offer->name_ar }}</span>
-                        </h4>
-                        <span class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-500 text-xs font-bold shrink-0" x-show="active">LIVE</span>
-                        <span class="px-2 py-1 rounded bg-gray-500/20 text-gray-500 text-xs font-bold shrink-0" x-show="!active" style="display:none">PAUSED</span>
-                    </div>
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="text-gray-500 line-through text-sm">{{ number_format($offer->original_price, 2) }} JOD</div>
-                        <div class="text-2xl font-bold text-dynamic">{{ number_format($offer->discount_price, 2) }} JOD</div>
-                    </div>
-                    <div class="flex items-center justify-between border-t border-white/10 pt-4">
-                        <div class="text-xs text-gray-400">
-                            Valid till: <span class="text-white font-medium">{{ $offer->valid_until }}</span>
+            <template x-for="(offer, index) in offers" :key="index">
+                <!-- Offer Card -->
+                <div class="solid-panel p-5 relative overflow-hidden transition-colors" :class="offer.active ? 'border-dynamic' : 'border-transparent'">
+                    <div class="absolute top-0 right-0 w-16 h-16 rounded-bl-full rtl:left-0 rtl:right-auto rtl:rounded-bl-none rtl:rounded-br-full z-0 transition-colors" :class="offer.active ? 'bg-dynamic/20' : 'bg-gray-600/20'"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-white pr-8 rtl:pr-0 rtl:pl-8 leading-tight">
+                                <span class="en-text" x-text="offer.name"></span>
+                                <span class="ar-text" x-text="offer.name_ar"></span>
+                            </h4>
+                            <span x-show="offer.active" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-500 text-xs font-bold shrink-0">LIVE</span>
+                            <span x-show="!offer.active" class="px-2 py-1 rounded bg-gray-500/20 text-gray-500 text-xs font-bold shrink-0" style="display:none">PAUSED</span>
                         </div>
-                        <button @click="active = !active" class="text-xs font-bold px-3 py-1 rounded border transition-colors" :class="active ? 'border-red-500 text-red-500 hover:bg-red-500/10' : 'border-emerald-500 text-emerald-500 hover:bg-emerald-500/10'">
-                            <span x-text="active ? 'Deactivate' : 'Activate'"></span>
-                        </button>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="text-gray-500 line-through text-sm"><span x-text="offer.original_price.toFixed(2)"></span> JOD</div>
+                            <div class="text-2xl font-bold text-dynamic"><span x-text="offer.discount_price.toFixed(2)"></span> JOD</div>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-white/10 pt-4">
+                            <div class="text-xs text-gray-400">
+                                Valid till: <span class="text-white font-medium" x-text="offer.valid_until"></span>
+                            </div>
+                            <button @click="toggleOffer(index)" class="text-xs font-bold px-3 py-1 rounded border transition-colors cursor-pointer bg-transparent" :class="offer.active ? 'border-red-500 text-red-500 hover:bg-red-500/10' : 'border-emerald-500 text-emerald-500 hover:bg-emerald-500/10'">
+                                <span x-text="offer.active ? 'Deactivate' : 'Activate'"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            @endforeach
+            </template>
+            <div x-show="offers.length === 0" style="display:none" class="col-span-full text-center text-gray-500 py-10">No active offers.</div>
         </div>
     </div>
 

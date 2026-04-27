@@ -27,7 +27,22 @@
 @endsection
 
 @section('content')
-<div x-data="{ activeTab: 'overview' }">
+<div x-data="{
+    activeTab: 'overview',
+    requests: {{ json_encode($guestRequests) }},
+    get pendingCount() { return this.requests.filter(r => r.status === 'Pending').length; },
+    changeStatus(index, newStatus) {
+        if (!newStatus) return;
+        this.requests[index].status = newStatus;
+        if(newStatus === 'In Progress') {
+            this.showToast('Request marked as In Progress', 'الطلب قيد التنفيذ');
+        } else if(newStatus === 'Resolved') {
+            this.showToast('Request Resolved', 'تم حل الطلب بنجاح');
+        } else {
+            this.showToast('Request reverted to Pending', 'عاد الطلب لقيد الانتظار');
+        }
+    }
+}">
 
     <!-- Header -->
     <div class="mb-8">
@@ -42,7 +57,7 @@
     </div>
 
     <!-- Overview Tab -->
-    <div x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
         <div class="stats-bar mb-8">
             <div class="stat-card border-dynamic shadow-[0_0_15px_color-mix(in_srgb,var(--dynamic-primary)_20%,transparent)]">
                 <div class="text-gray-400 text-sm font-medium mb-1">
@@ -72,10 +87,14 @@
                     <span class="en-text">Pending Requests</span>
                     <span class="ar-text">طلبات قيد الانتظار</span>
                 </div>
-                <div class="text-3xl font-bold text-red-500 mb-2">{{ collect($guestRequests)->where('status', 'Pending')->count() }}</div>
-                <div class="text-red-400 text-sm flex items-center gap-1">
+                <div class="text-3xl font-bold text-red-500 mb-2" x-text="pendingCount"></div>
+                <div class="text-red-400 text-sm flex items-center gap-1" x-show="pendingCount > 0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span>Requires attention</span>
+                </div>
+                <div class="text-emerald-500 text-sm flex items-center gap-1" x-show="pendingCount === 0" style="display:none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span>All requests handled</span>
                 </div>
             </div>
         </div>
@@ -92,7 +111,7 @@
     </div>
 
     <!-- Guest Requests Tab -->
-    <div x-show="activeTab === 'guest_requests'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'guest_requests'" x-transition.opacity.duration.300ms>
         <div class="solid-panel overflow-hidden">
             <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center bg-[#1F2937]">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2">
@@ -114,42 +133,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($guestRequests as $request)
-                        <tr class="hover:bg-white/5 transition-colors {{ $request->status === 'Resolved' ? 'opacity-50' : '' }}">
-                            <td class="font-bold text-dynamic">{{ $request->room }}</td>
-                            <td class="text-white">{{ $request->guest }}</td>
-                            <td class="text-gray-300">{{ $request->type }}</td>
-                            <td class="{{ $request->status === 'Pending' ? 'text-red-400 font-medium' : 'text-gray-400' }}">{{ $request->time }}</td>
-                            <td>
-                                @if($request->status === 'Pending')
-                                    <span class="px-2 py-1 rounded-full bg-red-500/20 text-red-500 text-xs font-bold uppercase tracking-wider">Pending</span>
-                                @elseif($request->status === 'In Progress')
-                                    <span class="px-2 py-1 rounded-full text-dynamic bg-dynamic/20 text-xs font-bold uppercase tracking-wider">In Progress</span>
-                                @else
-                                    <span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider">Resolved</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($request->status === 'Pending')
-                                    <select class="bg-gray-800 border border-white/10 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-dynamic">
-                                        <option>Mark In Progress</option>
-                                        <option>Mark Resolved</option>
+                        <template x-for="(request, index) in requests" :key="index">
+                            <tr class="hover:bg-white/5 transition-colors" :class="request.status === 'Resolved' ? 'opacity-50' : ''">
+                                <td class="font-bold text-dynamic" x-text="request.room"></td>
+                                <td class="text-white" x-text="request.guest"></td>
+                                <td class="text-gray-300" x-text="request.type"></td>
+                                <td :class="request.status === 'Pending' ? 'text-red-400 font-medium' : 'text-gray-400'" x-text="request.time"></td>
+                                <td>
+                                    <span x-show="request.status === 'Pending'" class="px-2 py-1 rounded-full bg-red-500/20 text-red-500 text-xs font-bold uppercase tracking-wider">Pending</span>
+                                    <span x-show="request.status === 'In Progress'" class="px-2 py-1 rounded-full text-dynamic bg-dynamic/20 text-xs font-bold uppercase tracking-wider" style="display:none">In Progress</span>
+                                    <span x-show="request.status === 'Resolved'" class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider" style="display:none">Resolved</span>
+                                </td>
+                                <td>
+                                    <select x-show="request.status === 'Pending'" @change="changeStatus(index, $event.target.value); $event.target.value = ''" class="bg-gray-800 border border-white/10 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-dynamic">
+                                        <option value="">Actions...</option>
+                                        <option value="In Progress">Mark In Progress</option>
+                                        <option value="Resolved">Mark Resolved</option>
                                     </select>
-                                @elseif($request->status === 'In Progress')
-                                    <select class="bg-gray-800 border border-white/10 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-dynamic">
-                                        <option>Mark Resolved</option>
-                                        <option>Revert to Pending</option>
+                                    <select x-show="request.status === 'In Progress'" @change="changeStatus(index, $event.target.value); $event.target.value = ''" class="bg-gray-800 border border-white/10 text-white text-xs rounded px-2 py-1 focus:outline-none focus:border-dynamic" style="display:none">
+                                        <option value="">Actions...</option>
+                                        <option value="Resolved">Mark Resolved</option>
+                                        <option value="Pending">Revert to Pending</option>
                                     </select>
-                                @else
-                                    <span class="text-xs text-gray-500">Done</span>
-                                @endif
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
+                                    <span x-show="request.status === 'Resolved'" class="text-xs text-gray-500 font-bold" style="display:none">Done</span>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="requests.length === 0" style="display:none">
                             <td colspan="6" class="text-center py-6 text-gray-500">No active requests.</td>
                         </tr>
-                        @endforelse
                     </tbody>
                 </table>
             </div>

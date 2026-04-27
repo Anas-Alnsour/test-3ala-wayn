@@ -3,7 +3,7 @@
     
     // Simulated Hidden Gems for Local
     $myContributions = [
-        (object)['name' => 'Wadi Bin Hammad Secret Trail', 'name_ar' => 'مسار وادي بن حماد', 'date' => 'Oct 24, 2023', 'status' => 'Pending', 'wiki_img' => 'Wadi_Mujib'], // using Wadi_Mujib as fallback for Wadi Hammad
+        (object)['name' => 'Wadi Bin Hammad Secret Trail', 'name_ar' => 'مسار وادي بن حماد', 'date' => 'Oct 24, 2023', 'status' => 'Pending', 'wiki_img' => 'Wadi_Mujib'], 
         (object)['name' => 'Old Salt Viewpoint', 'name_ar' => 'مطل السلط القديم', 'date' => 'Sep 10, 2023', 'status' => 'Approved', 'wiki_img' => 'Al-Salt'],
     ];
 
@@ -52,7 +52,21 @@
 @endsection
 
 @section('content')
-<div x-data="{ activeTab: 'overview' }">
+<div x-data="{
+    formGem: { name: '', coords: '', desc: '', region: '' },
+    submitGem() {
+        if (!this.formGem.name) {
+            this.showToast('Please enter the place name', 'الرجاء إدخال اسم المكان');
+            return;
+        }
+        this.showToast('Gem submitted! Review pending.', 'تم إرسال المكان للمراجعة!');
+        this.formGem = { name: '', coords: '', desc: '', region: '' };
+        this.activeTab = 'contributions';
+    },
+    claimDeal(name) {
+        this.showToast('Deal Claimed: ' + name, 'تم الحصول على العرض!');
+    }
+}">
 
     <!-- Header -->
     <div class="mb-8">
@@ -67,7 +81,7 @@
     </div>
 
     <!-- Overview Tab -->
-    <div x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
         <h3 class="text-xl font-bold text-dynamic mb-6 flex items-center gap-2">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span class="en-text">Exclusive Local Deals</span>
@@ -99,7 +113,7 @@
                             <span class="text-gray-500 line-through text-xs">{{ $deal->original_price }} JD</span>
                             <span class="text-dynamic font-bold text-lg ml-2 rtl:ml-0 rtl:mr-2">{{ $deal->discount_price }} JD</span>
                         </div>
-                        <button class="px-4 py-2 bg-dynamic hover:opacity-90 text-white text-sm font-bold rounded-lg transition-colors">
+                        <button @click="claimDeal('{{ addslashes($deal->name) }}')" class="px-4 py-2 btn-dynamic text-sm font-bold rounded-lg transition-colors">
                             <span class="en-text">Claim Deal</span>
                             <span class="ar-text">احصل على العرض</span>
                         </button>
@@ -113,7 +127,7 @@
     </div>
 
     <!-- Submit Gem Tab -->
-    <div x-show="activeTab === 'submit_gem'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'submit_gem'" x-transition.opacity.duration.300ms>
         <div class="solid-panel p-6 lg:p-10 max-w-3xl mx-auto border-t-4 border-dynamic">
             <div class="text-center mb-8">
                 <div class="w-16 h-16 rounded-full text-dynamic flex items-center justify-center mx-auto mb-4 border border-dynamic" style="background-color: color-mix(in srgb, var(--dynamic-primary) 20%, transparent);">
@@ -129,12 +143,12 @@
                 </p>
             </div>
 
-            <form class="space-y-6">
+            <form class="space-y-6" @submit.prevent="submitGem">
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         <span class="en-text">Place Name</span><span class="ar-text">اسم المكان</span>
                     </label>
-                    <input type="text" class="glass-input-premium" placeholder="e.g. Ain Qunya Waterfall / شلال عين قينيا">
+                    <input type="text" x-model="formGem.name" required class="glass-input-premium" placeholder="e.g. Ain Qunya Waterfall / شلال عين قينيا">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -142,7 +156,7 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Region / Governorate</span><span class="ar-text">المحافظة</span>
                         </label>
-                        <select class="glass-input-premium">
+                        <select x-model="formGem.region" class="glass-input-premium">
                             <option value="">Select...</option>
                             @foreach($cities as $city)
                                 <option value="{{ $city->id }}">{{ $city->name }}</option>
@@ -154,8 +168,8 @@
                             <span class="en-text">GPS Coordinates</span><span class="ar-text">إحداثيات GPS</span>
                         </label>
                         <div class="flex">
-                            <input type="text" class="glass-input-premium rounded-r-none rtl:rounded-r-lg rtl:rounded-l-none" placeholder="32.0123, 35.8456">
-                            <button type="button" class="bg-gray-700 px-4 rounded-r-lg rtl:rounded-r-none rtl:rounded-l-lg border border-l-0 rtl:border-l rtl:border-r-0 border-white/10 text-gray-300 hover:text-white transition-colors flex items-center justify-center">
+                            <input type="text" x-model="formGem.coords" class="glass-input-premium rounded-r-none rtl:rounded-r-lg rtl:rounded-l-none" placeholder="32.0123, 35.8456">
+                            <button type="button" @click="showToast('GPS Captured', 'تم التقاط الموقع')" class="bg-gray-700 px-4 rounded-r-lg rtl:rounded-r-none rtl:rounded-l-lg border border-l-0 rtl:border-l rtl:border-r-0 border-white/10 text-gray-300 hover:text-white transition-colors flex items-center justify-center">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                             </button>
                         </div>
@@ -166,14 +180,14 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         <span class="en-text">Description & Authentic Context</span><span class="ar-text">الوصف والسياق الأصيل</span>
                     </label>
-                    <textarea class="glass-input-premium h-32 resize-none" placeholder="What makes this place special? / شو اللي بيميز هالمكان؟"></textarea>
+                    <textarea x-model="formGem.desc" class="glass-input-premium h-32 resize-none" placeholder="What makes this place special? / شو اللي بيميز هالمكان؟"></textarea>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         <span class="en-text">Upload Images</span><span class="ar-text">رفع الصور</span>
                     </label>
-                    <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-dynamic transition-colors cursor-pointer bg-gray-800/50">
+                    <div @click="showToast('File picker opened', 'تم فتح اختيار الملفات')" class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center hover:border-dynamic transition-colors cursor-pointer bg-gray-800/50">
                         <svg class="w-10 h-10 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         <p class="text-gray-400 text-sm">
                             <span class="en-text">Click to upload or drag and drop</span><span class="ar-text">اضغط للرفع أو اسحب وأفلت</span>
@@ -183,7 +197,7 @@
                 </div>
 
                 <div class="pt-4">
-                    <button type="button" class="w-full py-3 bg-dynamic hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-lg">
+                    <button type="submit" class="w-full py-3 btn-dynamic text-lg font-bold rounded-lg transition-all shadow-lg">
                         <span class="en-text">Submit for Review</span>
                         <span class="ar-text">إرسال للمراجعة</span>
                     </button>
@@ -193,7 +207,7 @@
     </div>
 
     <!-- Contributions Tab -->
-    <div x-show="activeTab === 'contributions'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'contributions'" x-transition.opacity.duration.300ms>
         <div class="solid-panel overflow-hidden">
             <div class="px-6 py-4 border-b border-white/10">
                 <h3 class="text-lg font-bold text-white">

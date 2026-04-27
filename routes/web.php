@@ -1,35 +1,63 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HiddenGemController;
+use App\Http\Controllers\DailyOfferController;
+use App\Http\Controllers\GuestRequestController;
+use App\Http\Controllers\ApprovalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/admin/dashboard', function () {
-    return view('dashboards.admin');
-})->middleware(['auth', 'verified', 'role:admin'])->name('admin.dashboard');
+// Admin Routes
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('dashboards.admin');
+    })->name('admin.dashboard');
+    Route::patch('/admin/approvals/{attraction}/approve', [ApprovalController::class, 'approve'])->name('admin.approve');
+    Route::patch('/admin/approvals/{attraction}/reject', [ApprovalController::class, 'reject'])->name('admin.reject');
+});
 
-Route::get('/local/dashboard', function () {
-    return view('dashboards.local');
-})->middleware(['auth', 'verified', 'role:local'])->name('local.dashboard');
+// Local Routes
+Route::middleware(['auth', 'verified', 'role:local'])->group(function () {
+    Route::get('/local/dashboard', function () {
+        return view('dashboards.local');
+    })->name('local.dashboard');
+    Route::post('/local/hidden-gems', [HiddenGemController::class, 'store'])->name('local.hidden-gems.store');
+});
 
-Route::get('/tourist/dashboard', function () {
-    return view('dashboards.tourist');
-})->middleware(['auth', 'verified', 'role:tourist'])->name('tourist.dashboard');
+// Tourist Routes
+Route::middleware(['auth', 'verified', 'role:tourist'])->group(function () {
+    Route::get('/tourist/dashboard', function () {
+        return view('dashboards.tourist');
+    })->name('tourist.dashboard');
+});
 
-Route::get('/restaurant/dashboard', function () {
-    return view('dashboards.restaurant');
-})->middleware(['auth', 'verified', 'role:restaurant'])->name('restaurant.dashboard');
+// Restaurant Routes
+Route::middleware(['auth', 'verified', 'role:restaurant'])->group(function () {
+    Route::get('/restaurant/dashboard', function () {
+        return view('dashboards.restaurant');
+    })->name('restaurant.dashboard');
+    Route::post('/restaurant/offers', [DailyOfferController::class, 'store'])->name('restaurant.offers.store');
+    Route::patch('/restaurant/offers/{offer}/toggle', [DailyOfferController::class, 'toggle'])->name('restaurant.offers.toggle');
+});
 
-Route::get('/hotel/dashboard', function () {
-    return view('dashboards.hotel');
-})->middleware(['auth', 'verified', 'role:hotel'])->name('hotel.dashboard');
+// Hotel Routes
+Route::middleware(['auth', 'verified', 'role:hotel'])->group(function () {
+    Route::get('/hotel/dashboard', function () {
+        return view('dashboards.hotel');
+    })->name('hotel.dashboard');
+    Route::patch('/hotel/requests/{guestRequest}/status', [GuestRequestController::class, 'updateStatus'])->name('hotel.requests.update');
+});
 
-Route::get('/assistant/dashboard', function () {
-    return view('dashboards.assistant');
-})->middleware(['auth', 'verified', 'role:assistant'])->name('assistant.dashboard');
+// Assistant Routes
+Route::middleware(['auth', 'verified', 'role:assistant'])->group(function () {
+    Route::get('/assistant/dashboard', function () {
+        return view('dashboards.assistant');
+    })->name('assistant.dashboard');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

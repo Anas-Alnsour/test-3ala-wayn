@@ -32,7 +32,21 @@
 @endsection
 
 @section('content')
-<div x-data="{ activeTab: 'overview' }">
+<div x-data="{
+    activeTab: 'overview',
+    pendingApprovals: {{ json_encode($pendingApprovals) }},
+    get pendingCount() {
+        return this.pendingApprovals.filter(g => g.status === 'Pending').length;
+    },
+    approveGem(index) {
+        this.pendingApprovals[index].status = 'Approved';
+        this.showToast('Submission Approved!', 'تم قبول الطلب بنجاح');
+    },
+    rejectGem(index) {
+        this.pendingApprovals.splice(index, 1);
+        this.showToast('Submission Rejected', 'تم رفض الطلب');
+    }
+}">
 
     <!-- Header -->
     <div class="mb-8">
@@ -90,10 +104,14 @@
                     <span class="en-text">Pending Approvals</span>
                     <span class="ar-text">بانتظار الموافقة</span>
                 </div>
-                <div class="text-3xl font-bold text-red-500 mb-2">{{ collect($pendingApprovals)->where('status', 'Pending')->count() }}</div>
-                <div class="text-red-400 text-sm flex items-center gap-1">
+                <div class="text-3xl font-bold text-red-500 mb-2" x-text="pendingCount"></div>
+                <div class="text-red-400 text-sm flex items-center gap-1" x-show="pendingCount > 0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     <span><span class="en-text">Action required</span><span class="ar-text">إجراء مطلوب</span></span>
+                </div>
+                <div class="text-emerald-500 text-sm flex items-center gap-1" x-show="pendingCount === 0" style="display:none">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span><span class="en-text">All caught up!</span><span class="ar-text">تم إنجاز كل شيء!</span></span>
                 </div>
             </div>
         </div>
@@ -111,7 +129,7 @@
     </div>
 
     <!-- Approvals Tab -->
-    <div x-show="activeTab === 'approvals'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'approvals'" x-transition.opacity.duration.300ms>
         <div class="solid-panel overflow-hidden">
             <div class="px-6 py-4 border-b border-white/10 flex justify-between items-center">
                 <h3 class="text-lg font-bold text-white">
@@ -131,43 +149,36 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($pendingApprovals as $gem)
-                        <tr class="hover:bg-white/5 transition-colors">
-                            <td class="font-medium text-white">
-                                <span class="en-text">{{ $gem->name }}</span>
-                                <span class="ar-text">{{ $gem->name_ar }}</span>
-                            </td>
-                            <td class="text-gray-300">{{ $gem->submitter }}</td>
-                            <td class="text-gray-400">{{ $gem->date }}</td>
-                            <td>
-                                @if($gem->status === 'Pending')
-                                <span class="px-2 py-1 rounded-full bg-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">Pending</span>
-                                @else
-                                <span class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider">Approved</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if($gem->status === 'Pending')
-                                <div class="flex gap-2">
-                                    <button class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded transition-colors shadow-[0_0_10px_rgba(52,211,153,0.3)] hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]">
-                                        <span class="en-text">Approve</span><span class="ar-text">قبول</span>
+                        <template x-for="(gem, index) in pendingApprovals" :key="index">
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="font-medium text-white">
+                                    <span class="en-text" x-text="gem.name"></span>
+                                    <span class="ar-text" x-text="gem.name_ar"></span>
+                                </td>
+                                <td class="text-gray-300" x-text="gem.submitter"></td>
+                                <td class="text-gray-400" x-text="gem.date"></td>
+                                <td>
+                                    <span x-show="gem.status === 'Pending'" class="px-2 py-1 rounded-full bg-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">Pending</span>
+                                    <span x-show="gem.status === 'Approved'" class="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-500 text-xs font-bold uppercase tracking-wider" style="display:none">Approved</span>
+                                </td>
+                                <td>
+                                    <div x-show="gem.status === 'Pending'" class="flex gap-2">
+                                        <button @click="approveGem(index)" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded transition-colors shadow-[0_0_10px_rgba(52,211,153,0.3)] hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]">
+                                            <span class="en-text">Approve</span><span class="ar-text">قبول</span>
+                                        </button>
+                                        <button @click="rejectGem(index)" class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded transition-colors">
+                                            <span class="en-text">Reject</span><span class="ar-text">رفض</span>
+                                        </button>
+                                    </div>
+                                    <button x-show="gem.status === 'Approved'" class="text-gray-400 hover:text-white underline text-xs" style="display:none">
+                                        <span class="en-text">View</span><span class="ar-text">عرض</span>
                                     </button>
-                                    <button class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded transition-colors">
-                                        <span class="en-text">Reject</span><span class="ar-text">رفض</span>
-                                    </button>
-                                </div>
-                                @else
-                                <button class="text-gray-400 hover:text-white underline text-xs">
-                                    <span class="en-text">View</span><span class="ar-text">عرض</span>
-                                </button>
-                                @endif
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="pendingApprovals.length === 0" style="display:none">
                             <td colspan="5" class="text-center py-6 text-gray-500">No submissions found.</td>
                         </tr>
-                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -175,7 +186,7 @@
     </div>
 
     <!-- Users Tab -->
-    <div x-show="activeTab === 'users'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'users'" x-transition.opacity.duration.300ms>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             @forelse($recentUsers as $user)
             <!-- User Card -->

@@ -56,10 +56,27 @@
 @endsection
 
 @section('content')
-<div x-data="{ activeTab: 'overview' }">
+<div x-data="{
+    formRoute: { name: '', difficulty: 'Moderate / متوسط', duration: '', price: '', desc: '' },
+    submitRoute() {
+        if (!this.formRoute.name || !this.formRoute.duration) {
+            this.showToast('Please fill all required fields.', 'الرجاء تعبئة جميع الحقول المطلوبة.');
+            return;
+        }
+        this.showToast('Route submitted for approval!', 'تم إرسال المسار للموافقة!');
+        this.formRoute = { name: '', difficulty: 'Moderate / متوسط', duration: '', price: '', desc: '' };
+        this.activeTab = 'overview';
+    },
+    saveAvailability() {
+        this.showToast('Availability schedule saved successfully!', 'تم حفظ أوقات الفراغ بنجاح!');
+    },
+    viewTourDetails(name) {
+        this.showToast('Loading details for ' + name + '...', 'جاري تحميل تفاصيل ' + name + '...');
+    }
+}">
 
     <!-- Overview Tab (Cinematic Blended Header) -->
-    <div x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'overview'" x-transition.opacity.duration.300ms>
         
         <!-- Cinematic Header -->
         <div class="relative h-64 md:h-80 rounded-2xl overflow-hidden mb-8 border border-white/10 shadow-2xl">
@@ -129,7 +146,7 @@
                         <div class="text-sm text-white font-medium">Group of {{ $tour->group_size }}</div>
                         <div class="text-xs text-gray-400">Lead: {{ $tour->lead }}</div>
                     </div>
-                    <button class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-bold rounded-lg transition-colors">
+                    <button @click="viewTourDetails('{{ addslashes($tour->name) }}')" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-bold rounded-lg transition-colors cursor-pointer">
                         <span class="en-text">View Details</span>
                         <span class="ar-text">التفاصيل</span>
                     </button>
@@ -140,14 +157,14 @@
     </div>
 
     <!-- Availability Tab -->
-    <div x-show="activeTab === 'availability'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'availability'" x-transition.opacity.duration.300ms>
         <div class="solid-panel p-6 max-w-4xl mx-auto">
             <h3 class="text-xl font-bold text-white mb-6">
                 <span class="en-text">Set Availability</span>
                 <span class="ar-text">تحديد أوقات الفراغ</span>
             </h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-8" @submit.prevent="saveAvailability">
                 <!-- Simple toggle list for days -->
                 <div class="space-y-4">
                     <div class="flex items-center justify-between p-4 border border-white/10 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors">
@@ -192,28 +209,29 @@
                         </label>
                     </div>
                     
-                    <button class="mt-8 w-full py-2 bg-dynamic hover:opacity-90 text-white font-bold rounded transition-colors shadow-lg">
-                        Save Availability
+                    <button type="submit" class="mt-8 w-full py-3 btn-dynamic text-lg font-bold rounded-lg transition-all shadow-lg">
+                        <span class="en-text">Save Availability</span>
+                        <span class="ar-text">حفظ الأوقات</span>
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
     <!-- Routes Tab -->
-    <div x-show="activeTab === 'routes'" style="display: none;" x-transition.opacity.duration.300ms>
+    <div x-cloak x-show="activeTab === 'routes'" x-transition.opacity.duration.300ms>
         <div class="solid-panel p-6 lg:p-10 max-w-4xl mx-auto border-t-4 border-dynamic">
             <h3 class="text-2xl font-bold text-white mb-6">
                 <span class="en-text">Define New Hiking Route</span>
                 <span class="ar-text">إضافة مسار جديد</span>
             </h3>
             
-            <form class="space-y-6">
+            <form class="space-y-6" @submit.prevent="submitRoute">
                 <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         <span class="en-text">Route Name</span><span class="ar-text">اسم المسار</span>
                     </label>
-                    <input type="text" class="glass-input-premium" placeholder="e.g. Dana to Feynan Trail">
+                    <input type="text" x-model="formRoute.name" required class="glass-input-premium" placeholder="e.g. Dana to Feynan Trail">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -221,7 +239,7 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Difficulty</span><span class="ar-text">الصعوبة</span>
                         </label>
-                        <select class="glass-input-premium">
+                        <select x-model="formRoute.difficulty" class="glass-input-premium">
                             <option>Easy / سهل</option>
                             <option>Moderate / متوسط</option>
                             <option>Hard / صعب</option>
@@ -232,13 +250,13 @@
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Duration (Hours)</span><span class="ar-text">المدة (ساعات)</span>
                         </label>
-                        <input type="number" class="glass-input-premium" placeholder="4">
+                        <input type="number" x-model="formRoute.duration" required class="glass-input-premium" placeholder="4">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-300 mb-2">
                             <span class="en-text">Price (JOD)</span><span class="ar-text">السعر (دينار)</span>
                         </label>
-                        <input type="number" class="glass-input-premium" placeholder="25">
+                        <input type="number" x-model="formRoute.price" class="glass-input-premium" placeholder="25">
                     </div>
                 </div>
 
@@ -246,11 +264,11 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         <span class="en-text">Description</span><span class="ar-text">الوصف</span>
                     </label>
-                    <textarea class="glass-input-premium h-32 resize-none" placeholder="Describe the terrain, what they need to bring, etc."></textarea>
+                    <textarea x-model="formRoute.desc" class="glass-input-premium h-32 resize-none" placeholder="Describe the terrain, what they need to bring, etc."></textarea>
                 </div>
 
                 <div class="pt-4">
-                    <button type="button" class="w-full py-3 bg-dynamic hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-lg">
+                    <button type="submit" class="w-full py-3 btn-dynamic text-lg font-bold rounded-lg transition-all shadow-lg">
                         <span class="en-text">Submit Route for Approval</span>
                         <span class="ar-text">إرسال المسار للموافقة</span>
                     </button>

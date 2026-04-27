@@ -11,7 +11,7 @@
     $dynamicPrimary = $themeColors[$role] ?? '#D4A373';
 @endphp
 <!DOCTYPE html>
-<html lang="en" dir="ltr" x-data="{ lang: 'en', sidebarOpen: false, toggleLang() { this.lang = this.lang === 'en' ? 'ar' : 'en'; document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr'; } }">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,6 +27,31 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('dashboardLogic', () => ({
+                lang: 'en',
+                sidebarOpen: false,
+                toastMsg: '',
+                toastMsgAr: '',
+                
+                toggleLang() {
+                    this.lang = this.lang === 'en' ? 'ar' : 'en';
+                    document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
+                },
+                
+                showToast(msgEn, msgAr) {
+                    this.toastMsg = msgEn;
+                    this.toastMsgAr = msgAr || msgEn;
+                    setTimeout(() => {
+                        this.toastMsg = '';
+                        this.toastMsgAr = '';
+                    }, 3000);
+                }
+            }));
+        });
+    </script>
+    
     <style>
         :root {
             --bg-dark: #111827;
@@ -35,10 +60,6 @@
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #F9FAFB;
             --text-secondary: #9CA3AF;
-            --dynamic-primary: {{ $dynamicPrimary }};
-            --primary-accent: var(--dynamic-primary);
-            --secondary-accent: #BC6C25;
-            --shmagh-red: var(--dynamic-primary);
         }
         
         html[dir="rtl"] { font-family: 'Tajawal', sans-serif; }
@@ -51,10 +72,6 @@
             color: var(--text-main);
             overflow-x: hidden;
         }
-
-        .text-dynamic { color: var(--dynamic-primary) !important; }
-        .bg-dynamic { background-color: var(--dynamic-primary) !important; }
-        .border-dynamic { border-color: var(--dynamic-primary) !important; }
 
         /* Glassmorphism */
         .glass-panel {
@@ -72,7 +89,7 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
         }
 
-        /* Shmagh Active Link */
+        /* Shmagh Active Link (Dynamic) */
         .nav-link {
             transition: all 0.3s ease;
             position: relative;
@@ -106,11 +123,6 @@
             pointer-events: none;
         }
         .nav-link > * { position: relative; z-index: 1; }
-
-        .shmagh-border {
-            border-bottom: 2px solid transparent;
-            border-image: repeating-linear-gradient(45deg, var(--dynamic-primary), var(--dynamic-primary) 10px, transparent 10px, transparent 20px) 1;
-        }
 
         /* Layout */
         .dashboard-layout {
@@ -154,7 +166,7 @@
         }
         .glass-input-premium:focus {
             outline: none;
-            border-color: var(--primary-accent);
+            border-color: var(--dynamic-primary);
             box-shadow: 0 0 0 2px color-mix(in srgb, var(--dynamic-primary) 20%, transparent);
         }
 
@@ -223,7 +235,15 @@
         }
     </style>
 </head>
-<body class="antialiased text-sm sm:text-base">
+<body class="antialiased text-sm sm:text-base" style="--dynamic-primary: {{ $dynamicPrimary }};" x-data="dashboardLogic()">
+
+    <!-- Toast Notification -->
+    <div x-cloak x-show="toastMsg" x-transition 
+         class="fixed bottom-4 right-4 rtl:right-auto rtl:left-4 z-50 bg-dynamic text-white px-6 py-3 rounded-lg shadow-2xl flex items-center gap-3">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span class="en-text font-bold" x-text="toastMsg"></span>
+        <span class="ar-text font-bold" x-text="toastMsgAr"></span>
+    </div>
 
     <div class="dashboard-layout">
         
@@ -240,7 +260,7 @@
 
         <!-- Sidebar -->
         <aside class="sidebar glass-panel flex flex-col" :class="{'open': sidebarOpen}">
-            <!-- Logo Area (Shmagh border removed per Phase 8 req) -->
+            <!-- Logo Area -->
             <div class="h-20 flex items-center justify-center border-b border-white/10 relative">
                 <a href="/" class="flex items-center gap-3 no-underline group">
                     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 transition-transform duration-500 group-hover:rotate-45">
