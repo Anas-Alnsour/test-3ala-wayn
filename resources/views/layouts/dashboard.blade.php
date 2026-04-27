@@ -257,16 +257,20 @@
     @yield('content')
 
     <script>
+        // دالة إخفاء شاشة التحميل (مع صمام أمان لضمان عدم بقائها للأبد)
+        function hideGlobalLoader() {
+    const loader = document.getElementById('global-loader');
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 500);
+    }
+}
+
         // إخفاء شاشة التحميل عند اكتمال تجهيز الصفحة
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loader = document.getElementById('global-loader');
-                if(loader) {
-                    loader.style.opacity = '0';
-                    loader.style.visibility = 'hidden';
-                }
-            }, 300); // تأخير بسيط لجمالية العرض
-        });
+        window.addEventListener('load', hideGlobalLoader);
+
+        // صمام أمان: إذا تأخر التحميل لأكثر من ثانيتين، نقوم بالإخفاء القسري
+        setTimeout(hideGlobalLoader, 2000);
 
         // المحرك الأساسي للألبين (Alpine.js Global Logic)
         document.addEventListener('alpine:init', () => {
@@ -277,6 +281,9 @@
                 toastCounter: 0,
 
                 init() {
+                    // إخفاء اللودر بمجرد جاهزية الألبين
+                    hideGlobalLoader();
+
                     // ضبط اتجاه الصفحة فوراً
                     document.documentElement.dir = this.language === 'ar' ? 'rtl' : 'ltr';
 

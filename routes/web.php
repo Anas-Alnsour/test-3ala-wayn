@@ -12,14 +12,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// 2. إضافة مسار الـ Dashboard الموحد (المحرك الذي يوجه كل رول للوحته)
+// 2. إضافة مسار الـ Dashboard الموحد (تمت إزالة verified)
 Route::get('/dashboard', function () {
-    $role = auth()->user()->role ?? 'tourist';
-    return redirect()->route($role . '.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    $role = strtolower(trim(auth()->user()->role ?? 'tourist'));
+    $targetPath = match ($role) {
+        'admin'      => '/admin/dashboard',
+        'local'      => '/local/dashboard',
+        'restaurant' => '/restaurant/dashboard',
+        'hotel'      => '/hotel/dashboard',
+        'assistant'  => '/assistant/dashboard',
+        default      => '/tourist/dashboard',
+    };
+    return redirect($targetPath);
+})->middleware(['auth'])->name('dashboard');
 
-// Admin Routes
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+// Admin Routes (تمت إزالة verified)
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('dashboards.admin');
     })->name('admin.dashboard');
@@ -27,23 +35,23 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::patch('/admin/approvals/{attraction}/reject', [ApprovalController::class, 'reject'])->name('admin.reject');
 });
 
-// Local Routes
-Route::middleware(['auth', 'verified', 'role:local'])->group(function () {
+// Local Routes (تمت إزالة verified)
+Route::middleware(['auth', 'role:local'])->group(function () {
     Route::get('/local/dashboard', function () {
         return view('dashboards.local');
     })->name('local.dashboard');
     Route::post('/local/hidden-gems', [HiddenGemController::class, 'store'])->name('local.hidden-gems.store');
 });
 
-// Tourist Routes
-Route::middleware(['auth', 'verified', 'role:tourist'])->group(function () {
+// Tourist Routes (تمت إزالة verified)
+Route::middleware(['auth', 'role:tourist'])->group(function () {
     Route::get('/tourist/dashboard', function () {
         return view('dashboards.tourist');
     })->name('tourist.dashboard');
 });
 
-// Restaurant Routes
-Route::middleware(['auth', 'verified', 'role:restaurant'])->group(function () {
+// Restaurant Routes (تمت إزالة verified)
+Route::middleware(['auth', 'role:restaurant'])->group(function () {
     Route::get('/restaurant/dashboard', function () {
         return view('dashboards.restaurant');
     })->name('restaurant.dashboard');
@@ -51,16 +59,16 @@ Route::middleware(['auth', 'verified', 'role:restaurant'])->group(function () {
     Route::patch('/restaurant/offers/{offer}/toggle', [DailyOfferController::class, 'toggle'])->name('restaurant.offers.toggle');
 });
 
-// Hotel Routes
-Route::middleware(['auth', 'verified', 'role:hotel'])->group(function () {
+// Hotel Routes (تمت إزالة verified)
+Route::middleware(['auth', 'role:hotel'])->group(function () {
     Route::get('/hotel/dashboard', function () {
         return view('dashboards.hotel');
     })->name('hotel.dashboard');
     Route::patch('/hotel/requests/{guestRequest}/status', [GuestRequestController::class, 'updateStatus'])->name('hotel.requests.update');
 });
 
-// Assistant Routes
-Route::middleware(['auth', 'verified', 'role:assistant'])->group(function () {
+// Assistant Routes (تمت إزالة verified)
+Route::middleware(['auth', 'role:assistant'])->group(function () {
     Route::get('/assistant/dashboard', function () {
         return view('dashboards.assistant');
     })->name('assistant.dashboard');

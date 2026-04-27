@@ -13,25 +13,34 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, ...$roles): Response
-    {
-        if (! $request->user()) {
-            return redirect('/login');
-        }
-
-        if (! in_array($request->user()->role, $roles)) {
-            // Redirect based on actual role if they don't have permission
-            $role = $request->user()->role;
-            switch ($role) {
-                case 'admin': return redirect('/admin/dashboard');
-                case 'local': return redirect('/local/dashboard');
-                case 'restaurant': return redirect('/restaurant/dashboard');
-                case 'hotel': return redirect('/hotel/dashboard');
-                case 'assistant': return redirect('/assistant/dashboard');
-                default: return redirect('/tourist/dashboard');
-            }
-        }
-
-        return $next($request);
+public function handle(Request $request, Closure $next, ...$roles): Response
+{
+    if (! $request->user()) {
+        return redirect('/login');
     }
+
+    $userRole = strtolower(trim($request->user()->role));
+    $currentPath = $request->getPathInfo();
+
+    if (! in_array($userRole, $roles)) {
+        // تحديد المسار المستهدف بناءً على الرتبة
+        $targetPath = match ($userRole) {
+            'admin'      => '/admin/dashboard',
+            'local'      => '/local/dashboard',
+            'restaurant' => '/restaurant/dashboard',
+            'hotel'      => '/hotel/dashboard',
+            'assistant'  => '/assistant/dashboard',
+            default      => '/tourist/dashboard',
+        };
+
+        // منع إعادة التوجيه إذا كان المستخدم واقفاً بالفعل على المسار الصحيح
+        if ($currentPath === $targetPath) {
+            return $next($request);
+        }
+
+        return redirect($targetPath);
+    }
+
+    return $next($request);
+}
 }

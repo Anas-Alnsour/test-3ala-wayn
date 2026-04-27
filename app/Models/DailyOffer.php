@@ -19,6 +19,7 @@ class DailyOffer extends Model
         'valid_until',
         'audience',
         'is_active',
+        'image_url',
     ];
 
     protected $casts = [
