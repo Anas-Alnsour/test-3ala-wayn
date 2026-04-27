@@ -143,23 +143,22 @@
 
                 <div class="w-px h-6 bg-[#3a251c]"></div>
 
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="bg-gradient-to-r from-[#c17551] to-[#8E3D1D] text-white px-6 py-2.5 rounded-full font-black hover:shadow-[0_0_20px_rgba(193,117,81,0.4)] hover:-translate-y-0.5 transition-all no-underline">
-                        <span x-text="language === 'ar' ? 'لوحة التحكم' : 'Dashboard'"></span>
-                    </a>
-                @else
-                    <div class="flex items-center gap-4">
-    @guest
-        <a href="{{ route('login') }}" class="text-sm font-bold text-gray-300 hover:text-[#c17551] no-underline" x-text="language === 'ar' ? 'تسجيل الدخول' : 'Sign In'"></a>
-        <a href="{{ route('register') }}" class="border border-[#c17551] text-[#c17551] hover:bg-[#c17551] hover:text-white px-5 py-2 rounded-full font-bold transition-all no-underline" x-text="language === 'ar' ? 'حساب جديد' : 'Sign Up'"></a>
+@if (Route::has('login'))
+    @auth
+        {{-- يظهر للمسجلين فقط --}}
+        <a href="{{ url('/dashboard') }}" class="bg-gradient-to-r from-[#c17551] to-[#8E3D1D] text-white px-6 py-2.5 rounded-full font-black hover:shadow-[0_0_20px_rgba(193,117,81,0.4)] hover:-translate-y-0.5 transition-all no-underline">
+            <span x-text="language === 'ar' ? 'لوحة التحكم' : 'Dashboard'"></span>
+        </a>
     @else
-        <form method="POST" action="{{ route('logout') }}" class="inline">
-            @csrf
-            <button type="submit" class="text-sm font-bold text-gray-400 hover:text-red-500 bg-transparent border-none cursor-pointer" x-text="language === 'ar' ? 'خروج' : 'Logout'"></button>
-        </form>
-    @endguest
-</div>
-                @endauth
+        {{-- يظهر للزوار فقط --}}
+        <div class="flex items-center gap-4">
+            <a href="{{ route('login') }}" class="text-sm font-bold text-gray-300 hover:text-[#c17551] no-underline" x-text="language === 'ar' ? 'تسجيل الدخول' : 'Sign In'"></a>
+            @if (Route::has('register'))
+                <a href="{{ route('register') }}" class="border border-[#c17551] text-[#c17551] hover:bg-[#c17551] hover:text-white px-5 py-2 rounded-full font-bold transition-all no-underline" x-text="language === 'ar' ? 'حساب جديد' : 'Sign Up'"></a>
+            @endif
+        </div>
+    @endauth
+@endif
 
                 <button @click="toggleLang()" class="w-10 h-10 rounded-full border border-[#3a251c] bg-[#1f130e]/50 hover:border-[#c17551] text-gray-300 hover:text-[#c17551] flex items-center justify-center font-bold transition-colors cursor-pointer">
                     <span x-show="language === 'en'" class="font-arabic">ع</span>

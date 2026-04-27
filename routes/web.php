@@ -7,9 +7,16 @@ use App\Http\Controllers\GuestRequestController;
 use App\Http\Controllers\ApprovalController;
 use Illuminate\Support\Facades\Route;
 
+// 1. تصحيح الصفحة الرئيسية لتكون welcome (التي تحتوي على أزرار الدخول والعلم)
 Route::get('/', function () {
-    return view('home');
+    return view('welcome');
 });
+
+// 2. إضافة مسار الـ Dashboard الموحد (المحرك الذي يوجه كل رول للوحته)
+Route::get('/dashboard', function () {
+    $role = auth()->user()->role ?? 'tourist';
+    return redirect()->route($role . '.dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 // Admin Routes
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {

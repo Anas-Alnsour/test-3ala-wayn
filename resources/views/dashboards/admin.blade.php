@@ -5,7 +5,7 @@
     $totalCities = \App\Models\City::count();
     $pendingApprovals = \App\Models\Attraction::with(['city', 'submitter'])->where('status', 'pending')->get();
     $allUsers = \App\Models\User::latest()->take(10)->get();
-    
+
     // Global data for the Supreme Command
     $cities = \App\Models\City::all();
     $liveDeals = [
@@ -164,9 +164,12 @@
                             <h3 class="text-3xl font-black text-white mb-4 group-hover:text-[#F5C518] transition-colors">{{ $gem->name }}</h3>
                             <p class="text-gray-400 mb-8 leading-relaxed italic">"{{ $gem->description }}"</p>
                             <div class="flex items-center gap-4 mb-8">
-                                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold">{{ substr($gem->submitter->name, 0, 1) }}</div>
-                                <p class="text-sm text-gray-500">Submitted by <span class="text-white font-bold">{{ $gem->submitter->name }}</span></p>
-                            </div>
+<div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-bold">
+    {{ substr($gem->submitter?->name ?? 'W', 0, 1) }}
+</div>
+<p class="text-sm text-gray-500">Submitted by
+    <span class="text-white font-bold">{{ $gem->submitter?->name ?? 'Wayn System' }}</span>
+</p>                            </div>
                             <div class="flex gap-4">
                                 <button @click="processApproval({{ $gem->id }}, 'approve')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-4 rounded-2xl font-black transition-all cursor-pointer border-none shadow-lg">APPROVE</button>
                                 <button @click="processApproval({{ $gem->id }}, 'reject')" class="flex-1 bg-white/5 hover:bg-red-600 text-white py-4 rounded-2xl font-black transition-all cursor-pointer border border-white/10 hover:border-transparent">REJECT</button>
