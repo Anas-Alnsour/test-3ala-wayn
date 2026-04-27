@@ -8,16 +8,16 @@ const translations = {
   en: {
     page_title: "Wayn? | Authentic Jordan",
     logo_text: "Wayn?",
-    logo_sub: "Authentic Travel Â· Jordan",
+    logo_sub: "Authentic Travel · Jordan",
     nav_explore: "Explore",
     nav_cities: "Cities",
     nav_planner: "AI Planner",
     nav_currency: "Currency",
     nav_admin: "Admin",
-    hero_badge: "âœ¦ Authentic Jordanian Experience",
+    hero_badge: "✦ Authentic Jordanian Experience",
     hero_title: "Discover <span class='gradient-text'>Jordan</span>,<br>Your Way",
-    hero_desc: "From the ancient streets of Petra to the crystal waters of Aqaba â€” plan your perfect Jordanian journey.",
-    btn_plan_hero: "âœ¦ Plan My Trip",
+    hero_desc: "From the ancient streets of Petra to the crystal waters of Aqaba — plan your perfect Jordanian journey.",
+    btn_plan_hero: "✦ Plan My Trip",
     btn_explore_hero: "Explore Cities &rarr;",
     stat_cities_val: "17+",
     stat_cities_lbl: "Cities",
@@ -30,13 +30,13 @@ const translations = {
     stat_247_val: "24/7",
     stat_247_lbl: "Smart Guide",
     sec_choose_exp: "Choose Your <span class='gradient-text'>Experience</span>",
-    mode_local_title: "ÙˆÙŠÙ† Ø·Ø´Ù‘ØªÙ†Ø§ Ø§Ù„ÙŠÙˆÙ…ØŸ",
-    mode_local_sub: "Ù„Ù„Ù…ÙˆØ§Ø·Ù† Ø§Ù„Ø£Ø±Ø¯Ù†ÙŠ",
-    mode_local_f1: "Ø£Ù…Ø§ÙƒÙ† Ù‚Ø±ÙŠØ¨Ø© Ù…Ù†Ùƒ Ù‡Ø³Ù‘Ø§",
-    mode_local_f2: "Ø·Ø´Ù‘Ø§Øª Ø¨ØªØ¬Ù†Ù† Ø¹Ù„Ù‰ Ù‚Ø¯ Ø§Ù„Ø¬ÙŠØ¨Ø©",
-    mode_local_f3: "Ù…Ù†Ø§Ø·Ù‚ Ù…Ø®ÙÙŠØ© Ù…Ø§ Ø¨ØªØ¹Ø±ÙÙ‡Ø§",
-    mode_local_f4: "Ù…Ø·Ø§Ø¹Ù… Ø´Ø¹Ø¨ÙŠØ© Ø¨ØªÙØªØ­ Ø§Ù„Ù†ÙØ³",
-    btn_mode_local: "ÙŠÙ„Ù‘Ø§ Ù†Ø¨Ù„Ù‘Ø´ &rarr;",
+    mode_local_title: "وين طشّتنا اليوم؟",
+    mode_local_sub: "للمواطن الأردني",
+    mode_local_f1: "أماكن قريبة منك هسّا",
+    mode_local_f2: "طشّات بتجنن على قد الجيبة",
+    mode_local_f3: "مناطق مخفية ما بتعرفها",
+    mode_local_f4: "مطاعم شعبية بتفتح النفس",
+    btn_mode_local: "يلّا نبلّش &rarr;",
     mode_tourist_title: "Where To, Traveler?",
     mode_tourist_sub: "For International Visitors",
     mode_tourist_f1: "Full guided itineraries",
@@ -55,16 +55,16 @@ const translations = {
     cat_culture: "Culture",
     sec_flavors: "Jordanian <span class='gradient-text'>Flavors</span>",
     food_mansaf: "Mansaf",
-    food_mansaf_desc: "Jordan's national dish â€” slow-cooked lamb in dried yogurt sauce, served on fragrant rice",
+    food_mansaf_desc: "Jordan's national dish — slow-cooked lamb in dried yogurt sauce, served on fragrant rice",
     food_falafel: "Falafel",
     food_falafel_desc: "Crispy fried chickpea fritters, best enjoyed fresh from street vendors in Amman",
     food_knafeh: "Knafeh",
-    food_knafeh_desc: "Sweet shredded pastry soaked in sugar syrup with soft white cheese â€” a Levantine legend",
+    food_knafeh_desc: "Sweet shredded pastry soaked in sugar syrup with soft white cheese — a Levantine legend",
     food_coffee: "Arabic Coffee",
-    food_coffee_desc: "Cardamom-infused qahwa served in small cups â€” a gesture of Jordanian hospitality",
+    food_coffee_desc: "Cardamom-infused qahwa served in small cups — a gesture of Jordanian hospitality",
     sec_explore_cities: "Explore <span class='gradient-text'>Jordan's Cities</span>",
     btn_back_cities: "&larr; Back to Cities",
-    plan_trip_to: "âœ¦ Plan Trip to ",
+    plan_trip_to: "✦ Plan Trip to ",
     ai_planner_title: "AI Smart Trip Planner",
     ai_planner_desc: "Generate a full personalized itinerary powered by AI intelligence",
     plan_dest: "Destination",
@@ -95,18 +95,18 @@ const translations = {
     tag_hike: "Hiking",
     tag_market: "Local Markets",
     tag_art: "Mosaics & Arts",
-    btn_gen_itinerary: "âœ¦ Generate My Itinerary",
+    btn_gen_itinerary: "✦ Generate My Itinerary",
     sec_currency: "Currency <span class='gradient-text'>Converter</span>",
     curr_from: "From",
     curr_to: "To JOD",
-    rate_note: "Approx. rate Â· Verify locally",
-    tips_title: "ðŸ’¡ Exchange Tips for Jordan",
+    rate_note: "Approx. rate · Verify locally",
+    tips_title: "💡 Exchange Tips for Jordan",
     tips_desc: "Exchange at licensed money changers in downtown Amman for best rates. Avoid airport exchanges. JOD is pegged to USD. Keep small bills for local markets and taxis.",
     ai_adv_title: "AI Currency <span class='gradient-text'>Advisor</span>",
     ai_adv_prompt: "Ask about exchange rates, safety tips, or best places to exchange money in Jordan:",
     placeholder_currency: "e.g. Where's the best place to exchange in Amman?",
     btn_ask_ai: "Ask AI",
-    admin_title: "Admin Dashboard â€” Wayn?",
+    admin_title: "Admin Dashboard — Wayn?",
     admin_badge: "Admin",
     admin_active_trips: "Active Trips",
     admin_users: "Users",
@@ -131,14 +131,14 @@ const translations = {
     user_breakdown: "User Breakdown",
     lbl_intl: "International",
     lbl_local: "Local Jordanian",
-    peak_month: "Peak month: Marchâ€“April",
+    peak_month: "Peak month: March–April",
     ai_admin_prompt: "Ask the AI admin assistant for insights on tourism trends, content gaps, or recommendations:",
     placeholder_admin: "e.g. What content should we add for summer 2026?",
     btn_analyze: "Analyze",
-    footer_text: "Wayn? | ÙˆÙŠÙ†ØŸ â€” Authentic Tourism Platform for Jordan",
-    footer_sub: "Powered by AI Â· Built with â™¥ for Jordan",
-    mode_local_badge: "Local ðŸ‡¯ðŸ‡´",
-    mode_tourist_badge: "Tourist ðŸŒ",
+    footer_text: "Wayn? | وين؟ — Authentic Tourism Platform for Jordan",
+    footer_sub: "Powered by AI · Built with ♥ for Jordan",
+    mode_local_badge: "Local 🇯🇴",
+    mode_tourist_badge: "Tourist 🌍",
     status_active: "Active",
     status_inactive: "Inactive",
     ai_mock_loading_itinerary: "Analyzing preferences and generating your personalized itinerary...",
@@ -150,148 +150,148 @@ const translations = {
     ai_mock_admin_resp: "**AI Insight Report:**\n\nBased on your question, I analyzed the behavior of our 1,894 active users. We are seeing a 45% increase in searches for \"Wellness\" and \"Eco-tourism\". \n\n**Recommendation:** \nPrioritize adding new content for farm stays in Ajloun and eco-lodges in Dana Biosphere Reserve before the summer peak season."
   },
   ar: {
-    page_title: "ÙˆÙŠÙ†ØŸ | Ø§Ù„Ø£Ø±Ø¯Ù† Ø§Ù„Ø£ØµÙŠÙ„",
-    logo_text: "ÙˆÙŠÙ†ØŸ",
-    logo_sub: "Ø³ÙŠØ§Ø­Ø© Ø£ØµÙŠÙ„Ø© Â· Ø§Ù„Ø£Ø±Ø¯Ù†",
-    nav_explore: "Ø¯ÙŠØ±ØªÙ†Ø§",
-    nav_cities: "Ù…Ø­Ø§ÙØ¸Ø§ØªÙ†Ø§",
-    nav_planner: "Ù…Ø®Ø·Ø· Ø§Ù„Ø·Ø´Ù‘Ø§Øª",
-    nav_currency: "Ø§Ù„Ø¹Ù…Ù„Ø§Øª",
-    nav_admin: "Ø§Ù„Ø¥Ø¯Ø§Ø±Ø©",
-    hero_badge: "ÙŠØ§ Ù‡Ù„Ø§ Ø¨Ø§Ù„Ø¶ÙŠÙ",
-    hero_title: "Ø§ÙƒØªØ´Ù <span class='gradient-text'>Ø§Ù„Ø£Ø±Ø¯Ù†</span>ØŒ<br>Ø¹Ù„Ù‰ ÙƒÙŠÙÙƒ",
-    hero_desc: "Ù…Ù† Ø¬Ø¨Ø§Ù„ Ø§Ù„Ø¨ØªØ±Ø§ Ø§Ù„Ø¹Ø¸ÙŠÙ…Ø© Ù„Ù…ÙŠØ© Ø§Ù„Ø¹Ù‚Ø¨Ø© Ø§Ù„ØµØ§ÙÙŠØ© â€” Ø®Ø·Ø· Ù„Ø±Ø­Ù„ØªÙƒ Ø§Ù„Ø£Ø±Ø¯Ù†ÙŠØ© Ø§Ù„ØµØ­ ÙˆØªØ¹Ø±Ù‘Ù Ø¹Ù„Ù‰ Ø¯ÙŠØ±ØªÙƒ.",
-    btn_plan_hero: "âœ¦ Ø®Ø·Ø· Ø·Ø´Ù‘ØªÙŠ",
-    btn_explore_hero: "Ù„ÙÙ‘ Ø§Ù„Ù…Ø¯Ù† &larr;",
+    page_title: "وين؟ | الأردن الأصيل",
+    logo_text: "وين؟",
+    logo_sub: "سياحة أصيلة · الأردن",
+    nav_explore: "ديرتنا",
+    nav_cities: "محافظاتنا",
+    nav_planner: "مخطط الطشّات",
+    nav_currency: "العملات",
+    nav_admin: "الإدارة",
+    hero_badge: "يا هلا بالضيف",
+    hero_title: "اكتشف <span class='gradient-text'>الأردن</span>،<br>على كيفك",
+    hero_desc: "من جبال البترا العظيمة لمية العقبة الصافية — خطط لرحلتك الأردنية الصح وتعرّف على ديرتك.",
+    btn_plan_hero: "✦ خطط طشّتي",
+    btn_explore_hero: "لفّ المدن &larr;",
     stat_cities_val: "+17",
-    stat_cities_lbl: "Ù…Ø¯ÙŠÙ†Ø© ÙˆÙ…Ø­Ø§ÙØ¸Ø©",
+    stat_cities_lbl: "مدينة ومحافظة",
     stat_attr_val: "+480",
-    stat_attr_lbl: "Ù…ÙƒØ§Ù† Ø³ÙŠØ§Ø­ÙŠ",
+    stat_attr_lbl: "مكان سياحي",
     stat_rest_val: "+250",
-    stat_rest_lbl: "Ù…Ø·Ø¹Ù… ÙˆÙ‚Ø¹Ø¯Ø©",
+    stat_rest_lbl: "مطعم وقعدة",
     stat_ai_val: "AI",
-    stat_ai_lbl: "Ù…Ø¯Ø¹ÙˆÙ… Ø¨Ù€",
+    stat_ai_lbl: "مدعوم بـ",
     stat_247_val: "24/7",
-    stat_247_lbl: "Ø¯Ù„ÙŠÙ„ Ø°ÙƒÙŠ",
-    sec_choose_exp: "Ø§Ø®ØªØ§Ø± <span class='gradient-text'>Ø¬ÙˆÙ‘Ùƒ</span>",
-    mode_local_title: "ÙˆÙŠÙ† Ø·Ø´Ù‘ØªÙ†Ø§ Ø§Ù„ÙŠÙˆÙ…ØŸ",
-    mode_local_sub: "Ù„Ù„Ù…ÙˆØ§Ø·Ù† Ø§Ù„Ø£Ø±Ø¯Ù†ÙŠ",
-    mode_local_f1: "Ø£Ù…Ø§ÙƒÙ† Ù‚Ø±ÙŠØ¨Ø© Ù…Ù†Ùƒ Ù‡Ø³Ù‘Ø§",
-    mode_local_f2: "Ø·Ø´Ù‘Ø§Øª Ø¨ØªØ¬Ù†Ù† Ø¹Ù„Ù‰ Ù‚Ø¯ Ø§Ù„Ø¬ÙŠØ¨Ø©",
-    mode_local_f3: "Ù…Ù†Ø§Ø·Ù‚ Ù…Ø®ÙÙŠØ© Ù…Ø§ Ø¨ØªØ¹Ø±ÙÙ‡Ø§",
-    mode_local_f4: "Ù…Ø·Ø§Ø¹Ù… Ø´Ø¹Ø¨ÙŠØ© Ø¨ØªÙØªØ­ Ø§Ù„Ù†ÙØ³",
-    btn_mode_local: "ÙŠÙ„Ù‘Ø§ Ù†Ø¨Ù„Ù‘Ø´ &larr;",
-    mode_tourist_title: "Ø¥Ù„Ù‰ Ø£ÙŠÙ† Ø£ÙŠÙ‡Ø§ Ø§Ù„Ù…Ø³Ø§ÙØ±ØŸ",
-    mode_tourist_sub: "Ù„Ù„Ø²ÙˆØ§Ø± Ø§Ù„Ø¯ÙˆÙ„ÙŠÙŠÙ†",
-    mode_tourist_f1: "Ù…Ø³Ø§Ø±Ø§Øª Ù…ÙˆØ¬Ù‡Ø© Ø¨Ø§Ù„ÙƒØ§Ù…Ù„",
-    mode_tourist_f2: "Ø³ÙŠØ§Ù‚ Ø«Ù‚Ø§ÙÙŠ ÙˆÙ†ØµØ§Ø¦Ø­",
-    mode_tourist_f3: "ØªØ¬Ø§Ø±Ø¨ Ù…Ù†ØªÙ‚Ø§Ø©",
-    mode_tourist_f4: "Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ø³Ù„Ø§Ù…Ø© ÙˆØ§Ù„Ù„ÙˆØ¬Ø³ØªÙŠØ§Øª",
-    btn_mode_tourist: "Ø§Ø¨Ø¯Ø£ Ø§Ù„ØªØ®Ø·ÙŠØ· &larr;",
-    sec_categories: "ÙˆÙŠÙ€Ù† <span class='gradient-text'>Ø­Ø§Ø¨ÙŠÙ†ØŸ</span>",
-    cat_history: "ØªØ§Ø±ÙŠØ®Ù†Ø§",
-    cat_food: "Ø£ÙƒÙ„Ù†Ø§",
-    cat_hotels: "ÙÙ†Ø§Ø¯Ù‚",
-    cat_hiking: "Ù…Ø³ÙŠØ± ÙˆÙ‡Ø§ÙŠÙƒÙ†Ø¬",
-    cat_desert: "ØµØ­Ø±Ø§Ø¡",
-    cat_water: "Ù…ÙŠØ© ÙˆØ³Ø¨Ø§Ø­Ø©",
-    cat_farms: "Ù…Ø²Ø§Ø±Ø¹Ù†Ø§",
-    cat_culture: "Ø«Ù‚Ø§ÙØªÙ†Ø§",
-    sec_flavors: "Ø£ÙƒÙ„Ù†Ø§ <span class='gradient-text'>Ø§Ù„Ø²Ø§ÙƒÙŠ</span>",
-    food_mansaf: "Ø§Ù„Ù…Ù†Ø³Ù",
-    food_mansaf_desc: "Ù…Ù†Ø³ÙÙ†Ø§ Ø¯Ø­Ù‘ÙŠØ¬Ø©ØŒ Ù…Ø§ ÙŠØ­Ù„Ù‰ Ø¥Ù„Ø§ Ø¨Ø§Ù„Ø¬Ù…ÙŠØ¯ Ø§Ù„ÙƒØ±ÙƒÙŠØŒ Ø£ØµÙˆÙ„ Ø§Ù„ÙƒØ±Ù… Ø§Ù„Ø£Ø±Ø¯Ù†ÙŠ ÙˆØ§Ù„Ø¶ÙŠØ§ÙØ© Ø§Ù„ØµØ­.",
-    food_falafel: "Ø§Ù„ÙÙ„Ø§ÙÙ„",
-    food_falafel_desc: "Ø­Ø¨Ø§Øª ÙÙ„Ø§ÙÙ„ Ù…Ù‚Ø±Ù…Ø´Ø© Ø¨ØªØ´Ù‡ÙŠ Ù…Ù† Ù‚Ø§Ø¹ Ø§Ù„Ù…Ø¯ÙŠÙ†Ø©ØŒ Ø£Ø·ÙŠØ¨ Ø¥ÙØ·Ø§Ø± Ø¹Ù„Ù‰ Ø§Ù„Ù…Ø§Ø´ÙŠ Ù…Ø¹ ÙƒØ§Ø³Ø© Ø´Ø§ÙŠ.",
-    food_knafeh: "Ø§Ù„ÙƒÙ†Ø§ÙØ©",
-    food_knafeh_desc: "ÙƒÙ†Ø§ÙØ© Ù†Ø§Ø¨Ù„Ø³ÙŠØ© Ø¨ØªÙ…Ø·ØŒ ØºØ±Ù‚Ø§Ù†Ø© Ø¨Ø§Ù„Ù‚Ø·Ø±ØŒ Ø£Ø­Ù„Ù‰ ØªØ­Ù„Ø§ÙŠØ© Ø¨Ø¹Ø¯ Ø§Ù„Ù…Ù†Ø³Ù Ø£Ùˆ Ø¨Ø£ÙŠ Ø§Ø­ØªÙØ§Ù„.",
-    food_coffee: "Ø§Ù„Ù‚Ù‡ÙˆØ© Ø§Ù„Ø³Ø§Ø¯Ø©",
-    food_coffee_desc: "Ù‚Ù‡ÙˆØ© Ø³Ø§Ø¯Ø© Ù…Ù‡ÙŠÙ‘Ù„Ø© Ø¨ØªØ¹Ø¯Ù‘Ù„ Ø§Ù„Ù…Ø²Ø§Ø¬ØŒ ÙŠØ§ Ù‡Ù„Ø§ Ø¨Ø§Ù„Ø¶ÙŠÙØŒ Ø±Ù…Ø² Ø§Ù„ÙƒØ±Ù… ÙˆØ­Ø³Ù† Ø§Ù„Ø§Ø³ØªÙ‚Ø¨Ø§Ù„.",
-    sec_explore_cities: "Ù„ÙÙ‘ <span class='gradient-text'>Ù…Ø­Ø§ÙØ¸Ø§ØªÙ†Ø§</span>",
-    btn_back_cities: "&rarr; Ø§Ø±Ø¬Ø¹ Ù„Ù„Ù…Ø¯Ù†",
-    plan_trip_to: "âœ¦ Ø®Ø·Ø· Ø·Ø´Ù‘Ø© Ù„Ù€ ",
-    ai_planner_title: "Ù…Ø®Ø·Ø· Ø§Ù„Ø·Ø´Ù‘Ø§Øª Ø§Ù„Ø°ÙƒÙŠ",
-    ai_planner_desc: "Ø®Ù„ÙŠ Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ ÙŠØ²Ø¨Ø·Ù„Ùƒ Ø£Ø­Ù„Ù‰ Ø¨Ø±Ù†Ø§Ù…Ø¬ Ù„Ù„Ø±Ø­Ù„Ø©",
-    plan_dest: "ÙˆÙŠÙ† Ø§Ù„Ù†ÙŠØ©ØŸ",
-    plan_dest_all: "ÙƒÙ„ Ø§Ù„Ø£Ø±Ø¯Ù†",
-    plan_dur: "ÙƒÙ… ÙŠÙˆÙ…ØŸ",
-    plan_dur_1: "ÙŠÙˆÙ… ÙˆØ§Ø­Ø¯",
-    plan_dur_3: "3 Ø£ÙŠØ§Ù…",
-    plan_dur_5: "5 Ø£ÙŠØ§Ù…",
-    plan_dur_7: "Ø£Ø³Ø¨ÙˆØ¹",
-    plan_dur_14: "Ø£Ø³Ø¨ÙˆØ¹ÙŠÙ†",
-    plan_budget: "Ø§Ù„Ù…ÙŠØ²Ø§Ù†ÙŠØ©",
-    plan_bud_budget: "Ù…ÙŠØ²Ø§Ù†ÙŠØ© Ù…Ø­Ø¯ÙˆØ¯Ø©",
-    plan_bud_mid: "Ù…ØªÙˆØ³Ø·Ø©",
-    plan_bud_lux: "ÙØ§Ø®Ø±Ø© ÙˆÙ…Ø¯Ù„Ø¹Ø©",
-    plan_style: "Ø§Ù„ØµØ­Ø¨Ø©",
-    plan_style_solo: "Ù„Ø­Ø§Ù„ÙŠ",
-    plan_style_couple: "Ø£Ù†Ø§ ÙˆØ§Ù„Ø­Ø¨",
-    plan_style_family: "Ù…Ø¹ Ø§Ù„Ø¹ÙŠÙ„Ø©",
-    plan_style_group: "Ø£Ù†Ø§ ÙˆØ§Ù„Ø´Ù„Ø©",
-    tags_label: "Ø´Ùˆ Ø¬ÙˆÙ‘ÙƒØŸ",
-    tag_hist: "ØªØ§Ø±ÙŠØ® ÙˆØ¢Ø«Ø§Ø±",
-    tag_food: "Ø£ÙƒÙ„ ÙˆØªØ°ÙˆÙ‚",
-    tag_adv: "Ù…ØºØ§Ù…Ø±Ø§Øª",
-    tag_camp: "ØªØ®ÙŠÙŠÙ… Ø¨Ø§Ù„ØµØ­Ø±Ø§",
-    tag_water: "Ù…Ø³Ø§Ø¨Ø­ ÙˆÙ…ÙŠØ©",
-    tag_photo: "ØªØµÙˆÙŠØ± Ø·Ø¨ÙŠØ¹Ø©",
-    tag_rel: "Ù…Ù‚Ø§Ù…Ø§Øª ÙˆØ£Ø¯ÙŠØ±Ø©",
-    tag_hike: "Ù‡Ø§ÙŠÙƒÙ†Ø¬",
-    tag_market: "Ø£Ø³ÙˆØ§Ù‚ Ø´Ø¹Ø¨ÙŠØ©",
-    tag_art: "ÙÙ†ÙˆÙ† ÙˆØªØ±Ø§Ø«",
-    btn_gen_itinerary: "âœ¦ Ø²Ø¨Ù‘Ø·Ù„ÙŠ Ø§Ù„Ø¨Ø±Ù†Ø§Ù…Ø¬",
-    sec_currency: "Ø­Ø§Ø³Ø¨Ø© <span class='gradient-text'>Ø§Ù„Ø¹Ù…Ù„Ø§Øª</span>",
-    curr_from: "Ù…Ù†",
-    curr_to: "Ø¥Ù„Ù‰ Ø§Ù„Ø¯ÙŠÙ†Ø§Ø±",
-    rate_note: "Ø³Ø¹Ø± ØªÙ‚Ø±ÙŠØ¨ÙŠ Â· ØªØ£ÙƒØ¯ Ù…Ù† Ø§Ù„ØµØ±Ø§Ù",
-    tips_title: "ðŸ’¡ Ù†ØµØ§Ø¦Ø­ Ù„Ù„ØµØ±Ø§ÙØ© Ø¨Ø¨Ù„Ø¯Ù†Ø§",
-    tips_desc: "Ø±ÙˆØ­ Ø¹Ù„Ù‰ Ù…Ø­Ù„Ø§Øª Ø§Ù„ØµØ±Ø§ÙØ© Ø¨ÙˆØ³Ø· Ø§Ù„Ø¨Ù„Ø¯ Ø¹Ø´Ø§Ù† Ø£Ø­Ø³Ù† Ø³Ø¹Ø±. Ø¨Ù„Ø§Ø´ ØµØ±Ø§ÙØ© Ø§Ù„Ù…Ø·Ø§Ø±. Ø¯ÙŠÙ†Ø§Ø±Ù†Ø§ Ù…Ø±Ø¨ÙˆØ· Ø¨Ø§Ù„Ø¯ÙˆÙ„Ø§Ø± ÙˆÙˆØ¶Ø¹Ù‡ ØªÙ…Ø§Ù…. Ø®Ù„ÙŠ Ù…Ø¹Ùƒ ÙØ±Ø§Ø·Ø© ÙˆÙØ¦Ø§Øª ØµØºÙŠØ±Ø© Ù„Ù„ØªÙƒØ§Ø³ÙŠ ÙˆØ§Ù„Ù…Ø­Ù„Ø§Øª Ø§Ù„ØµØºÙŠØ±Ø©.",
-    ai_adv_title: "Ù…Ø³ØªØ´Ø§Ø± <span class='gradient-text'>Ø§Ù„Ø¹Ù…Ù„Ø§Øª Ø§Ù„Ø°ÙƒÙŠ</span>",
-    ai_adv_prompt: "Ø§Ø³Ø£Ù„ Ø¹Ù† Ø£Ø³Ø¹Ø§Ø± Ø§Ù„ØµØ±ÙØŒ Ø£Ùˆ Ø£Ø­Ø³Ù† Ù…ÙƒØ§Ù† ØªØµØ±Ù ÙÙŠÙ‡ Ù…ØµØ§Ø±ÙŠÙƒ:",
-    placeholder_currency: "Ù…Ø«Ø§Ù„: ÙˆÙŠÙ† Ø£Ø­Ø³Ù† ØµØ±Ø§Ù Ø¨Ø¹Ù…Ø§Ù†ØŸ",
-    btn_ask_ai: "Ø§Ø³Ø£Ù„ Ø§Ù„Ø°ÙƒÙŠ",
-    admin_title: "Ù„ÙˆØ­Ø© ØªØ­ÙƒÙ… Ø§Ù„Ø¥Ø¯Ø§Ø±Ø© â€” ÙˆÙŠÙ†ØŸ",
-    admin_badge: "Ø¥Ø¯Ø§Ø±Ø©",
-    admin_active_trips: "Ø§Ù„Ø±Ø­Ù„Ø§Øª Ø§Ù„Ø´ØºØ§Ù„Ø©",
-    admin_users: "Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†",
-    admin_avg_rating: "Ù…Ø¹Ø¯Ù„ Ø§Ù„ØªÙ‚ÙŠÙŠÙ…",
-    tab_content: "Ø§Ù„Ù…Ø­ØªÙˆÙ‰",
-    tab_users: "Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…ÙŠÙ†",
-    tab_analytics: "Ø§Ù„ØªØ­Ù„ÙŠÙ„Ø§Øª",
-    tab_ai: "Ø±Ø¤Ù‰ Ø§Ù„Ø°ÙƒÙŠ",
-    act_cities: "Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø§Øª",
-    act_cities_desc: "Ø¶ÙŠÙ ÙˆØ¹Ø¯Ù‘Ù„ Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø§Øª",
-    act_rest: "Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø·Ø§Ø¹Ù…",
-    act_rest_desc: "250 Ù…Ø·Ø¹Ù… Ù†Ø§Ø²Ù„ Ø¹Ù„Ù‰ Ø§Ù„Ù…Ù†ØµØ©",
-    act_hot: "Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙÙ†Ø§Ø¯Ù‚",
-    act_hot_desc: "156 ÙÙ†Ø¯Ù‚ ÙˆØ´Ø§Ù„ÙŠÙ‡",
-    act_exp: "Ø§Ù„ØªØ¬Ø§Ø±Ø¨",
-    act_exp_desc: "ØªØ¬Ø§Ø±Ø¨ ÙˆÙ…ØºØ§Ù…Ø±Ø§Øª Ù…Ø­Ù„ÙŠØ©",
-    th_user: "Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…",
-    th_mode: "Ø§Ù„Ø¬Ùˆ",
-    th_trips: "Ø¹Ø¯Ø¯ Ø§Ù„Ø±Ø­Ù„Ø§Øª",
-    th_status: "Ø§Ù„Ø­Ø§Ù„Ø©",
-    top_dest: "Ø£ÙƒØ«Ø± Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø§Øª Ø·Ù„Ø¨",
-    user_breakdown: "ØªÙˆØ²ÙŠØ¹ Ø§Ù„Ø²ÙˆØ§Ø±",
-    lbl_intl: "Ø³ÙŠØ§Ø­ Ø£Ø¬Ø§Ù†Ø¨",
-    lbl_local: "ÙˆÙ„Ø§Ø¯ Ø§Ù„Ø¨Ù„Ø¯",
-    peak_month: "Ø£ÙƒØ«Ø± Ø´Ù‡Ø± Ø¹Ù„ÙŠÙ‡ Ø­Ø±ÙƒØ©: Ø´Ù‡Ø± 3 Ùˆ 4",
-    ai_admin_prompt: "Ø§Ø³Ø£Ù„ Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒÙŠ Ø¹Ù† ÙˆØ¶Ø¹ Ø§Ù„Ø³ÙŠØ§Ø­Ø© ÙˆØ§ÙŠØ´ Ù†Ø§Ù‚ØµÙ†Ø§ Ù…Ø­ØªÙˆÙ‰:",
-    placeholder_admin: "Ù…Ø«Ø§Ù„: Ø´Ùˆ Ù†Ø²ÙŠØ¯ Ø£Ù…Ø§ÙƒÙ† Ù„ØµÙŠÙ 2026ØŸ",
-    btn_analyze: "Ø­Ù„Ù‘Ù„",
-    footer_text: "ÙˆÙŠÙ†ØŸ | Wayn? â€” Ù…Ù†ØµØ© Ø§Ù„Ø³ÙŠØ§Ø­Ø© Ø§Ù„Ø£Ø±Ø¯Ù†ÙŠØ© Ø§Ù„Ø£ØµÙŠÙ„Ø©",
-    footer_sub: "Ù…Ø¯Ø¹ÙˆÙ… Ø¨Ø§Ù„Ø°ÙƒØ§Ø¡ Ø§Ù„Ø§ØµØ·Ù†Ø§Ø¹ÙŠ Â· Ø§Ù†Ø¹Ù…Ù„ Ø¨Ø­Ø¨ Ø¹Ø´Ø§Ù† Ø§Ù„Ø£Ø±Ø¯Ù†",
-    mode_local_badge: "Ø§Ø¨Ù† Ø§Ù„Ø¨Ù„Ø¯ ðŸ‡¯ðŸ‡´",
-    mode_tourist_badge: "Ø³Ø§Ø¦Ø­ ðŸŒ",
-    status_active: "Ø´ØºØ§Ù„",
-    status_inactive: "Ù…ÙˆÙ‚Ù",
-    ai_mock_loading_itinerary: "Ø¹Ù… Ø¨Ø¬Ù‡Ù‘Ø²Ù„Ùƒ Ø£Ø­Ù„Ù‰ Ø¨Ø±Ù†Ø§Ù…Ø¬ ÙˆØ¨Ø²Ø¨Ø·Ù„Ùƒ Ø§Ù„Ø·Ø´Ù‘Ø©...",
-    ai_mock_pre_itinerary: "Ù‡Ø§Ø¯ Ø¨Ø±Ù†Ø§Ù…Ø¬ Ø±Ø­Ù„ØªÙƒ Ù„Ù€",
-    ai_mock_post_itinerary: "Ø§Ù†Ø´Ø§Ù„Ù„Ù‡ ØªÙ†Ø¨Ø³Ø·ÙˆØ§ Ø¨Ø§Ù„Ø·Ø´Ù‘Ø©! (ÙˆÙŠÙ†ØŸ) Ø¯Ø§ÙŠÙ…Ø§Ù‹ Ù…Ø¹Ùƒ Ù„Ø£ÙŠ ÙØ²Ø¹Ø©.",
-    ai_mock_loading_curr: "Ø¹Ù… Ø¨Ø­Ø³Ø¨Ù„Ùƒ Ø§Ù„Ø£Ø³Ø¹Ø§Ø±...",
-    ai_mock_curr_resp: "Ø­Ø³Ø¨ Ø§Ù„ÙˆØ¶Ø¹ Ø§Ù„Ø­Ø§Ù„ÙŠ Ø¨Ø§Ù„Ø³ÙˆÙ‚:\n\nØ¹Ø´Ø§Ù† ØªØ§Ø®Ø¯ Ø£Ø­Ø³Ù† Ø³Ø¹Ø±ØŒ Ø±ÙˆØ­ Ø¹Ù„Ù‰ ÙˆØ³Ø· Ø§Ù„Ø¨Ù„Ø¯ Ø¨Ø¹Ù…Ø§Ù†ØŒ Ù…Ø­Ù„Ø§Øª Ø§Ù„ØµØ±Ø§ÙØ© Ù‡Ù†Ø§Ùƒ Ø¨ØªØ¹Ø·ÙŠÙƒ Ø³Ø¹Ø± Ù…Ù…ØªØ§Ø² ÙˆØ¹Ù…ÙˆÙ„ØªÙ‡Ø§ Ø®ÙÙŠÙØ©. Ø¯Ø§ÙŠÙ…Ø§Ù‹ Ø®Ù„ÙŠ Ù…Ø¹Ùƒ ÙØ±Ø§Ø·Ø© (Ø¯Ù†Ø§Ù†ÙŠØ± ÙˆØ®Ù…Ø³Ø§Øª) Ø¹Ø´Ø§Ù† Ø§Ù„ØªÙƒØ§Ø³ÙŠ ÙˆØ¯ÙƒØ§ÙƒÙŠÙ† Ø§Ù„Ø­Ø§Ø±Ø© Ù…Ø§ Ø¨ØªÙ„Ø§Ù‚ÙŠ Ù…Ø¹Ù‡Ù… ÙÙƒØ© Ø¨Ø³Ù‡ÙˆÙ„Ø©.",
-    ai_mock_loading_admin: "Ø¹Ù… Ø¨Ø­Ù„Ù„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ù†ØµØ©...",
-    ai_mock_admin_resp: "**ØªÙ‚Ø±ÙŠØ± Ø°ÙƒØ§Ø¡ Ø§ØµØ·Ù†Ø§Ø¹ÙŠ:**\n\nØ¨Ù†Ø§Ø¡Ù‹ Ø¹Ù„Ù‰ Ø·Ù„Ø¨ÙƒØŒ Ø­Ù„Ù„Øª ØªÙØ¶ÙŠÙ„Ø§Øª 1,894 Ù…Ø³ØªØ®Ø¯Ù…. ÙÙŠ Ø²ÙŠØ§Ø¯Ø© 45Ùª Ø¹Ù„Ù‰ Ø·Ù„Ø¨Ø§Øª (Ø§Ù„Ø³ÙŠØ§Ø­Ø© Ø§Ù„Ø¨ÙŠØ¦ÙŠØ©) Ùˆ(Ø§Ù„Ø§Ø³ØªØ¬Ù…Ø§Ù…).\n\n**Ø§Ù‚ØªØ±Ø§Ø­ÙŠ:** \nØ±ÙƒØ²ÙˆØ§ ØªÙ†Ø²Ù„ÙˆØ§ Ø£Ù…Ø§ÙƒÙ† Ø£ÙƒØªØ± Ø¹Ù† Ø§Ù„Ø´Ø§Ù„ÙŠÙ‡Ø§Øª Ø§Ù„Ø±ÙŠÙÙŠØ© Ø¨Ø¹Ø¬Ù„ÙˆÙ† ÙˆØ§Ù„Ù…Ø®ÙŠÙ…Ø§Øª Ø§Ù„Ø¨ÙŠØ¦ÙŠØ© Ø¨Ù…Ø­Ù…ÙŠØ© Ø¶Ø§Ù†Ø§ Ù‚Ø¨Ù„ Ù…Ø§ ØªØ¨Ù„Ù‘Ø´ Ø¹Ø¬Ù‚Ø© Ø§Ù„ØµÙŠÙ."
+    stat_247_lbl: "دليل ذكي",
+    sec_choose_exp: "اختار <span class='gradient-text'>جوّك</span>",
+    mode_local_title: "وين طشّتنا اليوم؟",
+    mode_local_sub: "للمواطن الأردني",
+    mode_local_f1: "أماكن قريبة منك هسّا",
+    mode_local_f2: "طشّات بتجنن على قد الجيبة",
+    mode_local_f3: "مناطق مخفية ما بتعرفها",
+    mode_local_f4: "مطاعم شعبية بتفتح النفس",
+    btn_mode_local: "يلّا نبلّش &larr;",
+    mode_tourist_title: "إلى أين أيها المسافر؟",
+    mode_tourist_sub: "للزوار الدوليين",
+    mode_tourist_f1: "مسارات موجهة بالكامل",
+    mode_tourist_f2: "سياق ثقافي ونصائح",
+    mode_tourist_f3: "تجارب منتقاة",
+    mode_tourist_f4: "معلومات السلامة واللوجستيات",
+    btn_mode_tourist: "ابدأ التخطيط &larr;",
+    sec_categories: "ويـن <span class='gradient-text'>حابين؟</span>",
+    cat_history: "تاريخنا",
+    cat_food: "أكلنا",
+    cat_hotels: "فنادق",
+    cat_hiking: "مسير وهايكنج",
+    cat_desert: "صحراء",
+    cat_water: "مية وسباحة",
+    cat_farms: "مزارعنا",
+    cat_culture: "ثقافتنا",
+    sec_flavors: "أكلنا <span class='gradient-text'>الزاكي</span>",
+    food_mansaf: "المنسف",
+    food_mansaf_desc: "منسفنا دحّيجة، ما يحلى إلا بالجميد الكركي، أصول الكرم الأردني والضيافة الصح.",
+    food_falafel: "الفلافل",
+    food_falafel_desc: "حبات فلافل مقرمشة بتشهي من قاع المدينة، أطيب إفطار على الماشي مع كاسة شاي.",
+    food_knafeh: "الكنافة",
+    food_knafeh_desc: "كنافة نابلسية بتمط، غرقانة بالقطر، أحلى تحلاية بعد المنسف أو بأي احتفال.",
+    food_coffee: "القهوة السادة",
+    food_coffee_desc: "قهوة سادة مهيّلة بتعدّل المزاج، يا هلا بالضيف، رمز الكرم وحسن الاستقبال.",
+    sec_explore_cities: "لفّ <span class='gradient-text'>محافظاتنا</span>",
+    btn_back_cities: "&rarr; ارجع للمدن",
+    plan_trip_to: "✦ خطط طشّة لـ ",
+    ai_planner_title: "مخطط الطشّات الذكي",
+    ai_planner_desc: "خلي الذكاء الاصطناعي يزبطلك أحلى برنامج للرحلة",
+    plan_dest: "وين النية؟",
+    plan_dest_all: "كل الأردن",
+    plan_dur: "كم يوم؟",
+    plan_dur_1: "يوم واحد",
+    plan_dur_3: "3 أيام",
+    plan_dur_5: "5 أيام",
+    plan_dur_7: "أسبوع",
+    plan_dur_14: "أسبوعين",
+    plan_budget: "الميزانية",
+    plan_bud_budget: "ميزانية محدودة",
+    plan_bud_mid: "متوسطة",
+    plan_bud_lux: "فاخرة ومدلعة",
+    plan_style: "الصحبة",
+    plan_style_solo: "لحالي",
+    plan_style_couple: "أنا والحب",
+    plan_style_family: "مع العيلة",
+    plan_style_group: "أنا والشلة",
+    tags_label: "شو جوّك؟",
+    tag_hist: "تاريخ وآثار",
+    tag_food: "أكل وتذوق",
+    tag_adv: "مغامرات",
+    tag_camp: "تخييم بالصحرا",
+    tag_water: "مسابح ومية",
+    tag_photo: "تصوير طبيعة",
+    tag_rel: "مقامات وأديرة",
+    tag_hike: "هايكنج",
+    tag_market: "أسواق شعبية",
+    tag_art: "فنون وتراث",
+    btn_gen_itinerary: "✦ زبّطلي البرنامج",
+    sec_currency: "حاسبة <span class='gradient-text'>العملات</span>",
+    curr_from: "من",
+    curr_to: "إلى الدينار",
+    rate_note: "سعر تقريبي · تأكد من الصراف",
+    tips_title: "💡 نصائح للصرافة ببلدنا",
+    tips_desc: "روح على محلات الصرافة بوسط البلد عشان أحسن سعر. بلاش صرافة المطار. دينارنا مربوط بالدولار ووضعه تمام. خلي معك فراطة وفئات صغيرة للتكاسي والمحلات الصغيرة.",
+    ai_adv_title: "مستشار <span class='gradient-text'>العملات الذكي</span>",
+    ai_adv_prompt: "اسأل عن أسعار الصرف، أو أحسن مكان تصرف فيه مصاريك:",
+    placeholder_currency: "مثال: وين أحسن صراف بعمان؟",
+    btn_ask_ai: "اسأل الذكي",
+    admin_title: "لوحة تحكم الإدارة — وين؟",
+    admin_badge: "إدارة",
+    admin_active_trips: "الرحلات الشغالة",
+    admin_users: "المستخدمين",
+    admin_avg_rating: "معدل التقييم",
+    tab_content: "المحتوى",
+    tab_users: "المستخدمين",
+    tab_analytics: "التحليلات",
+    tab_ai: "رؤى الذكي",
+    act_cities: "إدارة المحافظات",
+    act_cities_desc: "ضيف وعدّل معلومات المحافظات",
+    act_rest: "إدارة المطاعم",
+    act_rest_desc: "250 مطعم نازل على المنصة",
+    act_hot: "إدارة الفنادق",
+    act_hot_desc: "156 فندق وشاليه",
+    act_exp: "التجارب",
+    act_exp_desc: "تجارب ومغامرات محلية",
+    th_user: "المستخدم",
+    th_mode: "الجو",
+    th_trips: "عدد الرحلات",
+    th_status: "الحالة",
+    top_dest: "أكثر المحافظات طلب",
+    user_breakdown: "توزيع الزوار",
+    lbl_intl: "سياح أجانب",
+    lbl_local: "ولاد البلد",
+    peak_month: "أكثر شهر عليه حركة: شهر 3 و 4",
+    ai_admin_prompt: "اسأل المساعد الذكي عن وضع السياحة وايش ناقصنا محتوى:",
+    placeholder_admin: "مثال: شو نزيد أماكن لصيف 2026؟",
+    btn_analyze: "حلّل",
+    footer_text: "وين؟ | Wayn? — منصة السياحة الأردنية الأصيلة",
+    footer_sub: "مدعوم بالذكاء الاصطناعي · انعمل بحب عشان الأردن",
+    mode_local_badge: "ابن البلد 🇯🇴",
+    mode_tourist_badge: "سائح 🌍",
+    status_active: "شغال",
+    status_inactive: "موقف",
+    ai_mock_loading_itinerary: "عم بجهّزلك أحلى برنامج وبزبطلك الطشّة...",
+    ai_mock_pre_itinerary: "هاد برنامج رحلتك لـ",
+    ai_mock_post_itinerary: "انشالله تنبسطوا بالطشّة! (وين؟) دايماً معك لأي فزعة.",
+    ai_mock_loading_curr: "عم بحسبلك الأسعار...",
+    ai_mock_curr_resp: "حسب الوضع الحالي بالسوق:\n\nعشان تاخد أحسن سعر، روح على وسط البلد بعمان، محلات الصرافة هناك بتعطيك سعر ممتاز وعمولتها خفيفة. دايماً خلي معك فراطة (دنانير وخمسات) عشان التكاسي ودكاكين الحارة ما بتلاقي معهم فكة بسهولة.",
+    ai_mock_loading_admin: "عم بحلل بيانات المنصة...",
+    ai_mock_admin_resp: "**تقرير ذكاء اصطناعي:**\n\nبناءً على طلبك، حللت تفضيلات 1,894 مستخدم. في زيادة 45٪ على طلبات (السياحة البيئية) و(الاستجمام).\n\n**اقتراحي:** \nركزوا تنزلوا أماكن أكتر عن الشاليهات الريفية بعجلون والمخيمات البيئية بمحمية ضانا قبل ما تبلّش عجقة الصيف."
   }
 };
 
@@ -305,7 +305,152 @@ const state = {
 };
 
 // --- Data Models (Fully Bilingual, Expanded, 100% Unique Real Images) ---
-const cities = window.appCities || [];
+const cities = [
+  { 
+    id: 'amman', 
+    name: { en: 'Amman', ar: 'عمّان' }, 
+    wikiTitle: 'Amman',
+    desc: { en: 'The bustling capital — ancient citadels meet modern cafés in a city of seven hills.', ar: 'العاصمة النابضة بالحياة — قلاع قديمة بتلتقي بمقاهي حديثة بمدينة الجبال السبعة.' },
+    tags: { en: ['Capital', 'Culture', 'Nightlife', 'Food'], ar: ['العاصمة', 'ثقافة', 'حياة ليلية', 'أكل زاكي'] },
+    intro: { en: 'Jordan\'s vibrant capital blends ancient Roman ruins with trendy neighborhoods. The Citadel offers panoramic views while Rainbow Street buzzes with local life.', ar: 'عمان بتجمع بين الآثار الرومانية العظيمة والأحياء العصرية. جبل القلعة بيعطيك أحلى إطلالة على البلد، وشارع الرينبو مليان حيوية وشباب.' },
+    attractions: [
+      { wikiTitle: 'Amman_Citadel', name: { en: 'The Citadel', ar: 'جبل القلعة' }, meta: { en: 'Ancient hilltop ruins', ar: 'آثار تاريخية وإطلالة بتجنن' } },
+      { wikiTitle: 'Roman_Theater_(Amman)', name: { en: 'Roman Theatre', ar: 'المدرج الروماني' }, meta: { en: '2,000-year-old amphitheater', ar: 'مدرج من أيام الرومان بوسط البلد' } },
+      { wikiTitle: 'King_Abdullah_I_Mosque', name: { en: 'King Abdullah I Mosque', ar: 'مسجد الملك عبدالله الأول' }, meta: { en: 'Beautiful blue-domed mosque', ar: 'المسجد العظيم بقبته الزرقا' } },
+      { wikiTitle: 'The_Jordan_Museum', name: { en: 'Jordan Museum', ar: 'متحف الأردن' }, meta: { en: 'Best museum in Jordan', ar: 'تاريخ البلد كله هون' } },
+      { wikiTitle: 'Rainbow_Street', name: { en: 'Rainbow Street', ar: 'شارع الرينبو' }, meta: { en: 'Vibrant cafés & shops', ar: 'قعدات رايقة ومقاهي' } },
+      { wikiTitle: 'Al_Abdali', name: { en: 'Abdali Boulevard', ar: 'بوليفارد العبدلي' }, meta: { en: 'Modern shopping district', ar: 'تسوق ومطاعم حديثة' } }
+    ]
+  },
+  { 
+    id: 'petra', 
+    name: { en: 'Petra', ar: 'البترا' }, 
+    wikiTitle: 'Petra',
+    desc: { en: 'The Rose-Red City — a UNESCO World Heritage wonder carved into ancient sandstone cliffs.', ar: 'المدينة الوردية — أعجوبة الدنيا اللي نحتوها الأنباط بالصخر الأحمر.' },
+    tags: { en: ['UNESCO', 'Ancient', 'Wonder', 'Iconic'], ar: ['تراث عالمي', 'تاريخي', 'أعجوبة', 'فخرنا'] },
+    intro: { en: 'One of the Seven Wonders of the World. The Nabataean rock-carved city is Jordan\'s crown jewel, best experienced at sunrise through the Siq gorge.', ar: 'من عجائب الدنيا السبع وجوهرة الأردن. أحلى إشي تمشي بالسيق وقت الشروق وتشوف الخزنة لأول مرة.' },
+    attractions: [
+      { wikiTitle: 'Al-Khazneh', name: { en: 'The Treasury (Al-Khazneh)', ar: 'الخزنة' }, meta: { en: 'Iconic carved facade', ar: 'واجهة البترا العظيمة' } },
+      { wikiTitle: 'Siq', name: { en: 'The Siq', ar: 'السيق' }, meta: { en: '1.2km natural gorge', ar: 'الشق الصخري المهيب' } },
+      { wikiTitle: 'Ad_Deir', name: { en: 'The Monastery (Ad-Deir)', ar: 'الدير' }, meta: { en: '800-step climb', ar: 'مشوار طويل بس بيستاهل' } },
+      { wikiTitle: 'High_Place_of_Sacrifice', name: { en: 'High Place of Sacrifice', ar: 'المذبح' }, meta: { en: 'Panoramic views', ar: 'أعلى إطلالة بالمنطقة' } },
+      { wikiTitle: 'Nabataeans', name: { en: 'Petra by Night', ar: 'البترا بالليل' }, meta: { en: 'Candlelit experience', ar: 'أجواء خرافية على ضو الشموع' } },
+      { wikiTitle: 'Little_Petra', name: { en: 'Little Petra', ar: 'البترا الصغيرة' }, meta: { en: 'Free Nabataean site nearby', ar: 'منطقة أثرية قريبة وهادية' } }
+    ]
+  },
+  { 
+    id: 'aqaba', 
+    name: { en: 'Aqaba', ar: 'العقبة' }, 
+    wikiTitle: 'Aqaba',
+    desc: { en: 'Jordan\'s only coastal city — crystal-clear Red Sea waters, coral reefs, and year-round sunshine.', ar: 'ثغر الأردن الباسم — مية البحر الأحمر الصافية وشمس بتدفي القلب طول السنة.' },
+    tags: { en: ['Beaches', 'Diving', 'Relaxation', 'Seafood'], ar: ['شطوط', 'غوص', 'رواق', 'سمك زاكي'] },
+    intro: { en: 'Jordan\'s window to the Red Sea. World-class diving and snorkeling, fresh seafood, and a relaxed coastal atmosphere.', ar: 'متنفسنا الوحيد على البحر. غوص بين المرجان، سمك طازج، وقعدة رايقة على الشط.' },
+    attractions: [
+      { wikiTitle: 'Gulf_of_Aqaba', name: { en: 'South Beach Dive Sites', ar: 'الشط الجنوبي' }, meta: { en: 'Top-rated coral reefs', ar: 'أحلى شعب مرجانية للغوص' } },
+      { wikiTitle: 'Aqaba_Fort', name: { en: 'Aqaba Fort', ar: 'قلعة العقبة' }, meta: { en: '16th-century castle', ar: 'قلعة تاريخية عالبحر' } },
+      { wikiTitle: 'Coral_reef', name: { en: 'Glass-Bottom Boat', ar: 'قوارب القاع الزجاجي' }, meta: { en: 'Guided reef tours', ar: 'رحلة بالقارب لتشوف السمك' } },
+      { wikiTitle: 'Seafood', name: { en: 'Aqaba Fish Market', ar: 'حسبة السمك' }, meta: { en: 'Fresh seafood', ar: 'أطيب صيادية بتوكلها بحياتك' } },
+      { wikiTitle: 'Beach_club', name: { en: 'Berenice Beach', ar: 'شط برنيس' }, meta: { en: 'Private beach club', ar: 'نادي شاطئي مرتب' } },
+      { wikiTitle: 'Red_Sea', name: { en: 'Sunset Boat Cruise', ar: 'رحلة قارب وقت الغروب' }, meta: { en: 'Evening tours with dinner', ar: 'قعدة حلوة بالبحر مع العشا' } }
+    ]
+  },
+  { 
+    id: 'jerash', 
+    name: { en: 'Jerash', ar: 'جرش' }, 
+    wikiTitle: 'Jerash',
+    desc: { en: 'The Pompeii of the Middle East — one of the best-preserved Roman provincial cities in the world.', ar: 'بومبي الشرق — من أفضل المدن الرومانية المحافظ عليها بالعالم كله.' },
+    tags: { en: ['Roman', 'History', 'Ruins', 'Day Trip'], ar: ['روماني', 'تاريخ', 'آثار', 'طشّة سريعة'] },
+    intro: { en: 'Just 48km from Amman, Jerash hosts remarkably intact Roman colonnaded streets, temples, and amphitheaters.', ar: 'قريبة من عمان ومناسبة لطشّة خفيفة. شارع الأعمدة والمدرجات رح ترجعك بالزمن لورا.' },
+    attractions: [
+      { wikiTitle: 'Forum_(Roman)', name: { en: 'Oval Plaza', ar: 'الساحة البيضاوية' }, meta: { en: 'Unique Roman forum', ar: 'ساحة الندوة العظيمة' } },
+      { wikiTitle: 'Roman_theatre_(structure)', name: { en: 'South Theatre', ar: 'المدرج الجنوبي' }, meta: { en: 'Still used for performances', ar: 'مكان حفلات مهرجان جرش' } },
+      { wikiTitle: 'Temple_of_Artemis_(Jerash)', name: { en: 'Temple of Artemis', ar: 'معبد أرتميس' }, meta: { en: 'Towering columns', ar: 'أعمدة شاهقة بتجنن' } },
+      { wikiTitle: 'Cardo_maximus', name: { en: 'Cardo Maximus', ar: 'شارع الأعمدة' }, meta: { en: 'Main colonnaded street', ar: 'الشارع الروماني الرئيسي' } },
+      { wikiTitle: 'Arch_of_Hadrian_(Jerash)', name: { en: 'Hadrian\'s Arch', ar: 'قوس هادريان' }, meta: { en: 'Triumphal entry gate', ar: 'بوابة النصر الضخمة' } },
+      { wikiTitle: 'Jerash_Festival', name: { en: 'Jerash Festival', ar: 'مهرجان جرش' }, meta: { en: 'Annual arts event', ar: 'فعاليات وفنون ومسرح' } }
+    ]
+  },
+  {
+    id: 'wadi-rum',
+    name: { en: 'Wadi Rum', ar: 'وادي رم' },
+    wikiTitle: 'Wadi_Rum',
+    desc: { en: 'The Valley of the Moon — vast red desert landscapes, Martian terrain, and Bedouin camps.', ar: 'وادي القمر — صحراء حمرا شاسعة وكأنك على كوكب المريخ، وقعدات بدوية أصيلة.' },
+    tags: { en: ['Desert', 'Adventure', 'Camping', 'Nature'], ar: ['صحرا', 'مغامرة', 'مخيمات', 'طبيعة'] },
+    intro: { en: 'A breathtaking desert wilderness. Experience Bedouin hospitality, jeep tours, and sleeping under a canopy of stars.', ar: 'برية صحراوية بتوخد العقل. جرب كرم البدو، جولات سيارات الدفع الرباعي، والنومة تحت النجوم.' },
+    attractions: [
+      { wikiTitle: 'Off-roading', name: { en: '4x4 Jeep Tours', ar: 'جولات سيارات 4x4' }, meta: { en: 'Explore the desert', ar: 'لف الصحرا وعيش المغامرة' } },
+      { wikiTitle: 'Glamping', name: { en: 'Martian Domes', ar: 'القباب المريخية' }, meta: { en: 'Luxury glamping', ar: 'تخييم فاخر بخيم قزاز' } },
+      { wikiTitle: 'Camel', name: { en: 'Camel Riding', ar: 'ركوب الجمال' }, meta: { en: 'Traditional transport', ar: 'جرب حياة البدو عالأصول' } },
+      { wikiTitle: 'Natural_arch', name: { en: 'Burdah Rock Bridge', ar: 'جسر جبل بردة' }, meta: { en: 'Spectacular rock arch', ar: 'قوس صخري طبيعي رهيب' } },
+      { wikiTitle: 'Earth_oven', name: { en: 'Zarb Dinner', ar: 'عشا زرب' }, meta: { en: 'Bedouin BBQ', ar: 'أطيب لحمة مدفونة تحت الرمل' } },
+      { wikiTitle: 'T._E._Lawrence', name: { en: 'Lawrence\'s Spring', ar: 'نبع لورنس' }, meta: { en: 'Historical water source', ar: 'عين مية تاريخية بالصحرا' } }
+    ]
+  },
+  {
+    id: 'dead-sea',
+    name: { en: 'Dead Sea', ar: 'البحر الميت' },
+    wikiTitle: 'Dead_Sea',
+    desc: { en: 'The lowest point on Earth — float effortlessly in hyper-saline waters and enjoy mineral-rich mud.', ar: 'أخفض بقعة بالأرض — مية مالحة بتخليك تطوف براحتك وطينة كلها فوائد.' },
+    tags: { en: ['Wellness', 'Relaxation', 'Unique', 'Nature'], ar: ['علاج طبيعي', 'رواق', 'فريد من نوعه', 'طبيعة'] },
+    intro: { en: 'At 430m below sea level, the Dead Sea offers a unique floating experience and therapeutic mineral mud.', ar: 'تجربة طفو ما بتنساها تحت مستوى سطح البحر بـ 430 متر. طينة معدنية بتجدد البشرة ومنتجعات ولا أروع.' },
+    attractions: [
+      { wikiTitle: 'Hypersaline_lake', name: { en: 'Floating Experience', ar: 'تجربة الطفو' }, meta: { en: 'Impossible to sink', ar: 'مستحيل تغرق من الملوحة' } },
+      { wikiTitle: 'Mud_bath', name: { en: 'Mud Bathing', ar: 'حمامات الطينة' }, meta: { en: 'Therapeutic mud', ar: 'طينة سودة علاجية للبشرة' } },
+      { wikiTitle: 'Resort', name: { en: 'Resort Day Passes', ar: 'دخوليات المنتجعات' }, meta: { en: 'Access to private beaches', ar: 'مسابح وشطوط خاصة مرتبة' } },
+      { wikiTitle: 'Sunset', name: { en: 'Sunset Views', ar: 'إطلالة الغروب' }, meta: { en: 'Spectacular colors', ar: 'منظر الغروب عالبركة خيالي' } },
+      { wikiTitle: 'Halite', name: { en: 'Salt Formations', ar: 'تشكيلات الملح' }, meta: { en: 'Crystal structures', ar: 'ملح متصلب عأطراف البحر' } },
+      { wikiTitle: 'Mujib_Nature_Reserve', name: { en: 'Mujib Reserve', ar: 'محمية الموجب' }, meta: { en: 'River canyoning', ar: 'مغامرة بالوديان والمية' } }
+    ]
+  },
+  {
+    id: 'madaba',
+    name: { en: 'Madaba', ar: 'مأدبا' },
+    wikiTitle: 'Madaba',
+    desc: { en: 'The City of Mosaics — home to the famous 6th-century mosaic map of the Holy Land.', ar: 'مدينة الفسيفساء — فيها أشهر خريطة فسيفسائية للأراضي المقدسة.' },
+    tags: { en: ['History', 'Art', 'Religion', 'Culture'], ar: ['تاريخ', 'فن', 'أديان', 'ثقافة'] },
+    intro: { en: 'Renowned for its spectacular Byzantine and Umayyad mosaics. A peaceful city with deep historical significance.', ar: 'معروفة عالمياً بفسيفسائها البيزنطية والأموية. مدينة هادية وأهلها طيبين وتاريخها عريق.' },
+    attractions: [
+      { wikiTitle: 'Madaba_Map', name: { en: 'Madaba Map', ar: 'خريطة مأدبا' }, meta: { en: 'Famous mosaic map', ar: 'خريطة فسيفساء قديمة' } },
+      { wikiTitle: 'Mosaic', name: { en: 'Church of the Apostles', ar: 'كنيسة الرسل' }, meta: { en: 'Stunning mosaic floors', ar: 'أرضيات فسيفساء بتجنن' } },
+      { wikiTitle: 'Byzantine_Empire', name: { en: 'Archaeological Park', ar: 'المنتزه الأثري' }, meta: { en: 'Open-air museum', ar: 'متحف مفتوح للآثار' } },
+      { wikiTitle: 'Mount_Nebo', name: { en: 'Mount Nebo', ar: 'جبل نيبو' }, meta: { en: 'Historical viewpoint', ar: 'مطل تاريخي عظيم' } },
+      { wikiTitle: 'Handicraft', name: { en: 'Handicraft Shops', ar: 'محلات الحرف' }, meta: { en: 'Traditional weaving', ar: 'شغل يدوي ونسيج أردني' } },
+      { wikiTitle: 'Levantine_cuisine', name: { en: 'Haret Jdoudna', ar: 'حارة جدودنا' }, meta: { en: 'Famous restaurant', ar: 'مطعم تراثي قعدته حلوة' } }
+    ]
+  },
+  {
+    id: 'as-salt',
+    name: { en: 'As-Salt', ar: 'السلط' },
+    wikiTitle: 'Al-Salt',
+    desc: { en: 'The Place of Tolerance and Urban Hospitality — a UNESCO World Heritage city.', ar: 'مدينة التسامح والكرم الأصيل — حاراتها القديمة دخلت التراث العالمي لليونسكو.' },
+    tags: { en: ['UNESCO', 'Architecture', 'Culture', 'Local'], ar: ['تراث عالمي', 'عمارة', 'ثقافة', 'ولاد البلد'] },
+    intro: { en: 'Famous for its stunning yellow-limestone architecture, vibrant local market, and deep-rooted traditions of interfaith harmony.', ar: 'معروفة ببيوتها الصفرا وحجارتها القديمة وسوقها الشعبي النابض بالحياة، وأهلها رمز للتعايش.' },
+    attractions: [
+      { wikiTitle: 'Al-Salt', name: { en: 'Harmony Trail', ar: 'مسار الوئام' }, meta: { en: 'Guided walking tour', ar: 'جولة مشي بين الحارات' } },
+      { wikiTitle: 'Ottoman_architecture', name: { en: 'Abu Jaber Museum', ar: 'متحف أبو جابر' }, meta: { en: 'Ottoman mansion', ar: 'قصر عثماني صار متحف' } },
+      { wikiTitle: 'Souq', name: { en: 'Hammam Street', ar: 'شارع الحمام' }, meta: { en: 'Bustling traditional souk', ar: 'أقدم وأحلى سوق شعبي' } },
+      { wikiTitle: 'Mosque', name: { en: 'Great Mosque', ar: 'مسجد السلط الكبير' }, meta: { en: 'Center of the old city', ar: 'قلب المدينة القديمة' } },
+      { wikiTitle: 'Saint_George', name: { en: 'Al-Khader Church', ar: 'كنيسة الخضر' }, meta: { en: 'Revered by all faiths', ar: 'مزار لكل أهل البلد' } },
+      { wikiTitle: 'Coffeehouse', name: { en: 'Al-Eskafyeh Café', ar: 'مقهى الإسكافية' }, meta: { en: 'Historic café', ar: 'قعدة ومقهى تاريخي' } }
+    ]
+  },
+  {
+    id: 'al-karak',
+    name: { en: 'Al Karak', ar: 'الكرك' },
+    wikiTitle: 'Al-Karak',
+    desc: { en: 'Home to one of the largest Crusader castles in the Levant, steeped in dramatic history.', ar: 'فيها أكبر قلاع الصليبيين ببلاد الشام، تاريخها عريق وأهلها أصحاب كرم.' },
+    tags: { en: ['Castles', 'History', 'Views', 'Food'], ar: ['قلاع', 'تاريخ', 'مطلات', 'أكل'] },
+    intro: { en: 'Dominated by its massive 12th-century Crusader castle. The city is also famous across Jordan for cooking the best Mansaf.', ar: 'قلعتها الضخمة بتطل على كل المنطقة. والكرك هي أصل الجميد وأطيب منسف ممكن تذوقه بحياتك.' },
+    attractions: [
+      { wikiTitle: 'Kerak_Castle', name: { en: 'Karak Castle', ar: 'قلعة الكرك' }, meta: { en: 'Massive fortress', ar: 'حصن صليبي عظيم' } },
+      { wikiTitle: 'Crusader_states', name: { en: 'Archaeological Museum', ar: 'متحف الآثار' }, meta: { en: 'Inside the castle', ar: 'متحف جوا القلعة' } },
+      { wikiTitle: 'Rift_Valley', name: { en: 'Dead Sea Viewpoint', ar: 'مطل البحر الميت' }, meta: { en: 'Panoramic views', ar: 'مطل بكشف البحر الميت' } },
+      { wikiTitle: 'Mansaf', name: { en: 'Authentic Mansaf', ar: 'منسف كركي' }, meta: { en: 'The best Jameed', ar: 'منسف عالأصول بالجميد الكركي' } },
+      { wikiTitle: 'Noah', name: { en: 'Prophet Nuh Shrine', ar: 'مقام النبي نوح' }, meta: { en: 'Religious site', ar: 'مقام ديني مهم' } },
+      { wikiTitle: 'Wadi_bin_Hammad', name: { en: 'Wadi Bin Hammad', ar: 'وادي بن حماد' }, meta: { en: 'Hidden canyon with hot springs', ar: 'وادي مخفي ومية سخنة' } }
+    ]
+  }
+];
 
 // Admin Users Dictionary Mock
 const adminUsers = [
@@ -560,6 +705,11 @@ function initInteractions() {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      switchSection('cities');
+      setTimeout(() => {
+        const grid = document.getElementById('citiesMain');
+        if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 500);
     });
   });
 
@@ -592,35 +742,34 @@ function initParallax() {
 // --- Cities Rendering Logic (Using Unique Unsplash Images) ---
 
 function renderCities() {
+  const grid = document.getElementById('citiesGrid');
   const mode = state.currentMode;
   
+  grid.innerHTML = cities.map((c, index) => `
+    <div class="city-card stagger-item" data-id="${c.id}">
+      <div class="city-img skeleton">
+        <img data-wiki="${c.wikiTitle}" alt="${c.name[mode]}" loading="lazy">
+        <div class="city-img-overlay"></div>
+        <span class="city-badge">${c.tags[mode][0]}</span>
+      </div>
+      <div class="city-body">
+        <div class="city-name">${c.name[mode]}</div>
+        <div class="city-desc">${c.desc[mode]}</div>
+        <div class="city-tags">${c.tags[mode].map(t => `<span class="city-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+
   document.querySelectorAll('.city-card').forEach(card => {
-    const enText = card.querySelector('.en-text');
-    const arText = card.querySelector('.ar-text');
-    if (enText && arText) {
-      if (mode === 'ar') {
-        enText.classList.add('hidden-view');
-        arText.classList.remove('hidden-view');
-      } else {
-        enText.classList.remove('hidden-view');
-        arText.classList.add('hidden-view');
-      }
-    }
-    if (!card.dataset.listenerAdded) {
-      card.addEventListener('click', () => showCityDetail(card.getAttribute('data-id')));
-      card.dataset.listenerAdded = 'true';
-    }
+    card.addEventListener('click', () => showCityDetail(card.getAttribute('data-id')));
   });
   
-  const grid = document.getElementById('citiesGrid');
-  if (grid) {
-    processWikiImages(grid);
-  }
-  initImageLoading();
+  processWikiImages(grid);
+  initImageLoading(); // Re-bind lazy loads
 }
 
 function showCityDetail(id) {
-  const city = cities.find(c => c.id == id);
+  const city = cities.find(c => c.id === id);
   if (!city) return;
   const mode = state.currentMode;
   state.currentCityId = id;
@@ -629,26 +778,6 @@ function showCityDetail(id) {
   const detailContainer = document.getElementById('cityDetail');
   detailContainer.classList.remove('hidden-view');
   
-  const cityName = mode === 'ar' ? city.name_ar : city.name;
-  const cityDesc = city.description;
-  const tags = mode === 'ar' ? ['مدينة', 'تاريخ', 'سياحة'] : ['City', 'History', 'Tourism'];
-  
-  const attractionsHTML = (city.attractions || []).map((attr, i) => {
-    const attrName = mode === 'ar' ? attr.name_ar : attr.name;
-    const attrMeta = mode === 'ar' ? attr.type : attr.type;
-    return `
-      <div class="place-card ripple stagger-item" style="animation-delay: ${i * 0.1}s">
-        <div class="place-icon skeleton">
-          <img data-wiki="${attr.wiki_title || ''}" alt="${attrName}" loading="lazy">
-        </div>
-        <div>
-          <div class="place-name">${attrName}</div>
-          <div class="place-meta">${attrMeta}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
   detailContainer.innerHTML = `
     <article class="section stagger-item" style="animation-delay: 0s; animation-fill-mode: forwards;">
       <button class="back-btn ripple" id="btnBackToCities" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--glass-border); padding:10px 20px; border-radius:20px; cursor:pointer; margin-bottom:20px;">
@@ -656,24 +785,29 @@ function showCityDetail(id) {
       </button>
       
       <div class="detail-header">
-        <div class="detail-icon skeleton"><img data-wiki="${city.wiki_title}" alt="${cityName}" loading="lazy"></div>
+        <div class="detail-icon skeleton"><img data-wiki="${city.wikiTitle}" alt="${city.name[mode]}" loading="lazy"></div>
         <div>
-          <h2 class="detail-title">${cityName}</h2>
-          <div class="city-tags" style="margin-top:10px;">
-            ${tags.map(t => `<span class="city-tag">${t}</span>`).join('')}
-          </div>
+          <h2 class="detail-title">${city.name[mode]}</h2>
         </div>
       </div>
       
-      <p class="detail-intro">${cityDesc}</p>
+      <p class="detail-intro">${city.intro[mode]}</p>
       
       <h3 class="detail-title" style="font-size: 24px; margin-bottom: 24px;">${translations[mode].stat_attr_lbl}</h3>
-      <div class="places-grid" id="cityAttractions">
-        ${attractionsHTML}
+      <div class="places-grid">
+        ${city.attractions.map((a, i) => `
+          <div class="place-card ripple stagger-item" style="animation-delay: ${i * 0.1}s">
+            <div class="place-icon skeleton"><img data-wiki="${a.wikiTitle}" alt="${a.name[mode]}" loading="lazy"></div>
+            <div>
+              <div class="place-name">${a.name[mode]}</div>
+              <div class="place-meta">${a.meta[mode]}</div>
+            </div>
+          </div>
+        `).join('')}
       </div>
       
       <div style="margin-top:4rem;">
-        <button class="btn-primary ripple" id="btnPlanForCity">${translations[mode].plan_trip_to} ${cityName}</button>
+        <button class="btn-primary ripple" id="btnPlanForCity">${translations[mode].plan_trip_to} ${city.name[mode]}</button>
       </div>
     </article>
   `;
@@ -685,12 +819,10 @@ function showCityDetail(id) {
   document.getElementById('btnPlanForCity').addEventListener('click', () => {
     switchSection('planner');
     const select = document.getElementById('planCity');
-    if (select) {
-      for (let i = 0; i < select.options.length; i++) {
-        if (select.options[i].value == city.id) {
-          select.selectedIndex = i;
-          break;
-        }
+    for (let i = 0; i < select.options.length; i++) {
+      if (select.options[i].value === city.id) {
+        select.selectedIndex = i;
+        break;
       }
     }
   });
@@ -724,33 +856,33 @@ async function handleGenerateItinerary() {
   setTimeout(() => {
     const mockEn = `${translations.en.ai_mock_pre_itinerary} ${days}-day itinerary for ${cityName}:
 
-Day 1 â€” Arrival & Exploration
-â€¢ Morning: Arrive and settle in. Grab a traditional breakfast of hummus and falafel.
-â€¢ Afternoon: Explore the local historical sites and walk through the old markets.
-â€¢ Evening: Enjoy a welcome dinner. Try Mansaf, Jordan's national dish.
-â€¢ Local Secret: Ask your hotel for the nearest cab queue rather than hailing from tourist spots.
+Day 1 — Arrival & Exploration
+• Morning: Arrive and settle in. Grab a traditional breakfast of hummus and falafel.
+• Afternoon: Explore the local historical sites and walk through the old markets.
+• Evening: Enjoy a welcome dinner. Try Mansaf, Jordan's national dish.
+• Local Secret: Ask your hotel for the nearest cab queue rather than hailing from tourist spots.
 
-Day 2 â€” Deep Dive into Culture
-â€¢ Morning: Guided tour of the main attractions. Arrive early!
-â€¢ Afternoon: Stop for a refreshing mint lemonade and explore the artisan shops.
-â€¢ Evening: Head to a scenic viewpoint to watch the sunset over the landscape.
-â€¢ Local Secret: Bargaining is expected in the markets; start at 50% of the asking price with a smile.
+Day 2 — Deep Dive into Culture
+• Morning: Guided tour of the main attractions. Arrive early!
+• Afternoon: Stop for a refreshing mint lemonade and explore the artisan shops.
+• Evening: Head to a scenic viewpoint to watch the sunset over the landscape.
+• Local Secret: Bargaining is expected in the markets; start at 50% of the asking price with a smile.
 
 ${translations.en.ai_mock_post_itinerary}`;
 
-    const mockAr = `${translations.ar.ai_mock_pre_itinerary} Ù„Ù€ ${cityName} Ù„Ù…Ø¯Ø© ${days} Ø£ÙŠØ§Ù…:
+    const mockAr = `${translations.ar.ai_mock_pre_itinerary} لـ ${cityName} لمدة ${days} أيام:
 
-Ø§Ù„ÙŠÙˆÙ… Ø§Ù„Ø£ÙˆÙ„ â€” Ø§Ù„ÙˆØµÙˆÙ„ ÙˆØ§Ù„Ø§Ø³ØªÙƒØ´Ø§Ù
-â€¢ Ø§Ù„ØµØ¨Ø­: Ø¨ØªÙˆØµÙ„ ÙˆØ¨ØªØ±ØªØ§Ø­ Ø´ÙˆÙŠ. Ø¨ØªÙØ·Ø± Ø­Ù…Øµ ÙˆÙÙ„Ø§ÙÙ„ Ù…Ù† Ù…Ø·Ø¹Ù… Ø´Ø¹Ø¨ÙŠ.
-â€¢ Ø§Ù„Ø¸Ù‡Ø±: Ø¨ØªÙ…Ø´ÙŠ Ø¨ÙŠÙ† Ø§Ù„Ø£Ù…Ø§ÙƒÙ† Ø§Ù„Ø£Ø«Ø±ÙŠØ© ÙˆØ¨ØªÙ„Ù Ø¨Ø§Ù„Ø£Ø³ÙˆØ§Ù‚ Ø§Ù„Ù‚Ø¯ÙŠÙ…Ø©.
-â€¢ Ø§Ù„Ù…Ø³Ø§: Ø¨ØªØªØ¹Ø´Ù‰ Ù…Ù†Ø³Ù ÙƒØ±ÙƒÙŠ ØµØ­ ÙˆØ¨ØªØ­Ù„ÙŠ Ø¨ÙƒÙ†Ø§ÙØ© Ù†Ø§Ø¨Ù„Ø³ÙŠØ©.
-â€¢ Ø³Ø± Ù…Ø®ÙÙŠ: Ø§Ø³Ø£Ù„ Ø£Ù‡Ù„ Ø§Ù„Ù…Ù†Ø·Ù‚Ø© Ø¹Ù† Ø£Ø­Ø³Ù† Ù…ÙƒØ§Ù† Ù„Ù„ØªÙƒØ§Ø³ÙŠ Ø£Ùˆ Ø§Ø³ØªØ¹Ù…Ù„ ØªØ·Ø¨ÙŠÙ‚Ø§Øª Ø§Ù„ØªÙˆØµÙŠÙ„.
+اليوم الأول — الوصول والاستكشاف
+• الصبح: بتوصل وبترتاح شوي. بتفطر حمص وفلافل من مطعم شعبي.
+• الظهر: بتمشي بين الأماكن الأثرية وبتلف بالأسواق القديمة.
+• المسا: بتتعشى منسف كركي صح وبتحلي بكنافة نابلسية.
+• سر مخفي: اسأل أهل المنطقة عن أحسن مكان للتكاسي أو استعمل تطبيقات التوصيل.
 
-Ø§Ù„ÙŠÙˆÙ… Ø§Ù„Ø«Ø§Ù†ÙŠ â€” Ø§Ù†Ø¯Ù…Ø§Ø¬ Ø¨Ø§Ù„Ø«Ù‚Ø§ÙØ©
-â€¢ Ø§Ù„ØµØ¨Ø­: Ø¬ÙˆÙ„Ø© Ø³ÙŠØ§Ø­ÙŠØ© Ø¨Ø§Ù„Ø£Ù…Ø§ÙƒÙ† Ø§Ù„Ù…Ø´Ù‡ÙˆØ±Ø©. Ø®Ù„ÙŠÙƒ Ù…Ø¨ÙƒØ± Ø£Ø­Ø³Ù† Ø¹Ø´Ø§Ù† Ø§Ù„Ø¹Ø¬Ù‚Ø©.
-â€¢ Ø§Ù„Ø¸Ù‡Ø±: Ø¨ØªØ´Ø±Ø¨ Ù„ÙŠÙ…ÙˆÙ† ÙˆÙ†Ø¹Ù†Ø¹ Ø¨Ù‚Ù‡ÙˆØ© Ù‚Ø¯ÙŠÙ…Ø© ÙˆØ¨ØªØªÙØ±Ø¬ Ø¹Ù„Ù‰ Ù…Ø­Ù„Ø§Øª Ø§Ù„ØªØ­Ù.
-â€¢ Ø§Ù„Ù…Ø³Ø§: Ø¨ØªØ·Ù„Ø¹ Ø¹Ù„Ù‰ Ù…Ø·Ù„ Ø­Ù„Ùˆ Ù„ØªØ´ÙˆÙ ØºØ±ÙˆØ¨ Ø§Ù„Ø´Ù…Ø³ ÙˆØªÙˆØ®Ø¯ ØµÙˆØ± Ø¨ØªØ¬Ù†Ù†.
-â€¢ Ø³Ø± Ù…Ø®ÙÙŠ: ÙƒØ§Ø³Ø± Ø¨Ø§Ù„Ø³Ø¹Ø± Ø¨Ø§Ù„Ø£Ø³ÙˆØ§Ù‚ Ø§Ù„Ø´Ø¹Ø¨ÙŠØ©ØŒ Ø¯Ø§ÙŠÙ…Ø§Ù‹ Ø¨Ù„Ø´ Ø¨Ù†Øµ Ø§Ù„Ø³Ø¹Ø± ÙˆØ§Ù†Øª Ø¨ØªØ¶Ø­Ùƒ.
+اليوم الثاني — اندماج بالثقافة
+• الصبح: جولة سياحية بالأماكن المشهورة. خليك مبكر أحسن عشان العجقة.
+• الظهر: بتشرب ليمون ونعنع بقهوة قديمة وبتتفرج على محلات التحف.
+• المسا: بتطلع على مطل حلو لتشوف غروب الشمس وتوخد صور بتجنن.
+• سر مخفي: كاسر بالسعر بالأسواق الشعبية، دايماً بلش بنص السعر وانت بتضحك.
 
 ${translations.ar.ai_mock_post_itinerary}`;
       

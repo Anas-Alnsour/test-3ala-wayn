@@ -50,7 +50,22 @@
     </div>
     
     <div class="header-mobile-controls">
-      <div class="mode-toggle" style="display:flex;">
+      <div class="auth-buttons-mobile" style="display: flex; gap: 10px; align-items: center;">
+          @guest
+              <a href="{{ route('login') }}" style="color: var(--secondary-accent); font-size: 0.9rem; font-weight: 600; text-decoration: none;" data-i18n="nav_login">Login</a>
+          @endguest
+          @auth
+              @php
+                  $dashRoute = match(Auth::user()->role) {
+                      'admin' => route('admin.dashboard'),
+                      'local' => route('local.dashboard'),
+                      default => route('tourist.dashboard'),
+                  };
+              @endphp
+              <a href="{{ $dashRoute }}" style="color: var(--secondary-accent); font-size: 0.9rem; font-weight: 600; text-decoration: none;" data-i18n="nav_dashboard">Dashboard</a>
+          @endauth
+      </div>
+      <div class="mode-toggle" style="display:flex; margin-left: 10px;">
         <button class="mode-btn active" id="modeEnMobile" data-mode="en">EN</button>
         <button class="mode-btn" id="modeArMobile" data-mode="ar">عربي</button>
       </div>
@@ -61,7 +76,28 @@
       <button class="nav-btn" data-target="cities" data-i18n="nav_cities">Cities</button>
       <button class="nav-btn" data-target="planner" data-i18n="nav_planner">AI Planner</button>
       <button class="nav-btn" data-target="currency" data-i18n="nav_currency">Currency</button>
-      <button class="nav-btn" data-target="admin" data-i18n="nav_admin">Admin</button>
+      
+      <div class="auth-buttons desktop-only" style="display: flex; gap: 10px; align-items: center; margin-left: 1rem;">
+          @guest
+              <a href="{{ route('login') }}" class="btn-secondary ripple" style="padding: 6px 16px; font-size: 0.85rem; border: 1px solid var(--secondary-accent); color: var(--secondary-accent); border-radius: 20px; text-decoration: none; background: transparent;" data-i18n="nav_login">Login</a>
+              <a href="{{ route('register') }}" class="btn-primary ripple" style="padding: 6px 16px; font-size: 0.85rem; border-radius: 20px; text-decoration: none;" data-i18n="nav_register">Register</a>
+          @endguest
+          @auth
+              @php
+                  $dashRoute = match(Auth::user()->role) {
+                      'admin' => route('admin.dashboard'),
+                      'local' => route('local.dashboard'),
+                      default => route('tourist.dashboard'),
+                  };
+              @endphp
+              <a href="{{ $dashRoute }}" class="btn-primary ripple" style="padding: 6px 16px; font-size: 0.85rem; border-radius: 20px; text-decoration: none;" data-i18n="nav_dashboard">Dashboard</a>
+              <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+                  @csrf
+                  <button type="submit" class="btn-secondary ripple" style="padding: 6px 16px; font-size: 0.85rem; border: 1px solid var(--text-secondary); color: var(--text-secondary); background: transparent; border-radius: 20px;" data-i18n="nav_logout">Logout</button>
+              </form>
+          @endauth
+      </div>
+
       <div class="mode-toggle desktop-only" id="desktopModeToggle">
         <button class="mode-btn active" id="modeEn" data-mode="en">EN</button>
         <button class="mode-btn" id="modeAr" data-mode="ar">عربي</button>
@@ -178,28 +214,8 @@
           <div class="section-header">
             <h2 class="section-title stagger-item" data-i18n="sec_explore_cities">Explore <span class="gradient-text">Jordan's Cities</span></h2>
           </div>
-          <script>
-            window.appCities = @json(\App\Models\City::with('attractions')->get());
-          </script>
           <div class="cities-grid" id="citiesGrid">
-            @php $cities = \App\Models\City::with('attractions')->get(); @endphp
-            @foreach($cities as $city)
-              <div class="city-card stagger-item" data-id="{{ $city->id }}">
-                <div class="city-img skeleton">
-                  <img data-wiki="{{ $city->wiki_title }}" alt="{{ $city->name }}" loading="lazy">
-                  <div class="city-img-overlay"></div>
-                  <span class="city-badge" data-i18n-city-tag="{{ $city->id }}">City</span>
-                </div>
-                <div class="city-body">
-                  <div class="city-name en-text">{{ $city->name }}</div>
-                  <div class="city-name ar-text hidden-view">{{ $city->name_ar }}</div>
-                  <div class="city-desc">{{ $city->description }}</div>
-                  <div class="city-tags">
-                    <span class="city-tag" data-i18n="tag_hist">History & Ruins</span>
-                  </div>
-                </div>
-              </div>
-            @endforeach
+            <!-- Rendered dynamically by app.js -->
           </div>
         </article>
       </div>
@@ -225,6 +241,7 @@
                 <label data-i18n="plan_dest">Destination</label>
                 <select id="planCity" class="glass-input">
                   <option value="all" data-i18n="plan_dest_all">All Jordan</option>
+                  @php $cities = \App\Models\City::all(); @endphp
                   @foreach($cities as $city)
                     <option value="{{ $city->id }}" class="en-text">{{ $city->name }}</option>
                     <option value="{{ $city->id }}" class="ar-text hidden-view">{{ $city->name_ar }}</option>
@@ -454,9 +471,14 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="footer">
-    <div data-i18n="footer_text">Wayn? | وين؟ — Authentic Tourism Platform for Jordan</div>
-    <div class="footer-sub" data-i18n="footer_sub">Powered by AI &middot; Built with &hearts; for Jordan</div>
+  <footer class="footer" style="background-color: var(--bg-dark); position: relative; overflow: hidden; padding: 60px 20px; text-align: center; border-top: 1px solid var(--border-highlight); margin-top: auto;">
+    <!-- Geometric/Sadu pattern background element -->
+    <div class="sadu-pattern" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.03; pointer-events: none; background-image: url('data:image/svg+xml;utf8,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M30 0L60 30L30 60L0 30L30 0ZM30 15L45 30L30 45L15 30L30 15Z\" fill=\"%23D4A373\" fill-rule=\"evenodd\"/></svg>'); background-size: 60px 60px;"></div>
+    
+    <div style="position: relative; z-index: 2;">
+        <div data-i18n="footer_text" style="font-family: var(--font-serif); font-size: 1.5rem; color: var(--primary-accent); margin-bottom: 15px; font-weight: 600;">Wayn? | وين؟ — Authentic Tourism Platform for Jordan</div>
+        <div class="footer-sub" data-i18n="footer_sub" style="font-size: 1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Powered by AI &middot; Built with &hearts; for Jordan</div>
+    </div>
   </footer>
 </body>
 </html>

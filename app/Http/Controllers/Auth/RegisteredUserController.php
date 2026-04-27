@@ -46,6 +46,15 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        $role = $user->role;
+        $redirectTo = '/tourist/dashboard';
+        
+        if ($role === 'admin') {
+            $redirectTo = '/admin/dashboard';
+        } elseif ($role === 'local') {
+            $redirectTo = '/local/dashboard';
+        }
+
+        return redirect($redirectTo);
     }
 }
