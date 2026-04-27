@@ -10,7 +10,7 @@
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans antialiased overflow-x-hidden selection:bg-amber-500 selection:text-gray-900" x-data="{ mobileMenuOpen: false, currentMode: 'en' }">
+<body class="bg-gray-900 text-gray-100 font-sans antialiased overflow-x-hidden selection:bg-amber-500 selection:text-gray-900" x-data="{ mobileMenuOpen: false, currentMode: 'en', activeTab: window.location.hash ? window.location.hash.substring(1) : 'home' }" @hashchange.window="activeTab = window.location.hash ? window.location.hash.substring(1) : 'home'">
     
     <!-- HEADER -->
     <header class="fixed top-0 left-0 w-full z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-800 transition-all duration-300">
@@ -45,11 +45,11 @@
 
                 <!-- Desktop Nav -->
                 <nav class="hidden md:flex items-center gap-6">
-                    <a href="#home" class="text-sm font-medium text-amber-500 hover:text-amber-400 transition-colors">Explore</a>
-                    <a href="#cities" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Cities</a>
-                    <a href="#planner" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">AI Planner</a>
-                    <a href="#currency" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Currency</a>
-                    <a href="#admin" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Admin</a>
+                    <a href="#home" class="text-sm font-medium transition-colors" :class="activeTab === 'home' ? 'text-amber-500' : 'text-gray-300 hover:text-white'">Explore</a>
+                    <a href="#cities" class="text-sm font-medium transition-colors" :class="activeTab === 'cities' ? 'text-amber-500' : 'text-gray-300 hover:text-white'">Cities</a>
+                    <a href="#planner" class="text-sm font-medium transition-colors" :class="activeTab === 'planner' ? 'text-amber-500' : 'text-gray-300 hover:text-white'">AI Planner</a>
+                    <a href="#currency" class="text-sm font-medium transition-colors" :class="activeTab === 'currency' ? 'text-amber-500' : 'text-gray-300 hover:text-white'">Currency</a>
+                    <a href="#admin" class="text-sm font-medium transition-colors" :class="activeTab === 'admin' ? 'text-amber-500' : 'text-gray-300 hover:text-white'">Admin</a>
                     
                     <div class="flex items-center bg-gray-800 rounded-full p-1 border border-gray-700">
                         <button class="px-3 py-1 rounded-full text-xs font-bold transition-colors" :class="currentMode === 'en' ? 'bg-amber-600 text-white' : 'text-gray-400 hover:text-white'" @click="currentMode = 'en'">EN</button>
@@ -80,11 +80,11 @@
              class="md:hidden bg-gray-800 border-b border-gray-700 absolute w-full"
              @click.away="mobileMenuOpen = false">
             <div class="px-4 pt-2 pb-4 space-y-1">
-                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-amber-500 bg-gray-900">Explore</a>
-                <a href="#cities" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Cities</a>
-                <a href="#planner" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">AI Planner</a>
-                <a href="#currency" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Currency</a>
-                <a href="#admin" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700">Admin</a>
+                <a href="#home" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium transition-colors" :class="activeTab === 'home' ? 'text-amber-500 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-700'">Explore</a>
+                <a href="#cities" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium transition-colors" :class="activeTab === 'cities' ? 'text-amber-500 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-700'">Cities</a>
+                <a href="#planner" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium transition-colors" :class="activeTab === 'planner' ? 'text-amber-500 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-700'">AI Planner</a>
+                <a href="#currency" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium transition-colors" :class="activeTab === 'currency' ? 'text-amber-500 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-700'">Currency</a>
+                <a href="#admin" @click="mobileMenuOpen = false" class="block px-3 py-2 rounded-md text-base font-medium transition-colors" :class="activeTab === 'admin' ? 'text-amber-500 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-700'">Admin</a>
                 
                 <div class="mt-4 flex items-center justify-center bg-gray-900 rounded-lg p-1 border border-gray-700 w-max mx-auto">
                     <button class="px-4 py-2 rounded-md text-sm font-bold transition-colors" :class="currentMode === 'en' ? 'bg-amber-600 text-white' : 'text-gray-400'" @click="currentMode = 'en'">EN</button>
