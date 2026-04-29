@@ -8,7 +8,7 @@
 @layer base {
   :root {
     /* اللون الافتراضي (يمكن تغييره من الـ Alpine.js) */
-    --theme-primary: #1e293b; 
+    --theme-primary: #1e293b;
   }
 
   /* تحديد الألوان لكل لوحة بناءً على المهنة */
@@ -23,7 +23,7 @@
   .bg-theme { background-color: var(--theme-primary) !important; }
   .text-theme { color: var(--theme-primary) !important; }
   .border-theme { border-color: var(--theme-primary) !important; }
-  
+
   .bg-theme-light { background-color: color-mix(in srgb, var(--theme-primary) 15%, white) !important; }
   .bg-theme-hover { background-color: color-mix(in srgb, var(--theme-primary) 85%, black) !important; }
   .text-theme-dark { color: color-mix(in srgb, var(--theme-primary) 70%, black) !important; }
@@ -83,15 +83,15 @@ button:not([class*="btn-"]):not([class*="nav-btn"]):not([class*="mode-btn"]):not
   --bg-card: #2a201d;
   --text-main: #f5f0e6;
   --text-secondary: #c4b5a5;
-  
+
   --primary-accent: #c17551; /* Petra Rose */
   --secondary-accent: #e6b885; /* Desert Sand */
   --highlight: #8c9e6c; /* Olive Tree Green */
   --shmagh-red: #b22222;
-  
+
   --font-sans: 'Lato', 'Tajawal', sans-serif;
   --font-serif: 'Playfair Display', serif;
-  
+
   --glass-bg: rgba(42, 32, 29, 0.6);
   --glass-border: rgba(193, 117, 81, 0.2);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
@@ -108,7 +108,8 @@ body {
   transition: background-color 0.4s ease;
 }
 
-img { opacity: 0; filter: blur(10px); transition: opacity 0.8s ease, filter 0.8s ease; }
+img { opacity: 1; filter: blur(10px); transition: opacity 0.8s ease, filter 0.8s ease; }
+img.lazy-load { opacity: 0; }
 img.loaded { opacity: 1; filter: blur(0); }
 
 .skeleton { position: relative; overflow: hidden; background-color: var(--bg-card) !important; }
@@ -133,8 +134,8 @@ img.loaded { opacity: 1; filter: blur(0); }
 
 .shmagh-border {
   height: 16px; width: 100%;
-  background-image: 
-    linear-gradient(45deg, var(--shmagh-red) 25%, transparent 25%, transparent 75%, var(--shmagh-red) 75%, var(--shmagh-red)), 
+  background-image:
+    linear-gradient(45deg, var(--shmagh-red) 25%, transparent 25%, transparent 75%, var(--shmagh-red) 75%, var(--shmagh-red)),
     linear-gradient(45deg, var(--shmagh-red) 25%, #ffffff 25%, #ffffff 75%, var(--shmagh-red) 75%, var(--shmagh-red));
   background-position: 0 0, 8px 8px; background-size: 16px 16px;
   border-bottom: 2px solid #5a0b12; position: relative; z-index: 1000;

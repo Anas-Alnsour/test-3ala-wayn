@@ -19,7 +19,7 @@ const translations = {
     hero_desc: "From the ancient streets of Petra to the crystal waters of Aqaba — plan your perfect Jordanian journey.",
     btn_plan_hero: "✦ Plan My Trip",
     btn_explore_hero: "Explore Cities &rarr;",
-    stat_cities_val: "17+",
+    stat_cities_val: "18+",
     stat_cities_lbl: "Cities",
     stat_attr_val: "480+",
     stat_attr_lbl: "Attractions",
@@ -306,9 +306,9 @@ const state = {
 
 // --- Data Models (Fully Bilingual, Expanded, 100% Unique Real Images) ---
 const cities = [
-  { 
-    id: 'amman', 
-    name: { en: 'Amman', ar: 'عمّان' }, 
+  {
+    id: 'amman',
+    name: { en: 'Amman', ar: 'عمّان' },
     wikiTitle: 'Amman',
     desc: { en: 'The bustling capital — ancient citadels meet modern cafés in a city of seven hills.', ar: 'العاصمة النابضة بالحياة — قلاع قديمة بتلتقي بمقاهي حديثة بمدينة الجبال السبعة.' },
     tags: { en: ['Capital', 'Culture', 'Nightlife', 'Food'], ar: ['العاصمة', 'ثقافة', 'حياة ليلية', 'أكل زاكي'] },
@@ -322,9 +322,9 @@ const cities = [
       { wikiTitle: 'Al_Abdali', name: { en: 'Abdali Boulevard', ar: 'بوليفارد العبدلي' }, meta: { en: 'Modern shopping district', ar: 'تسوق ومطاعم حديثة' } }
     ]
   },
-  { 
-    id: 'petra', 
-    name: { en: 'Petra', ar: 'البترا' }, 
+  {
+    id: 'petra',
+    name: { en: 'Petra', ar: 'البترا' },
     wikiTitle: 'Petra',
     desc: { en: 'The Rose-Red City — a UNESCO World Heritage wonder carved into ancient sandstone cliffs.', ar: 'المدينة الوردية — أعجوبة الدنيا اللي نحتوها الأنباط بالصخر الأحمر.' },
     tags: { en: ['UNESCO', 'Ancient', 'Wonder', 'Iconic'], ar: ['تراث عالمي', 'تاريخي', 'أعجوبة', 'فخرنا'] },
@@ -338,9 +338,9 @@ const cities = [
       { wikiTitle: 'Little_Petra', name: { en: 'Little Petra', ar: 'البترا الصغيرة' }, meta: { en: 'Free Nabataean site nearby', ar: 'منطقة أثرية قريبة وهادية' } }
     ]
   },
-  { 
-    id: 'aqaba', 
-    name: { en: 'Aqaba', ar: 'العقبة' }, 
+  {
+    id: 'aqaba',
+    name: { en: 'Aqaba', ar: 'العقبة' },
     wikiTitle: 'Aqaba',
     desc: { en: 'Jordan\'s only coastal city — crystal-clear Red Sea waters, coral reefs, and year-round sunshine.', ar: 'ثغر الأردن الباسم — مية البحر الأحمر الصافية وشمس بتدفي القلب طول السنة.' },
     tags: { en: ['Beaches', 'Diving', 'Relaxation', 'Seafood'], ar: ['شطوط', 'غوص', 'رواق', 'سمك زاكي'] },
@@ -354,9 +354,9 @@ const cities = [
       { wikiTitle: 'Red_Sea', name: { en: 'Sunset Boat Cruise', ar: 'رحلة قارب وقت الغروب' }, meta: { en: 'Evening tours with dinner', ar: 'قعدة حلوة بالبحر مع العشا' } }
     ]
   },
-  { 
-    id: 'jerash', 
-    name: { en: 'Jerash', ar: 'جرش' }, 
+  {
+    id: 'jerash',
+    name: { en: 'Jerash', ar: 'جرش' },
     wikiTitle: 'Jerash',
     desc: { en: 'The Pompeii of the Middle East — one of the best-preserved Roman provincial cities in the world.', ar: 'بومبي الشرق — من أفضل المدن الرومانية المحافظ عليها بالعالم كله.' },
     tags: { en: ['Roman', 'History', 'Ruins', 'Day Trip'], ar: ['روماني', 'تاريخ', 'آثار', 'طشّة سريعة'] },
@@ -492,7 +492,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.directive('wiki-image', (el, { expression }, { evaluate }) => {
         const title = evaluate(expression);
         const img = el.querySelector('img');
-        
+
         Alpine.store('wiki').fetch(title).then(url => {
             if (img) {
                 img.src = url;
@@ -511,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Global things
   updateLanguage();
   initImageLoading();
-  
+
   if (document.getElementById('mainContainer')) {
     initNavigation();
     initInteractions();
@@ -547,29 +547,29 @@ function processWikiImages(container = document) {
 }
 
 function initImageLoading() {
+  // دالة موحدة لإظهار الصورة
+  const revealImage = (img) => {
+    img.classList.add('loaded');
+    img.style.opacity = '1'; // ضمان الظهور
+    if (img.parentElement && img.parentElement.classList.contains('skeleton')) {
+      img.parentElement.classList.remove('skeleton');
+    }
+  };
+
+  // مراقبة أي صورة يتم تحميلها في الصفحة
   document.addEventListener('load', (e) => {
-    if (e.target.tagName && e.target.tagName.toLowerCase() === 'img') {
-      e.target.classList.add('loaded');
-      if (e.target.parentElement && e.target.parentElement.classList.contains('skeleton')) {
-        e.target.parentElement.classList.remove('skeleton');
-      }
+    if (e.target.tagName?.toLowerCase() === 'img') {
+      revealImage(e.target);
     }
   }, true);
-  
-  // Fallback for already cached images
+
+  // التعامل مع الصور التي تم تحميلها بالفعل (من الكاش)
   document.querySelectorAll('img').forEach(img => {
-    if (img.complete && img.src && !img.hasAttribute('data-wiki')) {
-      img.classList.add('loaded');
-      if (img.parentElement && img.parentElement.classList.contains('skeleton')) {
-        img.parentElement.classList.remove('skeleton');
-      }
+    if (img.complete) {
+      revealImage(img);
+    } else {
+      img.addEventListener('load', () => revealImage(img));
     }
-    img.addEventListener('load', () => {
-      img.classList.add('loaded');
-      if (img.parentElement && img.parentElement.classList.contains('skeleton')) {
-        img.parentElement.classList.remove('skeleton');
-      }
-    });
   });
 }
 
@@ -577,14 +577,14 @@ function initImageLoading() {
 
 function setLanguageMode(mode) {
   if (state.currentMode === mode) return;
-  
+
   document.body.classList.add('lang-switching');
-  
+
   setTimeout(() => {
     state.currentMode = mode;
     updateLanguage();
     document.body.classList.remove('lang-switching');
-  }, 400); 
+  }, 400);
 }
 
 function updateLanguage() {
@@ -617,7 +617,7 @@ function updateLanguage() {
   rebuildCitySelect();
   renderCities();
   renderAdminUsers();
-  
+
   if (state.currentSection === 'cities' && document.getElementById('cityDetail') && !document.getElementById('cityDetail').classList.contains('hidden-view')) {
     if(state.currentCityId) showCityDetail(state.currentCityId);
   }
@@ -628,12 +628,12 @@ function rebuildCitySelect() {
   if (!citySelect) return;
   const currentVal = citySelect.value;
   const mode = state.currentMode;
-  
+
   let optionsHTML = `<option value="all">${translations[mode].plan_dest_all}</option>`;
   cities.forEach(c => {
     optionsHTML += `<option value="${c.id}">${c.name[mode]}</option>`;
   });
-  
+
   citySelect.innerHTML = optionsHTML;
   citySelect.value = currentVal || 'all';
 }
@@ -642,7 +642,7 @@ function rebuildCitySelect() {
 
 function initNavigation() {
   const navBtns = document.querySelectorAll('.nav-btn');
-  
+
   navBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const targetId = e.currentTarget.getAttribute('data-target');
@@ -662,7 +662,7 @@ function initNavigation() {
 
   document.getElementById('btnPlanHero')?.addEventListener('click', () => switchSection('planner'));
   document.getElementById('btnExploreHero')?.addEventListener('click', () => switchSection('cities'));
-  
+
   document.getElementById('btnModeArAction')?.addEventListener('click', () => { setLanguageMode('ar'); switchSection('cities'); });
   document.getElementById('btnModeEnAction')?.addEventListener('click', () => { setLanguageMode('en'); switchSection('planner'); });
 }
@@ -672,13 +672,13 @@ function switchSection(id) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
-  
+
   if (state.isAnimating) return;
   state.isAnimating = true;
 
   const currentSec = state.currentSection ? document.getElementById(`sec-${state.currentSection}`) : null;
   const targetSec = document.getElementById(`sec-${id}`);
-  
+
   state.currentSection = id;
 
   if (currentSec) {
@@ -691,10 +691,10 @@ function switchSection(id) {
     if (currentSec) {
       currentSec.classList.remove('exit');
     }
-    
+
     if (targetSec) {
       targetSec.classList.add('active');
-      
+
       // Force reflow for staggered animation re-trigger
       const staggerItems = targetSec.querySelectorAll('.stagger-item');
       staggerItems.forEach((item, index) => {
@@ -754,7 +754,7 @@ function initParallax() {
         const speed = el.getAttribute('data-speed') || 0.1;
         el.style.transform = `translate3d(0, ${scrollY * speed}px, 0)`;
       });
-      
+
       const glow = document.querySelector('.parallax-bg');
       if (glow) {
         glow.style.transform = `translateY(${scrollY * 0.3}px)`;
@@ -768,7 +768,7 @@ function initParallax() {
 function renderCities() {
   const grid = document.getElementById('citiesGrid');
   const mode = state.currentMode;
-  
+
   grid.innerHTML = cities.map((c, index) => `
     <div class="city-card stagger-item" data-id="${c.id}">
       <div class="city-img skeleton">
@@ -787,7 +787,7 @@ function renderCities() {
   document.querySelectorAll('.city-card').forEach(card => {
     card.addEventListener('click', () => showCityDetail(card.getAttribute('data-id')));
   });
-  
+
   processWikiImages(grid);
   initImageLoading(); // Re-bind lazy loads
 }
@@ -802,22 +802,22 @@ function showCityDetail(id) {
   const detailContainer = document.getElementById('cityDetail');
   if (!detailContainer) return;
   detailContainer.classList.remove('hidden-view');
-  
+
   detailContainer.innerHTML = `
     <article class="section stagger-item" style="animation-delay: 0s; animation-fill-mode: forwards;">
       <button class="back-btn ripple" id="btnBackToCities" style="background:var(--bg-panel); color:var(--text-main); border:1px solid var(--glass-border); padding:10px 20px; border-radius:20px; cursor:pointer; margin-bottom:20px;">
         ${translations[mode].btn_back_cities}
       </button>
-      
+
       <div class="detail-header">
         <div class="detail-icon skeleton"><img data-wiki="${city.wikiTitle}" alt="${city.name[mode]}" loading="lazy"></div>
         <div>
           <h2 class="detail-title">${city.name[mode]}</h2>
         </div>
       </div>
-      
+
       <p class="detail-intro">${city.intro[mode]}</p>
-      
+
       <h3 class="detail-title" style="font-size: 24px; margin-bottom: 24px;">${translations[mode].stat_attr_lbl}</h3>
       <div class="places-grid">
         ${city.attractions.map((a, i) => `
@@ -830,7 +830,7 @@ function showCityDetail(id) {
           </div>
         `).join('')}
       </div>
-      
+
       <div style="margin-top:4rem;">
         <button class="btn-primary ripple" id="btnPlanForCity">${translations[mode].plan_trip_to} ${city.name[mode]}</button>
       </div>
@@ -852,7 +852,7 @@ function showCityDetail(id) {
       }
     }
   });
-  
+
   processWikiImages(detailContainer);
   initImageLoading();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -866,13 +866,13 @@ async function handleGenerateItinerary() {
   const daysEl = document.getElementById('planDays');
   const out = document.getElementById('itineraryOutput');
   const btn = document.getElementById('generateBtn');
-  
+
   if (!cityEl || !daysEl || !out || !btn) return;
-  
+
   const city = cityEl.value;
   const days = daysEl.value;
   const mode = state.currentMode;
-  
+
   out.classList.remove('hidden-view');
   out.innerHTML = `
     <div style="text-align:center; padding: 20px;">
@@ -917,7 +917,7 @@ ${translations.en.ai_mock_post_itinerary}`;
 • سر مخفي: كاسر بالسعر بالأسواق الشعبية، دايماً بلش بنص السعر وانت بتضحك.
 
 ${translations.ar.ai_mock_post_itinerary}`;
-      
+
     out.innerHTML = mode === 'ar' ? mockAr : mockEn;
     btn.disabled = false;
   }, 2000);
@@ -932,14 +932,14 @@ async function handleAskCurrencyAI() {
   const qEl = document.getElementById('currencyQ');
   const out = document.getElementById('currencyAIResp');
   const btn = document.getElementById('askCurrencyBtn');
-  
+
   if (!qEl || !out || !btn) return;
-  
+
   const query = qEl.value.trim();
   if(!query) return;
-  
+
   const mode = state.currentMode;
-  
+
   out.classList.remove('hidden-view');
   out.innerHTML = `<div style="text-align:center;"><div style="width:20px; height:20px; border:2px solid var(--highlight); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite; margin: 0 auto 10px;"></div>${translations[mode].ai_mock_loading_curr}</div>`;
   btn.disabled = true;
@@ -954,14 +954,14 @@ async function handleAskAdminAI() {
   const qEl = document.getElementById('adminAIQ');
   const out = document.getElementById('adminAIResp');
   const btn = document.getElementById('askAdminBtn');
-  
+
   if (!qEl || !out || !btn) return;
-  
+
   const query = qEl.value.trim();
   if(!query) return;
-  
+
   const mode = state.currentMode;
-  
+
   out.classList.remove('hidden-view');
   out.innerHTML = `<div style="text-align:center;"><div style="width:20px; height:20px; border:2px solid var(--secondary-accent); border-top-color:transparent; border-radius:50%; animation:spin 1s linear infinite; margin: 0 auto 10px;"></div>${translations[mode].ai_mock_loading_admin}</div>`;
   btn.disabled = true;
@@ -987,10 +987,10 @@ function convertCurrency() {
 
   const from = currFrom.value;
   const amount = parseFloat(currAmount.value) || 0;
-  
+
   const rate = state.rates[from];
   const result = (amount * rate).toFixed(2);
-  
+
   const currResult = document.getElementById('currResult');
   const rateLabel = document.getElementById('rateLabel');
   if (currResult) currResult.textContent = result;
@@ -1005,11 +1005,11 @@ function initAdminPanel() {
     btn.addEventListener('click', (e) => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
-      
+
       const tabId = e.target.getAttribute('data-tab');
       document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden-view'));
       document.getElementById(`admin-${tabId}`)?.classList.remove('hidden-view');
-      
+
       if(tabId === 'analytics') renderAnalytics();
     });
   });
@@ -1019,7 +1019,7 @@ function renderAdminUsers() {
   const tbody = document.getElementById('usersTable');
   if(!tbody) return;
   const mode = state.currentMode;
-  
+
   tbody.innerHTML = adminUsers.map((u, index) => {
     const statusClass = u.statusKey === 'status_active' ? 'status-active' : 'status-inactive';
     return `
@@ -1037,14 +1037,14 @@ function renderAnalytics() {
   const destContainer = document.getElementById('analyticsDestinations');
   if(!destContainer) return;
   const mode = state.currentMode;
-  
+
   const mockData = [
     { id: 'petra', value: 85 },
     { id: 'amman', value: 70 },
     { id: 'dead-sea', value: 65 },
     { id: 'wadi-rum', value: 60 }
   ];
-  
+
   destContainer.innerHTML = mockData.map(d => {
     const city = cities.find(c => c.id === d.id);
     return `
